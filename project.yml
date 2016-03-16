@@ -22,11 +22,21 @@
 :extension:
   :executable: .out
 
+:flags:
+  :test:
+    :compile:
+      :*:
+        - -Wextra
+        - -Wall
+        - -Wstrict-prototypes
+        - -Werror
+
 :paths:
   :test:
     - +:test/**
     - -:test/support
   :source:
+    - inc/**
     - src/**
   :support:
     - test/support

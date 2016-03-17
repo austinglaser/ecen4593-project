@@ -24,11 +24,11 @@
 typedef struct cache_param {
     uint32_t block_size_bytes;
     uint32_t cache_size_bytes;
-    bool is_associative;
-    uint16_t hit_time_cycles;
-    uint16_t miss_time_cycles;
-    uint16_t transfer_time_cycles;
-    uint16_t bus_width_bytes;
+    uint32_t associative;
+    uint32_t hit_time_cycles;
+    uint32_t miss_time_cycles;
+    uint32_t transfer_time_cycles;
+    uint32_t bus_width_bytes;
 } cache_param_t;
 
 typedef struct config {

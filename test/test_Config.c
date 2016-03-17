@@ -195,6 +195,22 @@ void test_ParseTransferTime(void)
     TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
+void test_ParseBusWidth(void)
+{
+    config_t expected_config = {
+        .l2 = {
+            .bus_width_bytes = 32,
+        },
+    };
+
+    config_t config;
+    ZERO_STRUCT(config);
+
+    Config_ParseLine("L2_bus_width=32\n", &config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_CONFIG */

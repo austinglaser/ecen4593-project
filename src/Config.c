@@ -27,6 +27,8 @@ static const char * cache_size_str          = "cache_size";
 static const char * associative_size_str    = "assoc";
 static const char * hit_time_str            = "hit_time";
 static const char * miss_time_str           = "miss_time";
+static const char * transfer_time_str       = "transfer_time";
+static const char * bus_width_str           = "bus_width";
 
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
@@ -88,6 +90,12 @@ void Config_ParseLine(const char * line, config_t * configp)
         }
         else if (strcmp(field_str, miss_time_str) == 0) {
             cache->miss_time_cycles = value;
+        }
+        else if (strcmp(field_str, transfer_time_str) == 0) {
+            cache->transfer_time_cycles = value;
+        }
+        else if (strcmp(field_str, bus_width_str) == 0) {
+            cache->bus_width_bytes = value;
         }
     }
 }

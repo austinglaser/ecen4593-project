@@ -105,6 +105,9 @@ void Config_ParseLine(const char * line, config_t * configp)
             }
             cache->bus_width_bytes = value;
         }
+        else {
+            Throw(BAD_CONFIG_PARAM);
+        }
     }
 }
 

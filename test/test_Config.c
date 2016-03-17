@@ -247,6 +247,20 @@ void test_RejetcsInvalidCacheName(void)
     TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "There is no L3 cache");
 }
 
+void test_RejetcsInvalidParameterName(void)
+{
+    CEXCEPTION_T e = CEXCEPTION_NONE;
+
+    config_t config;
+
+    Try {
+        Config_ParseLine("L1_doesnt_exist=1024\n", &config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "Should catch doesnt_exist parameter");
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_CONFIG */

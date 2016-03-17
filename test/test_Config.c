@@ -15,6 +15,7 @@
 #include "Config.h"
 
 #include "test_utilities.h"
+#include "unity_ConfigHelper.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -23,47 +24,6 @@
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
-
-#define TEST_ASSERT_EQUAL_CONFIG(expected, actual)                           \
-    do {                                                                     \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l1.block_size_bytes,     \
-                                         (actual).l1.block_size_bytes,       \
-                                         "l1.block_size_bytes");             \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l1.cache_size_bytes,     \
-                                         (actual).l1.cache_size_bytes,       \
-                                         "l1.cache_size_bytes");             \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l1.associative_bytes,    \
-                                         (actual).l1.associative_bytes,      \
-                                         "l1.associative");                  \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l1.hit_time_cycles,      \
-                                         (actual).l1.hit_time_cycles,        \
-                                         "l1.hit_time_cycles");              \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l1.miss_time_cycles,     \
-                                         (actual).l1.miss_time_cycles,       \
-                                         "l1.miss_time_cycles");             \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l2.block_size_bytes,     \
-                                         (actual).l2.block_size_bytes,       \
-                                         "l2.block_size_bytes");             \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l2.cache_size_bytes,     \
-                                         (actual).l2.cache_size_bytes,       \
-                                         "l2.cache_size_bytes");             \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l2.associative_bytes,    \
-                                         (actual).l2.associative_bytes,      \
-                                         "l2.associative");                  \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l2.hit_time_cycles,      \
-                                         (actual).l2.hit_time_cycles,        \
-                                         "l2.hit_time_cycles");              \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l2.miss_time_cycles,     \
-                                         (actual).l2.miss_time_cycles,       \
-                                         "l2.miss_time_cycles");             \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l2.transfer_time_cycles, \
-                                         (actual).l2.transfer_time_cycles,   \
-                                         "l2.transfer_time_cycles");         \
-        TEST_ASSERT_EQUAL_UINT32_MESSAGE((expected).l2.bus_width_bytes,      \
-                                         (actual).l2.bus_width_bytes,        \
-                                         "l2.bus_width_bytes");              \
-    } while (false)
-
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -103,7 +63,7 @@ void test_ConfigDefaultValues(void)
 
     Config_Defaults(&default_config);
 
-    TEST_ASSERT_EQUAL_CONFIG(expected_config, default_config);
+    TEST_ASSERT_EQUAL_config_t(expected_config, default_config);
 }
 
 void test_BlankLineDoesntModifyConfig(void)
@@ -116,7 +76,7 @@ void test_BlankLineDoesntModifyConfig(void)
 
     Config_ParseLine("\n", &config);
 
-    TEST_ASSERT_EQUAL_CONFIG(expected_config, config);
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
 void test_ParseBlockSizeString(void)
@@ -136,7 +96,7 @@ void test_ParseBlockSizeString(void)
     Config_ParseLine("L1_block_size=128\n", &config);
     Config_ParseLine("L2_block_size=32\n", &config);
 
-    TEST_ASSERT_EQUAL_CONFIG(expected_config, config);
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
 void test_ParseCacheSizeString(void)
@@ -156,7 +116,7 @@ void test_ParseCacheSizeString(void)
     Config_ParseLine("L1_cache_size=1024\n", &config);
     Config_ParseLine("L2_cache_size=1024\n", &config);
 
-    TEST_ASSERT_EQUAL_CONFIG(expected_config, config);
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
 void test_ParseAssociativeString(void)
@@ -176,7 +136,7 @@ void test_ParseAssociativeString(void)
     Config_ParseLine("L1_assoc=2\n", &config);
     Config_ParseLine("L2_assoc=4\n", &config);
 
-    TEST_ASSERT_EQUAL_CONFIG(expected_config, config);
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
 void test_ParseHitTime(void)
@@ -196,7 +156,7 @@ void test_ParseHitTime(void)
     Config_ParseLine("L1_hit_time=2\n", &config);
     Config_ParseLine("L2_hit_time=12\n", &config);
 
-    TEST_ASSERT_EQUAL_CONFIG(expected_config, config);
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
 void test_ParseMissTime(void)
@@ -216,7 +176,23 @@ void test_ParseMissTime(void)
     Config_ParseLine("L1_miss_time=2\n", &config);
     Config_ParseLine("L2_miss_time=12\n", &config);
 
-    TEST_ASSERT_EQUAL_CONFIG(expected_config, config);
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
+}
+
+void test_ParseTransferTime(void)
+{
+    config_t expected_config = {
+        .l2 = {
+            .transfer_time_cycles = 12,
+        },
+    };
+
+    config_t config;
+    ZERO_STRUCT(config);
+
+    Config_ParseLine("L2_transfer_time=12\n", &config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

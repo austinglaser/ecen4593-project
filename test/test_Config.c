@@ -230,7 +230,21 @@ void test_RejectsL1InvalidParameters(void)
     }
     Catch (e) {
     }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "L1 has no transfer time parameter");
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "L1 has no bus width parameter");
+}
+
+void test_RejetcsInvalidCacheName(void)
+{
+    CEXCEPTION_T e = CEXCEPTION_NONE;
+
+    config_t config;
+
+    Try {
+        Config_ParseLine("L3_cache_size=1024\n", &config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "There is no L3 cache");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

@@ -75,7 +75,7 @@ void Config_ParseLine(const char * line, config_t * configp)
             cache = &configp->l2;
         }
         else {
-            return;
+            Throw(BAD_CONFIG_PARAM);
         }
 
         if (strcmp(field_str, block_size_str) == 0) {

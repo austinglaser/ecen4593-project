@@ -10,6 +10,8 @@
 /* --- PRIVATE DEPENDENCIES ------------------------------------------------- */
 
 #include "Config.h"
+#include "CException.h"
+#include "ExceptionTypes.h"
 
 #include <inttypes.h>
 #include <stdbool.h>
@@ -92,9 +94,15 @@ void Config_ParseLine(const char * line, config_t * configp)
             cache->miss_time_cycles = value;
         }
         else if (strcmp(field_str, transfer_time_str) == 0) {
+            if (cache == &configp->l1) {
+                Throw(BAD_CONFIG_PARAM);
+            }
             cache->transfer_time_cycles = value;
         }
         else if (strcmp(field_str, bus_width_str) == 0) {
+            if (cache == &configp->l1) {
+                Throw(BAD_CONFIG_PARAM);
+            }
             cache->bus_width_bytes = value;
         }
     }

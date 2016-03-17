@@ -11,6 +11,7 @@
 
 #include "unity.h"
 #include "CException.h"
+#include "ExceptionTypes.h"
 
 #include "Config.h"
 
@@ -209,6 +210,27 @@ void test_ParseBusWidth(void)
     Config_ParseLine("L2_bus_width=32\n", &config);
 
     TEST_ASSERT_EQUAL_config_t(expected_config, config);
+}
+
+void test_RejectsL1InvalidParameters(void)
+{
+    CEXCEPTION_T e = CEXCEPTION_NONE;
+
+    config_t config;
+
+    Try {
+        Config_ParseLine("L1_transfer_time=3\n", &config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "L1 has no transfer time parameter");
+
+    Try {
+        Config_ParseLine("L1_bus_width=32\n", &config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "L1 has no transfer time parameter");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

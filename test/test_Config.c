@@ -229,6 +229,7 @@ void test_RejectsL1InvalidParameters(void)
     }
     TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "L1 has no transfer time parameter");
 
+    e = CEXCEPTION_NONE;
     Try {
         Config_ParseLine("L1_bus_width=32\n", &config);
     }
@@ -248,7 +249,7 @@ void test_RejetcsInvalidCacheName(void)
     }
     Catch (e) {
     }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "There is no L3 cache");
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_CACHE, "There is no L3 cache");
 }
 
 void test_RejectsInvalidParameterName(void)

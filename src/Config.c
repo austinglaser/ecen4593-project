@@ -47,6 +47,7 @@ static void transfer_time_writer(uint32_t value, const char * cache_str, cache_p
 static void bus_width_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
 
 static cache_param_t * get_cache(const char * cache_str, config_t * configp);
+static void ensure_cache_not_l1(const char * cache_str);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -175,18 +176,14 @@ static void miss_time_writer(uint32_t value, const char * cache_str, cache_param
 
 static void transfer_time_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    if (strcmp(l1_str, cache_str) == 0) {
-        ThrowHere(BAD_CONFIG_PARAM);
-    }
+    ensure_cache_not_l1(cache_str);
 
     cachep->transfer_time_cycles = value;
 }
 
 static void bus_width_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    if (strcmp(l1_str, cache_str) == 0) {
-        ThrowHere(BAD_CONFIG_PARAM);
-    }
+    ensure_cache_not_l1(cache_str);
 
     cachep->bus_width_bytes = value;
 }
@@ -202,6 +199,13 @@ static cache_param_t * get_cache(const char * cache_str, config_t * configp)
     else {
         ThrowHere(BAD_CONFIG_CACHE);
         return NULL;
+    }
+}
+
+static void ensure_cache_not_l1(const char * cache_str)
+{
+    if (strcmp(l1_str, cache_str) == 0) {
+        ThrowHere(BAD_CONFIG_PARAM);
     }
 }
 

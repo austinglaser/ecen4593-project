@@ -20,13 +20,21 @@
 
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
 
+/**@brief   Exception values */
 enum EXCEPTION_TYPES {
-    BAD_CONFIG_PARAM,
+    NO_EXCEPTION = 0,           /**< Another way to say there wasn't an exception */
+    BAD_CONFIG_PARAM,           /**< Bad value in configuration */
+    MAX_EXCEPTION_N,            /**< Total number of exception types */
+    INVALID_EXCEPTION           /**< An invalid exception */
 };
 
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 /* --- PUBLIC MACROS -------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
+
+/**@brief Descriptor strings for exceptions */
+extern char const * const exception_descriptors[MAX_EXCEPTION_N];
+
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 /** @} defgroup EXCEPTIONTYPES */

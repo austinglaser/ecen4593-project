@@ -8,16 +8,17 @@
 :project:
   :use_exceptions: TRUE
   :use_test_preprocessor: TRUE
+  :use_deep_dependencies: TRUE
   :use_auxiliary_dependencies: TRUE
   :build_root: build
-#  :release_build: TRUE
+  :release_build: TRUE
   :test_file_prefix: test_
 
 #:release_build:
 #  :output: MyApp.out
 #  :use_assembly: FALSE
 
-:cexception_path: vendor/ceedling/vendor/c_exception
+:cexception_path: vendor/ceedling/vendor/
 
 :environment:
 
@@ -26,6 +27,13 @@
 
 :flags:
   :test:
+    :compile:
+      :*:
+        - -Wextra
+        - -Wall
+        - -Wstrict-prototypes
+        - -Werror
+  :release:
     :compile:
       :*:
         - -Wextra
@@ -47,13 +55,16 @@
   # in order to add common defines:
   #  1) remove the trailing [] from the :common: section
   #  2) add entries to the :common: section (e.g. :test: has TEST defined)
-  :commmon: &common_defines []
+  :commmon: &common_defines
+    - CEXCEPTION_USE_CONFIG_FILE
   :test:
     - *common_defines
     - TEST
   :test_preprocess:
     - *common_defines
     - TEST
+  :release:
+    - *common_defines
 
 :cmock:
   :mock_prefix: mock_

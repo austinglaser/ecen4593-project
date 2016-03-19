@@ -32,11 +32,13 @@ typedef void (* value_writer_t)(uint32_t, const char *, cache_param_t *);
 typedef struct {
     const char * cache_str;
     const char * param_str;
-    value_writer_t vw;
+    value_writer_t value_writer;
 } config_value_t;
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
+
+static void write_value(const char * cache_str, const char * field_str, uint32_t value, config_t * configp);
 
 static void block_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
 static void cache_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
@@ -53,13 +55,13 @@ static void ensure_cache_not_l1(const char * cache_str);
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
 static const config_value_t config_values[] = {
-    { .param_str = "block_size",    .vw = block_size_writer },
-    { .param_str = "cache_size",    .vw = cache_size_writer },
-    { .param_str = "assoc",         .vw = associative_size_writer },
-    { .param_str = "hit_time",      .vw = hit_time_writer },
-    { .param_str = "miss_time",     .vw = miss_time_writer },
-    { .param_str = "transfer_time", .vw = transfer_time_writer },
-    { .param_str = "bus_width",     .vw = bus_width_writer },
+    { .param_str = "block_size",    .value_writer = block_size_writer },
+    { .param_str = "cache_size",    .value_writer = cache_size_writer },
+    { .param_str = "assoc",         .value_writer = associative_size_writer },
+    { .param_str = "hit_time",      .value_writer = hit_time_writer },
+    { .param_str = "miss_time",     .value_writer = miss_time_writer },
+    { .param_str = "transfer_time", .value_writer = transfer_time_writer },
+    { .param_str = "bus_width",     .value_writer = bus_width_writer },
 };
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -94,19 +96,7 @@ void Config_ParseLine(const char * line, config_t * configp)
     }
 
     if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", cache_str, field_str, &value) == 3) {
-        unsigned int i;
-        cache_param_t * cachep = get_cache(cache_str, configp);
-
-        for (i = 0; i < ARRAY_ELEMENTS(config_values); i++) {
-            config_value_t config_value = config_values[i];
-            if (strcmp(config_value.param_str, field_str) == 0) {
-                config_value.vw(value, cache_str, cachep);
-                break;
-            }
-        }
-        if (i == ARRAY_ELEMENTS(config_values)) {
-            ThrowHere(BAD_CONFIG_PARAM);
-        }
+        write_value(cache_str, field_str, value, configp);
     }
 }
 
@@ -138,6 +128,25 @@ void Config_FromFile(const char * filename, config_t * configp)
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
+
+static void write_value(const char * cache_str, const char * field_str, uint32_t value, config_t * configp)
+{
+    unsigned int i;
+    cache_param_t * cachep = get_cache(cache_str, configp);
+
+    bool found_param = false;
+    for (i = 0; i < ARRAY_ELEMENTS(config_values); i++) {
+        config_value_t config_value = config_values[i];
+        if (strcmp(config_value.param_str, field_str) == 0) {
+            config_value.value_writer(value, cache_str, cachep);
+            found_param = true;
+            break;
+        }
+    }
+    if (!found_param) {
+        ThrowHere(BAD_CONFIG_PARAM);
+    }
+}
 
 static void block_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {

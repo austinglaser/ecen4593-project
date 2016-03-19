@@ -22,7 +22,9 @@
 
 char const * const exception_descriptors[MAX_EXCEPTION_N] = {
     [NO_EXCEPTION]      = "No exception",
+    [ARGUMENT_ERROR]    = "Bad function argument",
     [BAD_CONFIG_PARAM]  = "Bad parameter in configuration",
+    [BAD_CONFIG_FILE]   = "Unable to open configuration file",
 };
 
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */

@@ -26,6 +26,9 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
+
+static void SetDefaultConfigValues(config_t * configp);
+
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -40,24 +43,8 @@ void tearDown(void)
 
 void test_ConfigDefaultValues(void)
 {
-    config_t expected_config = {
-        .l1 = {
-            .block_size_bytes       = 32,
-            .cache_size_bytes       = 8192,
-            .associative_bytes      = 1,
-            .hit_time_cycles        = 1,
-            .miss_time_cycles       = 1,
-        },
-        .l2 = {
-            .block_size_bytes       = 64,
-            .cache_size_bytes       = 32768,
-            .associative_bytes      = 1,
-            .hit_time_cycles        = 8,
-            .miss_time_cycles       = 10,
-            .transfer_time_cycles   = 10,
-            .bus_width_bytes        = 16,
-        },
-    };
+    config_t expected_config;
+    SetDefaultConfigValues(&expected_config);
 
     config_t default_config;
     ZERO_STRUCT(default_config);
@@ -212,6 +199,22 @@ void test_ParseBusWidth(void)
     TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
+void test_NewlineDoesntMatter(void)
+{
+    config_t expected_config = {
+        .l2 = {
+            .bus_width_bytes = 32,
+        },
+    };
+
+    config_t config;
+    ZERO_STRUCT(config);
+
+    Config_ParseLine("L2_bus_width=32", &config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
+}
+
 void test_RejectsL1InvalidParameters(void)
 {
     CEXCEPTION_T e = CEXCEPTION_NONE;
@@ -261,26 +264,31 @@ void test_RejectsInvalidParameterName(void)
     TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "Should catch doesnt_exist parameter");
 }
 
+void test_ThrowsExceptionWithNullPointers(void)
+{
+    CEXCEPTION_T e = CEXCEPTION_NONE;
+
+    config_t config;
+
+    Try {
+        Config_ParseLine(NULL, &config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == ARGUMENT_ERROR, "Should catch null string");
+
+    Try {
+        Config_ParseLine("L1_hit_time=1\n", NULL);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == ARGUMENT_ERROR, "Should catch null config struct");
+}
+
 void test_SetsDefaultsWithoutConfigFile(void)
 {
-    config_t expected_config = {
-        .l1 = {
-            .block_size_bytes       = 32,
-            .cache_size_bytes       = 8192,
-            .associative_bytes      = 1,
-            .hit_time_cycles        = 1,
-            .miss_time_cycles       = 1,
-        },
-        .l2 = {
-            .block_size_bytes       = 64,
-            .cache_size_bytes       = 32768,
-            .associative_bytes      = 1,
-            .hit_time_cycles        = 8,
-            .miss_time_cycles       = 10,
-            .transfer_time_cycles   = 10,
-            .bus_width_bytes        = 16,
-        },
-    };
+    config_t expected_config;
+    SetDefaultConfigValues(&expected_config);
 
     config_t actual_config;
     Config_FromFile(NULL, &actual_config);
@@ -288,6 +296,62 @@ void test_SetsDefaultsWithoutConfigFile(void)
     TEST_ASSERT_EQUAL_config_t(expected_config, actual_config);
 }
 
+void test_SetsDefaultsWithoutEmptyConfigFile(void)
+{
+    config_t expected_config;
+    SetDefaultConfigValues(&expected_config);
+
+    config_t actual_config;
+    Config_FromFile("config/empty", &actual_config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, actual_config);
+}
+
+void test_ThrowsExceptionWithNonexistentConfigFile(void)
+{
+    CEXCEPTION_T e;
+
+    config_t dummy_config;
+
+    Try {
+        Config_FromFile("doesnt/exist/at/all", &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_EQUAL_MESSAGE(BAD_CONFIG_FILE, e, "Should have caught nonexistent config file");
+}
+
+void test_AnyConfigFileOptionsOverrideDefaults(void)
+{
+    config_t expected_config;
+    SetDefaultConfigValues(&expected_config);
+    expected_config.l2.hit_time_cycles = 10;
+
+    config_t actual_config;
+    Config_FromFile("config/l2_hit_time_10", &actual_config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, actual_config);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
+
+static void SetDefaultConfigValues(config_t * configp)
+{
+    configp->l1.block_size_bytes     = 32;
+    configp->l1.cache_size_bytes     = 8192;
+    configp->l1.associative_bytes    = 1;
+    configp->l1.hit_time_cycles      = 1;
+    configp->l1.miss_time_cycles     = 1;
+    configp->l1.transfer_time_cycles = 0;  // Invalid
+    configp->l1.bus_width_bytes      = 0;  // Invalid
+
+    configp->l2.block_size_bytes     = 64;
+    configp->l2.cache_size_bytes     = 32768;
+    configp->l2.associative_bytes    = 1;
+    configp->l2.hit_time_cycles      = 8;
+    configp->l2.miss_time_cycles     = 10;
+    configp->l2.transfer_time_cycles = 10;
+    configp->l2.bus_width_bytes      = 16;
+}
 
 /** @} addtogroup TEST_CONFIG */

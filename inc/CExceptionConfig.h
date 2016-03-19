@@ -38,10 +38,10 @@
 
 static inline void UncaughtException(CEXCEPTION_T id) {
     if (id >= MAX_EXCEPTION_N) {
-        printf("Uncaught Exception: Unknown! (%u)\n", id);
+        printf("Unknown Exception! (%u)\n", id);
     }
     else {
-        printf("Uncaught Exception: %s (%u)\n", exception_descriptors[id], id);
+        printf("Exception: %s (%u)\n", exception_descriptors[id], id);
     }
     exit(-id);
 }

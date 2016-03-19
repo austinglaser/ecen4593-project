@@ -65,6 +65,10 @@ void Config_ParseLine(const char * line, config_t * configp)
     char field_str[64];
     uint32_t value;
 
+    if (line == NULL || configp == NULL) {
+        Throw(ARGUMENT_ERROR);
+    }
+
     if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", cache_str, field_str, &value) == 3) {
         cache_param_t * cache;
 
@@ -113,9 +117,21 @@ void Config_ParseLine(const char * line, config_t * configp)
 
 void Config_FromFile(const char * filename, config_t * configp)
 {
-    (void) filename;
-
     Config_Defaults(configp);
+
+    if (filename) {
+        FILE * config_file = fopen(filename, "r");
+        if (config_file == NULL) {
+            Throw(BAD_CONFIG_FILE);
+        }
+
+        char line[128];
+        while (fgets(line, sizeof(line), config_file)) {
+            Config_ParseLine(line, configp);
+        }
+
+        fclose(config_file);
+    }
 }
 
 /** @} addtogroup CONFIG */

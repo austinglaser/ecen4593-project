@@ -27,7 +27,7 @@ static const char * l2_str                  = "L2";
 
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
-typedef void (* value_writer_t)(uint32_t, const char *, config_t *);
+typedef void (* value_writer_t)(uint32_t, const char *, cache_param_t *);
 
 typedef struct {
     const char * cache_str;
@@ -38,13 +38,13 @@ typedef struct {
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
-static void block_size_writer(uint32_t value, const char * cache_str, config_t * configp);
-static void cache_size_writer(uint32_t value, const char * cache_str, config_t * configp);
-static void associative_size_writer(uint32_t value, const char * cache_str, config_t * configp);
-static void hit_time_writer(uint32_t value, const char * cache_str, config_t * configp);
-static void miss_time_writer(uint32_t value, const char * cache_str, config_t * configp);
-static void transfer_time_writer(uint32_t value, const char * cache_str, config_t * configp);
-static void bus_width_writer(uint32_t value, const char * cache_str, config_t * configp);
+static void block_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
+static void cache_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
+static void associative_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
+static void hit_time_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
+static void miss_time_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
+static void transfer_time_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
+static void bus_width_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
 
 static cache_param_t * get_cache(const char * cache_str, config_t * configp);
 
@@ -94,10 +94,12 @@ void Config_ParseLine(const char * line, config_t * configp)
 
     if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", cache_str, field_str, &value) == 3) {
         unsigned int i;
+        cache_param_t * cachep = get_cache(cache_str, configp);
+
         for (i = 0; i < ARRAY_ELEMENTS(config_values); i++) {
             config_value_t config_value = config_values[i];
             if (strcmp(config_value.param_str, field_str) == 0) {
-                config_value.vw(value, cache_str, configp);
+                config_value.vw(value, cache_str, cachep);
                 break;
             }
         }
@@ -136,53 +138,56 @@ void Config_FromFile(const char * filename, config_t * configp)
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static void block_size_writer(uint32_t value, const char * cache_str, config_t * configp)
+static void block_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    cache_param_t * cachep = get_cache(cache_str, configp);
+    (void) cache_str;
+
     cachep->block_size_bytes = value;
 }
 
-static void cache_size_writer(uint32_t value, const char * cache_str, config_t * configp)
+static void cache_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    cache_param_t * cachep = get_cache(cache_str, configp);
+    (void) cache_str;
+
     cachep->cache_size_bytes = value;
 }
 
-static void associative_size_writer(uint32_t value, const char * cache_str, config_t * configp)
+static void associative_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    cache_param_t * cachep = get_cache(cache_str, configp);
+    (void) cache_str;
+
     cachep->associative_bytes = value;
 }
 
-static void hit_time_writer(uint32_t value, const char * cache_str, config_t * configp)
+static void hit_time_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    cache_param_t * cachep = get_cache(cache_str, configp);
+    (void) cache_str;
+
     cachep->hit_time_cycles = value;
 }
 
-static void miss_time_writer(uint32_t value, const char * cache_str, config_t * configp)
+static void miss_time_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    cache_param_t * cachep = get_cache(cache_str, configp);
+    (void) cache_str;
+
     cachep->miss_time_cycles = value;
 }
 
-static void transfer_time_writer(uint32_t value, const char * cache_str, config_t * configp)
+static void transfer_time_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
     if (strcmp(l1_str, cache_str) == 0) {
         ThrowHere(BAD_CONFIG_PARAM);
     }
 
-    cache_param_t * cachep = get_cache(cache_str, configp);
     cachep->transfer_time_cycles = value;
 }
 
-static void bus_width_writer(uint32_t value, const char * cache_str, config_t * configp)
+static void bus_width_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
     if (strcmp(l1_str, cache_str) == 0) {
         ThrowHere(BAD_CONFIG_PARAM);
     }
 
-    cache_param_t * cachep = get_cache(cache_str, configp);
     cachep->bus_width_bytes = value;
 }
 

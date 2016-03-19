@@ -66,7 +66,7 @@ void Config_ParseLine(const char * line, config_t * configp)
     uint32_t value;
 
     if (line == NULL || configp == NULL) {
-        Throw(ARGUMENT_ERROR);
+        ThrowHere(ARGUMENT_ERROR);
     }
 
     if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", cache_str, field_str, &value) == 3) {
@@ -99,18 +99,18 @@ void Config_ParseLine(const char * line, config_t * configp)
         }
         else if (strcmp(field_str, transfer_time_str) == 0) {
             if (cache == &configp->l1) {
-                Throw(BAD_CONFIG_PARAM);
+                ThrowHere(BAD_CONFIG_PARAM);
             }
             cache->transfer_time_cycles = value;
         }
         else if (strcmp(field_str, bus_width_str) == 0) {
             if (cache == &configp->l1) {
-                Throw(BAD_CONFIG_PARAM);
+                ThrowHere(BAD_CONFIG_PARAM);
             }
             cache->bus_width_bytes = value;
         }
         else {
-            Throw(BAD_CONFIG_PARAM);
+            ThrowHere(BAD_CONFIG_PARAM);
         }
     }
 }
@@ -122,12 +122,20 @@ void Config_FromFile(const char * filename, config_t * configp)
     if (filename) {
         FILE * config_file = fopen(filename, "r");
         if (config_file == NULL) {
-            Throw(BAD_CONFIG_FILE);
+            ThrowHere(BAD_CONFIG_FILE);
         }
 
-        char line[128];
-        while (fgets(line, sizeof(line), config_file)) {
-            Config_ParseLine(line, configp);
+        CEXCEPTION_T e;
+        Try {
+            char line[128];
+            while (fgets(line, sizeof(line), config_file)) {
+                Config_ParseLine(line, configp);
+            }
+        }
+        Catch (e) {
+            fclose(config_file);
+            // We use Throw instead of ThrowHere so as to preserve file/line no. info
+            Throw(e);
         }
 
         fclose(config_file);

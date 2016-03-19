@@ -11,6 +11,7 @@
 
 #include "unity.h"
 #include "CException.h"
+#include "CExceptionConfig.h"
 #include "ExceptionTypes.h"
 
 #include "Config.h"

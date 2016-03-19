@@ -15,7 +15,6 @@
 
 /* --- PUBLIC DEPENDENCIES -------------------------------------------------- */
 
-#include "CException.h"
 #include "ExceptionTypes.h"
 
 #include <stdbool.h>
@@ -33,18 +32,21 @@
 
 #define CEXCEPTION_NO_CATCH_HANDLER(id) UncaughtException(id)
 
+#define ThrowWithLocationInfo(e, file, line)    do {                       \
+                                                    exception_file = file; \
+                                                    exception_line = line; \
+                                                    Throw(e);              \
+                                                } while (false)
+#define ThrowHere(e) ThrowWithLocationInfo(e, __FILE__, __LINE__)
+
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
+
+extern const char * exception_file;
+extern unsigned int exception_line;
+
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-static inline void UncaughtException(CEXCEPTION_T id) {
-    if (id >= MAX_EXCEPTION_N) {
-        printf("Unknown Exception! (%u)\n", id);
-    }
-    else {
-        printf("Exception: %s (%u)\n", exception_descriptors[id], id);
-    }
-    exit(-id);
-}
+void UncaughtException(CEXCEPTION_T id);
 
 /** @} defgroup CEXCEPTIONCONFIG */
 

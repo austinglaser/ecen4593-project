@@ -111,4 +111,11 @@ void Config_ParseLine(const char * line, config_t * configp)
     }
 }
 
+void Config_FromFile(const char * filename, config_t * configp)
+{
+    (void) filename;
+
+    Config_Defaults(configp);
+}
+
 /** @} addtogroup CONFIG */

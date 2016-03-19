@@ -247,7 +247,7 @@ void test_RejetcsInvalidCacheName(void)
     TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "There is no L3 cache");
 }
 
-void test_RejetcsInvalidParameterName(void)
+void test_RejectsInvalidParameterName(void)
 {
     CEXCEPTION_T e = CEXCEPTION_NONE;
 
@@ -259,6 +259,33 @@ void test_RejetcsInvalidParameterName(void)
     Catch (e) {
     }
     TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "Should catch doesnt_exist parameter");
+}
+
+void test_SetsDefaultsWithoutConfigFile(void)
+{
+    config_t expected_config = {
+        .l1 = {
+            .block_size_bytes       = 32,
+            .cache_size_bytes       = 8192,
+            .associative_bytes      = 1,
+            .hit_time_cycles        = 1,
+            .miss_time_cycles       = 1,
+        },
+        .l2 = {
+            .block_size_bytes       = 64,
+            .cache_size_bytes       = 32768,
+            .associative_bytes      = 1,
+            .hit_time_cycles        = 8,
+            .miss_time_cycles       = 10,
+            .transfer_time_cycles   = 10,
+            .bus_width_bytes        = 16,
+        },
+    };
+
+    config_t actual_config;
+    Config_FromFile(NULL, &actual_config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, actual_config);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

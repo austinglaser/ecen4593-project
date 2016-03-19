@@ -22,7 +22,8 @@
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 /* --- PUBLIC MACROS -------------------------------------------------------- */
 
-#define ARRAY_ELEMENTS(a) (sizeof(a)/sizeof((a)[0]))
+#define UNUSED_VARIABLE(var)    ((void) (var))
+#define ARRAY_ELEMENTS(a)       (sizeof(a)/sizeof((a)[0]))
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */

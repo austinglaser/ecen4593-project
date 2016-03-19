@@ -150,35 +150,35 @@ static void write_value(const char * cache_str, const char * field_str, uint32_t
 
 static void block_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    (void) cache_str;
+    UNUSED_VARIABLE(cache_str);
 
     cachep->block_size_bytes = value;
 }
 
 static void cache_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    (void) cache_str;
+    UNUSED_VARIABLE(cache_str);
 
     cachep->cache_size_bytes = value;
 }
 
 static void associative_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    (void) cache_str;
+    UNUSED_VARIABLE(cache_str);
 
     cachep->associative_bytes = value;
 }
 
 static void hit_time_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    (void) cache_str;
+    UNUSED_VARIABLE(cache_str);
 
     cachep->hit_time_cycles = value;
 }
 
 static void miss_time_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
-    (void) cache_str;
+    UNUSED_VARIABLE(cache_str);
 
     cachep->miss_time_cycles = value;
 }

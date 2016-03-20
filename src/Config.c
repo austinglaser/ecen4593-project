@@ -41,13 +41,14 @@ typedef struct {
 
 static void write_value(const char * mem_name_str, const char * field_str, uint32_t value, config_t * configp);
 
-static void block_size_writer(uint32_t value, void * _cachep);
-static void cache_size_writer(uint32_t value, void * _cachep);
-static void associative_size_writer(uint32_t value, void * _cachep);
-static void hit_time_writer(uint32_t value, void * _cachep);
-static void miss_time_writer(uint32_t value, void * _cachep);
-static void transfer_time_writer(uint32_t value, void * _cachep);
-static void bus_width_writer(uint32_t value, void * _cachep);
+static void cache_block_size_writer(uint32_t value, void * _cachep);
+static void cache_cache_size_writer(uint32_t value, void * _cachep);
+static void cache_associative_size_writer(uint32_t value, void * _cachep);
+static void cache_hit_time_writer(uint32_t value, void * _cachep);
+static void cache_miss_time_writer(uint32_t value, void * _cachep);
+static void l2_cache_transfer_time_writer(uint32_t value, void * _cachep);
+static void l2_cache_bus_width_writer(uint32_t value, void * _cachep);
+static void main_mem_send_address_writer(uint32_t value, void * _memp);
 
 static void * get_mem(const char * mem_name_str, config_t * configp);
 
@@ -57,13 +58,14 @@ static void ensure_value_power_of_two(uint32_t value);
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
 static const config_value_t config_values[] = {
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "block_size",    .value_writer = block_size_writer },
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "cache_size",    .value_writer = cache_size_writer },
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "assoc",         .value_writer = associative_size_writer },
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "hit_time",      .value_writer = hit_time_writer },
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "miss_time",     .value_writer = miss_time_writer },
-    { .mem_names = { L2_CACHE_STR },               .param_str = "transfer_time", .value_writer = transfer_time_writer },
-    { .mem_names = { L2_CACHE_STR },               .param_str = "bus_width",     .value_writer = bus_width_writer },
+    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "block_size",    .value_writer = cache_block_size_writer },
+    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "cache_size",    .value_writer = cache_cache_size_writer },
+    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "assoc",         .value_writer = cache_associative_size_writer },
+    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "hit_time",      .value_writer = cache_hit_time_writer },
+    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "miss_time",     .value_writer = cache_miss_time_writer },
+    { .mem_names = { L2_CACHE_STR },               .param_str = "transfer_time", .value_writer = l2_cache_transfer_time_writer },
+    { .mem_names = { L2_CACHE_STR },               .param_str = "bus_width",     .value_writer = l2_cache_bus_width_writer },
+    { .mem_names = { MAIN_MEM_STR },               .param_str = "sendaddr",      .value_writer = main_mem_send_address_writer },
 };
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -168,7 +170,7 @@ static void write_value(const char * mem_name_str, const char * field_str, uint3
     }
 }
 
-static void block_size_writer(uint32_t value, void * _cachep)
+static void cache_block_size_writer(uint32_t value, void * _cachep)
 {
     ensure_value_power_of_two(value);
 
@@ -176,7 +178,7 @@ static void block_size_writer(uint32_t value, void * _cachep)
     cachep->block_size_bytes = value;
 }
 
-static void cache_size_writer(uint32_t value, void * _cachep)
+static void cache_cache_size_writer(uint32_t value, void * _cachep)
 {
     ensure_value_power_of_two(value);
 
@@ -184,7 +186,7 @@ static void cache_size_writer(uint32_t value, void * _cachep)
     cachep->cache_size_bytes = value;
 }
 
-static void associative_size_writer(uint32_t value, void * _cachep)
+static void cache_associative_size_writer(uint32_t value, void * _cachep)
 {
     ensure_value_power_of_two(value);
 
@@ -192,31 +194,37 @@ static void associative_size_writer(uint32_t value, void * _cachep)
     cachep->associative_bytes = value;
 }
 
-static void hit_time_writer(uint32_t value, void * _cachep)
+static void cache_hit_time_writer(uint32_t value, void * _cachep)
 {
 
     cache_param_t * cachep = _cachep;
     cachep->hit_time_cycles = value;
 }
 
-static void miss_time_writer(uint32_t value, void * _cachep)
+static void cache_miss_time_writer(uint32_t value, void * _cachep)
 {
     cache_param_t * cachep = _cachep;
     cachep->miss_time_cycles = value;
 }
 
-static void transfer_time_writer(uint32_t value, void * _cachep)
+static void l2_cache_transfer_time_writer(uint32_t value, void * _cachep)
 {
     cache_param_t * cachep = _cachep;
     cachep->transfer_time_cycles = value;
 }
 
-static void bus_width_writer(uint32_t value, void * _cachep)
+static void l2_cache_bus_width_writer(uint32_t value, void * _cachep)
 {
     ensure_value_power_of_two(value);
 
     cache_param_t * cachep = _cachep;
     cachep->bus_width_bytes = value;
+}
+
+static void main_mem_send_address_writer(uint32_t value, void * _memp)
+{
+    memory_param_t * memp = _memp;
+    memp->send_address_cycles = value;
 }
 
 static void * get_mem(const char * mem_name_str, config_t * configp)

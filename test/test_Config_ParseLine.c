@@ -198,6 +198,22 @@ void test_ParseBusWidth(void)
     TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
+void test_ParseMemSendAddressTime(void)
+{
+    config_t expected_config = {
+        .main_mem = {
+            .send_address_cycles = 13,
+        },
+    };
+
+    config_t config;
+    ZERO_STRUCT(config);
+
+    Config_ParseLine("mem_sendaddr=13\n", &config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
+}
+
 void test_NewlineDoesntMatter(void)
 {
     config_t expected_config = {

@@ -70,21 +70,26 @@ static const config_value_t config_values[] = {
 
 void Config_Defaults(config_t * configp)
 {
-    configp->l1.block_size_bytes        = 32;
-    configp->l1.cache_size_bytes        = 8192;
-    configp->l1.associative_bytes       = 1;
-    configp->l1.hit_time_cycles         = 1;
-    configp->l1.miss_time_cycles        = 1;
-    configp->l1.transfer_time_cycles    = 0;    // not valid for L1
-    configp->l1.bus_width_bytes         = 0;    // not valid for L1
+    configp->l1.block_size_bytes            = 32;
+    configp->l1.cache_size_bytes            = 8192;
+    configp->l1.associative_bytes           = 1;
+    configp->l1.hit_time_cycles             = 1;
+    configp->l1.miss_time_cycles            = 1;
+    configp->l1.transfer_time_cycles        = 0;    // not valid for L1
+    configp->l1.bus_width_bytes             = 0;    // not valid for L1
 
-    configp->l2.block_size_bytes        = 64;
-    configp->l2.cache_size_bytes        = 32768;
-    configp->l2.associative_bytes       = 1;
-    configp->l2.hit_time_cycles         = 8;
-    configp->l2.miss_time_cycles        = 10;
-    configp->l2.transfer_time_cycles    = 10;
-    configp->l2.bus_width_bytes         = 16;
+    configp->l2.block_size_bytes            = 64;
+    configp->l2.cache_size_bytes            = 32768;
+    configp->l2.associative_bytes           = 1;
+    configp->l2.hit_time_cycles             = 8;
+    configp->l2.miss_time_cycles            = 10;
+    configp->l2.transfer_time_cycles        = 10;
+    configp->l2.bus_width_bytes             = 16;
+
+    configp->main_mem.send_address_cycles   = 10;
+    configp->main_mem.ready_cycles          = 50;
+    configp->main_mem.send_chunk_cycles     = 15;
+    configp->main_mem.chunk_size_bytes      = 8;
 }
 
 void Config_ParseLine(const char * line, config_t * configp)

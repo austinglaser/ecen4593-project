@@ -31,9 +31,17 @@ typedef struct cache_param {
     uint32_t bus_width_bytes;
 } cache_param_t;
 
+typedef struct memory_param_t {
+    uint32_t send_address_cycles;
+    uint32_t ready_cycles;
+    uint32_t send_chunk_cycles;
+    uint32_t chunk_size_bytes;
+} memory_param_t;
+
 typedef struct config {
-    cache_param_t l1;
-    cache_param_t l2;
+    cache_param_t   l1;
+    cache_param_t   l2;
+    memory_param_t  main_mem;
 } config_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */

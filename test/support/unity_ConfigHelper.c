@@ -41,6 +41,9 @@ void AssertEqual_config_t(config_t expected,
 
     sncat_if_nonnull(sub_msg, 128, "L2", message);
     UNITY_TEST_ASSERT_EQUAL_cache_param_t(expected.l2, actual.l2, line, sub_msg);
+
+    sncat_if_nonnull(sub_msg, 128, "Main memory", message);
+    UNITY_TEST_ASSERT_EQUAL_memory_param_t(expected.main_mem, actual.main_mem, line, sub_msg);
 }
 
 void AssertEqual_cache_param_t(cache_param_t expected,
@@ -70,6 +73,26 @@ void AssertEqual_cache_param_t(cache_param_t expected,
 
     sncat_if_nonnull(sub_msg, 128, "bus_width", message);
     UNITY_TEST_ASSERT_EQUAL_UINT32(expected.bus_width_bytes, actual.bus_width_bytes, line, sub_msg);
+}
+
+void AssertEqual_memory_param_t(memory_param_t expected,
+                                memory_param_t actual,
+                                unsigned short line,
+                                const char * message)
+{
+    char sub_msg[128];
+
+    sncat_if_nonnull(sub_msg, 128, "send_address", message);
+    UNITY_TEST_ASSERT_EQUAL_UINT32(expected.send_address_cycles, actual.send_address_cycles, line, sub_msg);
+
+    sncat_if_nonnull(sub_msg, 128, "ready", message);
+    UNITY_TEST_ASSERT_EQUAL_UINT32(expected.ready_cycles, actual.ready_cycles, line, sub_msg);
+
+    sncat_if_nonnull(sub_msg, 128, "send_chunk", message);
+    UNITY_TEST_ASSERT_EQUAL_UINT32(expected.send_chunk_cycles, actual.send_chunk_cycles, line, sub_msg);
+
+    sncat_if_nonnull(sub_msg, 128, "chunk_size", message);
+    UNITY_TEST_ASSERT_EQUAL_UINT32(expected.chunk_size_bytes, actual.chunk_size_bytes, line, sub_msg);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

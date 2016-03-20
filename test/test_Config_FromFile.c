@@ -83,7 +83,7 @@ void test_AnyConfigFileOptionsOverrideDefaults(void)
     expected_config.l2.hit_time_cycles = 10;
 
     config_t actual_config;
-    Config_FromFile("config/l2_hit_time_10", &actual_config);
+    Config_FromFile("test/support/l2_hit_time_10", &actual_config);
 
     TEST_ASSERT_EQUAL_config_t(expected_config, actual_config);
 }

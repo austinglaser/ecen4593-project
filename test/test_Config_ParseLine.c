@@ -285,6 +285,67 @@ void test_ThrowsExceptionWithNullPointers(void)
     TEST_ASSERT_MESSAGE(e == ARGUMENT_ERROR, "Should catch null config struct");
 }
 
+void test_WidthsMustBePowersOfTwo(void)
+{
+    CEXCEPTION_T e = CEXCEPTION_NONE;
+    config_t dummy_config;
+
+    Try {
+        Config_ParseLine("L1_block_size=31\n", &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two block size");
+
+    e = CEXCEPTION_NONE;
+    Try {
+        Config_ParseLine("L2_block_size=31\n", &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two block size");
+
+    e = CEXCEPTION_NONE;
+    Try {
+        Config_ParseLine("L1_cache_size=1000\n", &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two cache size");
+
+    e = CEXCEPTION_NONE;
+    Try {
+        Config_ParseLine("L2_cache_size=1000\n", &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two cache size");
+
+    e = CEXCEPTION_NONE;
+    Try {
+        Config_ParseLine("L1_assoc=5\n", &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two associative value");
+
+    e = CEXCEPTION_NONE;
+    Try {
+        Config_ParseLine("L2_assoc=5\n", &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two associative value");
+
+    e = CEXCEPTION_NONE;
+    Try {
+        Config_ParseLine("L2_bus_width=9\n", &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two bus width");
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_CONFIG */

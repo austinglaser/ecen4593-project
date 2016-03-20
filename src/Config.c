@@ -49,6 +49,8 @@ static void transfer_time_writer(uint32_t value, const char * cache_str, cache_p
 static void bus_width_writer(uint32_t value, const char * cache_str, cache_param_t * cachep);
 
 static cache_param_t * get_cache(const char * cache_str, config_t * configp);
+
+static void ensure_value_power_of_two(uint32_t value);
 static void ensure_cache_not_l1(const char * cache_str);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
@@ -154,6 +156,8 @@ static void block_size_writer(uint32_t value, const char * cache_str, cache_para
 {
     UNUSED_VARIABLE(cache_str);
 
+    ensure_value_power_of_two(value);
+
     cachep->block_size_bytes = value;
 }
 
@@ -161,12 +165,16 @@ static void cache_size_writer(uint32_t value, const char * cache_str, cache_para
 {
     UNUSED_VARIABLE(cache_str);
 
+    ensure_value_power_of_two(value);
+
     cachep->cache_size_bytes = value;
 }
 
 static void associative_size_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
     UNUSED_VARIABLE(cache_str);
+
+    ensure_value_power_of_two(value);
 
     cachep->associative_bytes = value;
 }
@@ -195,6 +203,7 @@ static void transfer_time_writer(uint32_t value, const char * cache_str, cache_p
 static void bus_width_writer(uint32_t value, const char * cache_str, cache_param_t * cachep)
 {
     ensure_cache_not_l1(cache_str);
+    ensure_value_power_of_two(value);
 
     cachep->bus_width_bytes = value;
 }
@@ -210,6 +219,13 @@ static cache_param_t * get_cache(const char * cache_str, config_t * configp)
     else {
         ThrowHere(BAD_CONFIG_CACHE);
         return NULL;
+    }
+}
+
+static void ensure_value_power_of_two(uint32_t value)
+{
+    if (!IS_POWER_OF_TWO(value)) {
+        ThrowHere(BAD_CONFIG_VALUE);
     }
 }
 

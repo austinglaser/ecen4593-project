@@ -24,6 +24,7 @@
 
 #define UNUSED_VARIABLE(var)    ((void) (var))
 #define ARRAY_ELEMENTS(a)       (sizeof(a)/sizeof((a)[0]))
+#define IS_POWER_OF_TWO(v)      (((v) != 0) && ((v) & ((v) - 1)) == 0 )
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */

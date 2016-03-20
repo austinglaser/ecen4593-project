@@ -110,17 +110,19 @@ void Config_FromFile(const char * filename, config_t * configp)
             ThrowHere(BAD_CONFIG_FILE);
         }
 
+        unsigned int line_no = 1;
         CEXCEPTION_T e;
         Try {
             char line[128];
             while (fgets(line, sizeof(line), config_file)) {
                 Config_ParseLine(line, configp);
+                line_no++;
             }
         }
         Catch (e) {
             fclose(config_file);
-            // We use Throw instead of ThrowHere so as to preserve file/line no. info
-            Throw(e);
+            // Manually set file/line number info for config file
+            ThrowWithLocationInfo(e, filename, line_no);
         }
 
         fclose(config_file);

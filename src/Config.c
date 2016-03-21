@@ -55,6 +55,7 @@ static void main_mem_chunk_size_writer(uint32_t value, void * _memp);
 
 static void * get_mem(const char * mem_name_str, config_t * configp);
 static const config_value_t * find_matching_config_value(const char * mem_name_str, const char * param_str);
+static bool is_matching_config_value(const config_value_t * config_valuep, const char * mem_name_str, const char * param_str);
 
 static void ensure_value_power_of_two(uint32_t value);
 
@@ -263,24 +264,31 @@ static const config_value_t * find_matching_config_value(const char * mem_name_s
     const unsigned int n_config_values = ARRAY_ELEMENTS(config_values);
     for (i = 0; i < n_config_values; i++) {
         const config_value_t * config_valuep = &config_values[i];
-
-        if (strcmp(config_valuep->param_str, param_str) == 0) {
-            unsigned int j;
-            unsigned int n_mems = ARRAY_ELEMENTS(config_valuep->mem_names);
-            for (j = 0; j < n_mems; j++) {
-                const char * candidate_mem_name = config_valuep->mem_names[j];
-
-                if (candidate_mem_name == NULL) {
-                    break;
-                }
-                if (strcmp(mem_name_str, candidate_mem_name) == 0) {
-                    return config_valuep;
-                }
-            }
+        if (is_matching_config_value(config_valuep, mem_name_str, param_str)) {
+            return config_valuep;
         }
     }
 
     return NULL;
+}
+
+static bool is_matching_config_value(const config_value_t * config_valuep, const char * mem_name_str, const char * param_str)
+{
+    if (strcmp(config_valuep->param_str, param_str) == 0) {
+        unsigned int i;
+        unsigned int n_mems = ARRAY_ELEMENTS(config_valuep->mem_names);
+        for (i = 0; i < n_mems; i++) {
+            const char * candidate_mem_name = config_valuep->mem_names[i];
+
+            if (candidate_mem_name == NULL) {
+                break;
+            }
+            if (strcmp(mem_name_str, candidate_mem_name) == 0) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 static void ensure_value_power_of_two(uint32_t value)

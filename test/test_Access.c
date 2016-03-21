@@ -89,6 +89,22 @@ void test_ReadAccess(void)
     TEST_ASSERT_EQUAL_access_t(expected_access, access);
 }
 
+void test_NewlineDoesntMatter(void)
+{
+    access_t expected_access = {
+        .type       = TYPE_READ,
+        .address    = 0x7F81CE441B80 ,
+        .n_bytes    = 8,
+    };
+
+    access_t access;
+    ZERO_STRUCT(access);
+
+    Access_ParseLine("R 7f81ce441b80 8", &access);
+
+    TEST_ASSERT_EQUAL_access_t(expected_access, access);
+}
+
 void test_NullPointerThrowsException(void)
 {
     lineShouldCauseException(NULL, ARGUMENT_ERROR, "Should catch null line");

@@ -21,9 +21,9 @@
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
 
 enum {
-    TYPE_INSTR,
-    TYPE_WRITE,
-    TYPE_READ,
+    TYPE_INSTR  = 'I',
+    TYPE_WRITE  = 'W',
+    TYPE_READ   = 'R',
 };
 
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */

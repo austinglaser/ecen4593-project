@@ -89,11 +89,6 @@ void test_ReadAccess(void)
     TEST_ASSERT_EQUAL_access_t(expected_access, access);
 }
 
-void test_InvalidOperationThrowsException(void)
-{
-    lineShouldCauseException("D 7f81ce441b80 8\n", INVALID_OPERATION, "Should catch invalid operation");
-}
-
 void test_NullPointerThrowsException(void)
 {
     lineShouldCauseException(NULL, ARGUMENT_ERROR, "Should catch null line");
@@ -106,6 +101,18 @@ void test_NullPointerThrowsException(void)
     Catch (e) {
     }
     TEST_ASSERT_EQUAL_HEX32_MESSAGE(ARGUMENT_ERROR, e, "Should catch null access struct");
+}
+
+void test_InvalidOperationThrowsException(void)
+{
+    lineShouldCauseException("D 7f81ce441b80 8\n", INVALID_OPERATION, "Should catch invalid operation");
+}
+
+void test_SyntaxErrorThrowsException(void)
+{
+    lineShouldCauseException("can't even handle all these syntax errors", SYNTAX_ERROR, "Should catch invalid syntax");
+    lineShouldCauseException("R 948nothexffc 10", SYNTAX_ERROR, "Should catch invalid syntax");
+    lineShouldCauseException("R 7fff5a8487d8 woooord", SYNTAX_ERROR, "Should catch invalid syntax");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

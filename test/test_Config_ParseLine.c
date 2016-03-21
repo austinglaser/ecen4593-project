@@ -28,6 +28,9 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
+
+static void lineShouldCauseException(const char * line, CEXCEPTION_T exception_e, const char * message);
+
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -280,134 +283,61 @@ void test_NewlineDoesntMatter(void)
 
 void test_RejectsSyntaxError(void)
 {
-    CEXCEPTION_T e = CEXCEPTION_NONE;
-
-    config_t config;
-
-    Try {
-        Config_ParseLine("syntax errors all over da place", &config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == SYNTAX_ERROR, "Should detect syntax error");
+    lineShouldCauseException("syntax errors all over da place", SYNTAX_ERROR, "Should detect syntax error");
 }
 
 void test_RejectsL1InvalidParameters(void)
 {
-    CEXCEPTION_T e = CEXCEPTION_NONE;
-
-    config_t config;
-
-    Try {
-        Config_ParseLine("L1_transfer_time=3\n", &config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "L1 has no transfer time parameter");
-
-    e = CEXCEPTION_NONE;
-    Try {
-        Config_ParseLine("L1_bus_width=32\n", &config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "L1 has no bus width parameter");
+    lineShouldCauseException("L1_transfer_time=3\n", BAD_CONFIG_PARAM, "L1 has no transfer time parameter");
+    lineShouldCauseException("L1_bus_width=32\n", BAD_CONFIG_PARAM, "L1 has no bus width parameter");
 }
 
 void test_RejetcsInvalidCacheName(void)
 {
-    CEXCEPTION_T e = CEXCEPTION_NONE;
-
-    config_t config;
-
-    Try {
-        Config_ParseLine("L3_cache_size=1024\n", &config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_CACHE, "There is no L3 cache");
+    lineShouldCauseException("L3_cache_size=1024\n", BAD_CONFIG_CACHE, "There is no L3 cache");
 }
 
 void test_RejectsInvalidParameterName(void)
 {
-    CEXCEPTION_T e = CEXCEPTION_NONE;
-
-    config_t config;
-
-    Try {
-        Config_ParseLine("L1_doesnt_exist=1024\n", &config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_PARAM, "Should catch doesnt_exist parameter");
+    lineShouldCauseException("L1_doesnt_exist=1024\n", BAD_CONFIG_PARAM, "Should catch doesnt_exist parameter");
 }
 
 void test_ThrowsExceptionWithNullPointers(void)
 {
+    lineShouldCauseException(NULL, ARGUMENT_ERROR, "Should catch null string");
+
+    // Broken out specially because we need to pass a null config
     CEXCEPTION_T e = CEXCEPTION_NONE;
-
-    config_t config;
-
-    Try {
-        Config_ParseLine(NULL, &config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == ARGUMENT_ERROR, "Should catch null string");
-
     Try {
         Config_ParseLine("L1_hit_time=1\n", NULL);
     }
     Catch (e) {
     }
-    TEST_ASSERT_MESSAGE(e == ARGUMENT_ERROR, "Should catch null config struct");
+    TEST_ASSERT_EQUAL_HEX32_MESSAGE(ARGUMENT_ERROR, e, "Should catch null config struct");
 }
 
 void test_WidthsMustBePowersOfTwo(void)
 {
-    CEXCEPTION_T e = CEXCEPTION_NONE;
-    config_t dummy_config;
-
-    Try {
-        Config_ParseLine("L1_block_size=31\n", &dummy_config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two block size");
-
-    e = CEXCEPTION_NONE;
-    Try {
-        Config_ParseLine("L2_cache_size=1000\n", &dummy_config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two cache size");
-
-    e = CEXCEPTION_NONE;
-    Try {
-        Config_ParseLine("L1_assoc=5\n", &dummy_config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two associative value");
-
-    e = CEXCEPTION_NONE;
-    Try {
-        Config_ParseLine("L2_bus_width=9\n", &dummy_config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two bus width");
-
-    e = CEXCEPTION_NONE;
-    Try {
-        Config_ParseLine("mem_chunksize=15\n", &dummy_config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two chunk size width");
+    lineShouldCauseException("L1_block_size=31\n", BAD_CONFIG_VALUE, "Should catch non power-of-two block size");
+    lineShouldCauseException("L2_cache_size=1000\n", BAD_CONFIG_VALUE, "Should catch non power-of-two cache size");
+    lineShouldCauseException("L1_assoc=5\n", BAD_CONFIG_VALUE, "Should catch non power-of-two associative value");
+    lineShouldCauseException("L2_bus_width=9\n", BAD_CONFIG_VALUE, "Should catch non power-of-two bus width");
+    lineShouldCauseException("mem_chunksize=15\n", BAD_CONFIG_VALUE, "Should catch non power-of-two chunk size");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
+
+static void lineShouldCauseException(const char * line, CEXCEPTION_T expected_e, const char * message)
+{
+    config_t dummy_config;
+
+    CEXCEPTION_T e = CEXCEPTION_NONE;
+    Try {
+        Config_ParseLine(line, &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_EQUAL_HEX32_MESSAGE(expected_e, e, message);
+}
 
 /** @} addtogroup TEST_CONFIG */

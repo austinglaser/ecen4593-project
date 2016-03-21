@@ -32,6 +32,10 @@ void Access_ParseLine(const char * line, access_t * access)
 {
     char type_c;
 
+    if (line == NULL || access == NULL) {
+        ThrowHere(ARGUMENT_ERROR);
+    }
+
     sscanf(line, "%c %" SCNx64 " %" SCNu32 "\n", &type_c, &access->address, &access->n_bytes);
 
     switch (type_c) {

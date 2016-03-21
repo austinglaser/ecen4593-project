@@ -26,6 +26,9 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
+
+static void lineShouldCauseException(const char * line, CEXCEPTION_T expected_e, const char * message);
+
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -88,17 +91,36 @@ void test_ReadAccess(void)
 
 void test_InvalidOperationThrowsException(void)
 {
+    lineShouldCauseException("D 7f81ce441b80 8\n", INVALID_OPERATION, "Should catch invalid operation");
+}
+
+void test_NullPointerThrowsException(void)
+{
+    lineShouldCauseException(NULL, ARGUMENT_ERROR, "Should catch null line");
+
+    // Explicit because we need to pass null pointer
+    CEXCEPTION_T e = CEXCEPTION_NONE;
+    Try {
+        Access_ParseLine("R 7f81ce441b80 8\n", NULL);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_EQUAL_HEX32_MESSAGE(ARGUMENT_ERROR, e, "Should catch null access struct");
+}
+
+/* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
+
+static void lineShouldCauseException(const char * line, CEXCEPTION_T expected_e, const char * message)
+{
     access_t dummy_access;
 
     CEXCEPTION_T e = CEXCEPTION_NONE;
     Try {
-        Access_ParseLine("D 7f81ce441b80 8\n", &dummy_access);
+        Access_ParseLine(line, &dummy_access);
     }
     Catch (e) {
     }
-    TEST_ASSERT_EQUAL_HEX32_MESSAGE(INVALID_OPERATION, e, "Should catch invalid operation");
+    TEST_ASSERT_EQUAL_HEX32_MESSAGE(expected_e, e, message);
 }
-
-/* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_ACCESS */

@@ -214,6 +214,54 @@ void test_ParseMemSendAddressTime(void)
     TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
+void test_ParseMemReadyTime(void)
+{
+    config_t expected_config = {
+        .main_mem = {
+            .ready_cycles = 20,
+        },
+    };
+
+    config_t config;
+    ZERO_STRUCT(config);
+
+    Config_ParseLine("mem_ready=20\n", &config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
+}
+
+void test_ParseMemChunkTime(void)
+{
+    config_t expected_config = {
+        .main_mem = {
+            .send_chunk_cycles = 23,
+        },
+    };
+
+    config_t config;
+    ZERO_STRUCT(config);
+
+    Config_ParseLine("mem_chunktime=23\n", &config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
+}
+
+void test_ParseMemChunkSize(void)
+{
+    config_t expected_config = {
+        .main_mem = {
+            .chunk_size_bytes = 16,
+        },
+    };
+
+    config_t config;
+    ZERO_STRUCT(config);
+
+    Config_ParseLine("mem_chunksize=16\n", &config);
+
+    TEST_ASSERT_EQUAL_config_t(expected_config, config);
+}
+
 void test_NewlineDoesntMatter(void)
 {
     config_t expected_config = {
@@ -315,22 +363,6 @@ void test_WidthsMustBePowersOfTwo(void)
 
     e = CEXCEPTION_NONE;
     Try {
-        Config_ParseLine("L2_block_size=31\n", &dummy_config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two block size");
-
-    e = CEXCEPTION_NONE;
-    Try {
-        Config_ParseLine("L1_cache_size=1000\n", &dummy_config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two cache size");
-
-    e = CEXCEPTION_NONE;
-    Try {
         Config_ParseLine("L2_cache_size=1000\n", &dummy_config);
     }
     Catch (e) {
@@ -347,19 +379,19 @@ void test_WidthsMustBePowersOfTwo(void)
 
     e = CEXCEPTION_NONE;
     Try {
-        Config_ParseLine("L2_assoc=5\n", &dummy_config);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two associative value");
-
-    e = CEXCEPTION_NONE;
-    Try {
         Config_ParseLine("L2_bus_width=9\n", &dummy_config);
     }
     Catch (e) {
     }
     TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two bus width");
+
+    e = CEXCEPTION_NONE;
+    Try {
+        Config_ParseLine("mem_chunksize=15\n", &dummy_config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == BAD_CONFIG_VALUE, "Should catch non power-of-two chunk size width");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

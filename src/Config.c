@@ -49,6 +49,9 @@ static void cache_miss_time_writer(uint32_t value, void * _cachep);
 static void l2_cache_transfer_time_writer(uint32_t value, void * _cachep);
 static void l2_cache_bus_width_writer(uint32_t value, void * _cachep);
 static void main_mem_send_address_writer(uint32_t value, void * _memp);
+static void main_mem_ready_writer(uint32_t value, void * _memp);
+static void main_mem_send_chunk_writer(uint32_t value, void * _memp);
+static void main_mem_chunk_size_writer(uint32_t value, void * _memp);
 
 static void * get_mem(const char * mem_name_str, config_t * configp);
 
@@ -66,6 +69,9 @@ static const config_value_t config_values[] = {
     { .mem_names = { L2_CACHE_STR },               .param_str = "transfer_time", .value_writer = l2_cache_transfer_time_writer },
     { .mem_names = { L2_CACHE_STR },               .param_str = "bus_width",     .value_writer = l2_cache_bus_width_writer },
     { .mem_names = { MAIN_MEM_STR },               .param_str = "sendaddr",      .value_writer = main_mem_send_address_writer },
+    { .mem_names = { MAIN_MEM_STR },               .param_str = "ready",         .value_writer = main_mem_ready_writer },
+    { .mem_names = { MAIN_MEM_STR },               .param_str = "chunktime",     .value_writer = main_mem_send_chunk_writer },
+    { .mem_names = { MAIN_MEM_STR },               .param_str = "chunksize",     .value_writer = main_mem_chunk_size_writer },
 };
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -225,6 +231,26 @@ static void main_mem_send_address_writer(uint32_t value, void * _memp)
 {
     memory_param_t * memp = _memp;
     memp->send_address_cycles = value;
+}
+
+static void main_mem_ready_writer(uint32_t value, void * _memp)
+{
+    memory_param_t * memp = _memp;
+    memp->ready_cycles = value;
+}
+
+static void main_mem_send_chunk_writer(uint32_t value, void * _memp)
+{
+    memory_param_t * memp = _memp;
+    memp->send_chunk_cycles = value;
+}
+
+static void main_mem_chunk_size_writer(uint32_t value, void * _memp)
+{
+    ensure_value_power_of_two(value);
+
+    memory_param_t * memp = _memp;
+    memp->chunk_size_bytes = value;
 }
 
 static void * get_mem(const char * mem_name_str, config_t * configp)

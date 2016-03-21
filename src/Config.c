@@ -39,7 +39,7 @@ typedef struct {
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
-static void write_value(const char * mem_name_str, const char * field_str, uint32_t value, config_t * configp);
+static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * configp);
 
 static void cache_block_size_writer(uint32_t value, void * _cachep);
 static void cache_cache_size_writer(uint32_t value, void * _cachep);
@@ -54,6 +54,7 @@ static void main_mem_send_chunk_writer(uint32_t value, void * _memp);
 static void main_mem_chunk_size_writer(uint32_t value, void * _memp);
 
 static void * get_mem(const char * mem_name_str, config_t * configp);
+static const config_value_t * find_matching_config_value(const char * mem_name_str, const char * param_str);
 
 static void ensure_value_power_of_two(uint32_t value);
 
@@ -103,15 +104,15 @@ void Config_Defaults(config_t * configp)
 void Config_ParseLine(const char * line, config_t * configp)
 {
     char mem_name_str[64];
-    char field_str[64];
+    char param_str[64];
     uint32_t value;
 
     if (line == NULL || configp == NULL) {
         ThrowHere(ARGUMENT_ERROR);
     }
 
-    if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", mem_name_str, field_str, &value) == 3) {
-        write_value(mem_name_str, field_str, value, configp);
+    if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", mem_name_str, param_str, &value) == 3) {
+        write_value(mem_name_str, param_str, value, configp);
     }
 }
 
@@ -146,34 +147,15 @@ void Config_FromFile(const char * filename, config_t * configp)
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static void write_value(const char * mem_name_str, const char * field_str, uint32_t value, config_t * configp)
+static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * configp)
 {
-    unsigned int i;
     void * memp = get_mem(mem_name_str, configp);
-
-    bool found_param = false;
-    for (i = 0; i < ARRAY_ELEMENTS(config_values); i++) {
-        config_value_t config_value = config_values[i];
-        if (strcmp(config_value.param_str, field_str) == 0) {
-
-            unsigned int j;
-            for (j = 0;
-                 j < ARRAY_ELEMENTS(config_value.mem_names) && config_value.mem_names[j] != NULL;
-                 j++) {
-                if (strcmp(mem_name_str, config_value.mem_names[j]) == 0) {
-                    config_value.value_writer(value, memp);
-                    found_param = true;
-                    break;
-                }
-                if (found_param) {
-                    break;
-                }
-            }
-        }
-    }
-    if (!found_param) {
+    const config_value_t * config_valuep = find_matching_config_value(mem_name_str, param_str);
+    if (!config_valuep) {
         ThrowHere(BAD_CONFIG_PARAM);
     }
+
+    config_valuep->value_writer(value, memp);
 }
 
 static void cache_block_size_writer(uint32_t value, void * _cachep)
@@ -268,6 +250,32 @@ static void * get_mem(const char * mem_name_str, config_t * configp)
         ThrowHere(BAD_CONFIG_CACHE);
         return NULL;
     }
+}
+
+static const config_value_t * find_matching_config_value(const char * mem_name_str, const char * param_str)
+{
+    unsigned int i;
+    const unsigned int n_config_values = ARRAY_ELEMENTS(config_values);
+    for (i = 0; i < n_config_values; i++) {
+        const config_value_t * config_valuep = &config_values[i];
+
+        if (strcmp(config_valuep->param_str, param_str) == 0) {
+            unsigned int j;
+            unsigned int n_mems = ARRAY_ELEMENTS(config_valuep->mem_names);
+            for (j = 0; j < n_mems; j++) {
+                const char * candidate_mem_name = config_valuep->mem_names[j];
+
+                if (candidate_mem_name == NULL) {
+                    break;
+                }
+                if (strcmp(mem_name_str, candidate_mem_name) == 0) {
+                    return config_valuep;
+                }
+            }
+        }
+    }
+
+    return NULL;
 }
 
 static void ensure_value_power_of_two(uint32_t value)

@@ -111,8 +111,14 @@ void Config_ParseLine(const char * line, config_t * configp)
         ThrowHere(ARGUMENT_ERROR);
     }
 
-    if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", mem_name_str, param_str, &value) == 3) {
+    if (strcmp("", line) == 0 || strcmp("\n", line) == 0) {
+        return;
+    }
+    else if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", mem_name_str, param_str, &value) == 3) {
         write_value(mem_name_str, param_str, value, configp);
+    }
+    else {
+        ThrowHere(SYNTAX_ERROR);
     }
 }
 

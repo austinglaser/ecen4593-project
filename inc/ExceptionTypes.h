@@ -24,6 +24,7 @@
 enum EXCEPTION_TYPES {
     NO_EXCEPTION = 0,           /**< Another way to say there wasn't an exception */
     ARGUMENT_ERROR,             /**< Bad argument to function */
+    SYNTAX_ERROR,               /**< Invalid syntax */
     BAD_CONFIG_CACHE,           /**< Bad cache specifier in configuration */
     BAD_CONFIG_PARAM,           /**< Bad parameter in configuration */
     BAD_CONFIG_VALUE,           /**< Bad value in configuration */

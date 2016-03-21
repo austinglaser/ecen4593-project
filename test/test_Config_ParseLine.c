@@ -278,6 +278,20 @@ void test_NewlineDoesntMatter(void)
     TEST_ASSERT_EQUAL_config_t(expected_config, config);
 }
 
+void test_RejectsSyntaxError(void)
+{
+    CEXCEPTION_T e = CEXCEPTION_NONE;
+
+    config_t config;
+
+    Try {
+        Config_ParseLine("syntax errors all over da place", &config);
+    }
+    Catch (e) {
+    }
+    TEST_ASSERT_MESSAGE(e == SYNTAX_ERROR, "Should detect syntax error");
+}
+
 void test_RejectsL1InvalidParameters(void)
 {
     CEXCEPTION_T e = CEXCEPTION_NONE;

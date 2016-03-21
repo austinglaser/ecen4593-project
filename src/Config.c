@@ -184,7 +184,6 @@ static void cache_associative_size_writer(uint32_t value, void * _cachep)
 
 static void cache_hit_time_writer(uint32_t value, void * _cachep)
 {
-
     cache_param_t * cachep = _cachep;
     cachep->hit_time_cycles = value;
 }

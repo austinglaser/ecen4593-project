@@ -1,15 +1,16 @@
 /**
- * @file    ExceptionTypes.c
+ * @file    unity_AccessHelper.c
  * @author  Austin Glaser <austin@boulderes.com>
- * @brief   ExceptionTypes Source
+ * @brief   UnityAccessHelper Source
  *
- * @addtogroup EXCEPTIONTYPES
+ * @addtogroup UNITY_ACCESSHELPER
  * @{
  */
 
 /* --- PRIVATE DEPENDENCIES ------------------------------------------------- */
 
-#include "ExceptionTypes.h"
+#include "unity_AccessHelper.h"
+#include "unity.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -19,20 +20,19 @@
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
-
-char const * const exception_descriptors[MAX_EXCEPTION_N] = {
-    [NO_EXCEPTION]      = "No exception",
-    [ARGUMENT_ERROR]    = "Bad function argument",
-    [SYNTAX_ERROR]      = "Invalid syntax",
-    [BAD_CONFIG_CACHE]  = "Bad cache specifier in configuration",
-    [BAD_CONFIG_PARAM]  = "Bad parameter name in configuration",
-    [BAD_CONFIG_VALUE]  = "Invalid value for field in configuration",
-    [BAD_CONFIG_FILE]   = "Unable to open configuration file",
-    [INVALID_OPERATION] = "Bad operation specifier. Valid values are I, W, or R",
-};
-
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
+
+void AssertEqual_access_t(access_t expected,
+                          access_t actual,
+                          unsigned short line,
+                          const char * message)
+{
+    UNITY_TEST_ASSERT_EQUAL_UINT8(expected.type, actual.type, line, message);
+    UNITY_TEST_ASSERT_EQUAL_HEX64(expected.address, actual.address, line, message);
+    UNITY_TEST_ASSERT_EQUAL_UINT32(expected.n_bytes, actual.n_bytes, line, message);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-/** @} addtogroup EXCEPTIONTYPES */
+/** @} addtogroup UNITY_ACCESSHELPER */

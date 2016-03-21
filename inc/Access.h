@@ -19,10 +19,26 @@
 #include <stdint.h>
 
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
+
+enum {
+    TYPE_INSTR,
+    TYPE_WRITE,
+    TYPE_READ,
+};
+
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
+
+typedef struct {
+    uint8_t type;
+    uint64_t address;
+    uint32_t n_bytes;
+} access_t;
+
 /* --- PUBLIC MACROS -------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
+
+void Access_ParseLine(const char * line, access_t * access);
 
 /** @} defgroup ACCESS */
 

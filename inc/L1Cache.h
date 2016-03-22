@@ -26,7 +26,7 @@
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 
 typedef struct {
-    uint32_t dummy;
+    bool has_been_accessed;
 } l1_cache_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */

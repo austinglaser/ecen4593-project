@@ -24,24 +24,32 @@
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
+static config_t * config;
 static l2_cache_t * subcache;
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 void L1Cache_Create(l1_cache_t * cachep, config_t * configp, l2_cache_t * l2_cache)
 {
-    (void) cachep;
-    (void) configp;
+    config = configp;
+    cachep->has_been_accessed = false;
 
     subcache = l2_cache;
 }
 
 uint32_t L1Cache_Access(l1_cache_t * cachep, access_t * accessp)
 {
-    (void) cachep;
-    L2Cache_Access(subcache, accessp);
+    uint32_t cycles = 0;
+    if (!cachep->has_been_accessed) {
+        cycles = config->l1.miss_time_cycles;
+        cycles += L2Cache_Access(subcache, accessp);
+        cachep->has_been_accessed = true;
+    }
+    else {
+        cycles = config->l1.hit_time_cycles;
+    }
 
-    return 35;
+    return cycles;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

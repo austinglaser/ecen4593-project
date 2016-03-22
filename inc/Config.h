@@ -24,7 +24,7 @@
 typedef struct cache_param {
     uint32_t block_size_bytes;
     uint32_t cache_size_bytes;
-    uint32_t associative_bytes;
+    uint32_t associativity;
     uint32_t hit_time_cycles;
     uint32_t miss_time_cycles;
     uint32_t transfer_time_cycles;

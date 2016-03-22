@@ -82,7 +82,7 @@ void Config_Defaults(config_t * configp)
 {
     configp->l1.block_size_bytes            = 32;
     configp->l1.cache_size_bytes            = 8192;
-    configp->l1.associative_bytes           = 1;
+    configp->l1.associativity               = 1;
     configp->l1.hit_time_cycles             = 1;
     configp->l1.miss_time_cycles            = 1;
     configp->l1.transfer_time_cycles        = 0;    // not valid for L1
@@ -90,7 +90,7 @@ void Config_Defaults(config_t * configp)
 
     configp->l2.block_size_bytes            = 64;
     configp->l2.cache_size_bytes            = 32768;
-    configp->l2.associative_bytes           = 1;
+    configp->l2.associativity               = 1;
     configp->l2.hit_time_cycles             = 8;
     configp->l2.miss_time_cycles            = 10;
     configp->l2.transfer_time_cycles        = 10;
@@ -186,7 +186,7 @@ static void cache_associative_size_writer(uint32_t value, void * _cachep)
     ensure_value_power_of_two(value);
 
     cache_param_t * cachep = _cachep;
-    cachep->associative_bytes = value;
+    cachep->associativity = value;
 }
 
 static void cache_hit_time_writer(uint32_t value, void * _cachep)

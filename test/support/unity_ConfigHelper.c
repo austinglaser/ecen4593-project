@@ -60,7 +60,7 @@ void AssertEqual_cache_param_t(cache_param_t expected,
     UNITY_TEST_ASSERT_EQUAL_UINT32(expected.cache_size_bytes, actual.cache_size_bytes, line, sub_msg);
 
     sncat_if_nonnull(sub_msg, 128, "associative", message);
-    UNITY_TEST_ASSERT_EQUAL_UINT32(expected.associative_bytes, actual.associative_bytes, line, sub_msg);
+    UNITY_TEST_ASSERT_EQUAL_UINT32(expected.associativity, actual.associativity, line, sub_msg);
 
     sncat_if_nonnull(sub_msg, 128, "hit_time", message);
     UNITY_TEST_ASSERT_EQUAL_UINT32(expected.hit_time_cycles, actual.hit_time_cycles, line, sub_msg);

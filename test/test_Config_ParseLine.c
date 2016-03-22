@@ -113,10 +113,10 @@ void test_ParseAssociativeString(void)
 {
     config_t expected_config = {
         .l1 = {
-            .associative_bytes = 2,
+            .associativity = 2,
         },
         .l2 = {
-            .associative_bytes = 4,
+            .associativity = 4,
         },
     };
 

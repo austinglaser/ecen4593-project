@@ -11,7 +11,7 @@
   :use_deep_dependencies: TRUE
   :use_auxiliary_dependencies: TRUE
   :build_root: build
-  :release_build: FALSE
+  :release_build: TRUE
   :test_file_prefix: test_
 
 #:release_build:

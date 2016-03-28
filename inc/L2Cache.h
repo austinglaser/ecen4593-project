@@ -27,8 +27,9 @@
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 
 typedef struct {
-    main_mem_t * memp;
-    cache_param_t * configp;
+    main_mem_t      * memp;
+    cache_param_t   * configp;
+    bool            has_been_accessed;
 } l2_cache_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */

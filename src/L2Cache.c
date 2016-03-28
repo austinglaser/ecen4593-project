@@ -26,13 +26,24 @@
 
 void L2Cache_Create(l2_cache_t * cachep, main_mem_t * memp, config_t * configp)
 {
-    cachep->memp    = memp;
-    cachep->configp = &configp->l2;
+    cachep->memp                = memp;
+    cachep->configp             = &configp->l2;
+    cachep->has_been_accessed   = false;
 }
 
 uint32_t L2Cache_Access(l2_cache_t * cachep, access_t * accessp)
 {
-    return MainMem_Access(cachep->memp, accessp) + cachep->configp->miss_time_cycles;
+    uint32_t access_time_cycles = 0;
+
+    if (!cachep->has_been_accessed) {
+        access_time_cycles += cachep->configp->miss_time_cycles;
+        access_time_cycles += MainMem_Access(cachep->memp, accessp);
+        cachep->has_been_accessed = true;
+    }
+
+    access_time_cycles += cachep->configp->hit_time_cycles;
+
+    return access_time_cycles;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

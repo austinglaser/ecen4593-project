@@ -29,6 +29,7 @@
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
 static config_t config;
+static main_mem_t main_mem;
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
@@ -39,7 +40,7 @@ void setUp(void)
     config.main_mem.send_chunk_cycles   = 15;
     config.main_mem.chunk_size_bytes    = 8;
 
-    MainMem_Create(&config);
+    MainMem_Create(&main_mem, &config);
 }
 
 void tearDown(void)
@@ -62,7 +63,7 @@ void test_AlignedBusWidthAccess(void)
                                       config.main_mem.ready_cycles +
                                       config.main_mem.send_chunk_cycles;
 
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&main_mem, &access));
 }
 
 void test_AlignedSmallerThanBusAccess(void)
@@ -81,7 +82,7 @@ void test_AlignedSmallerThanBusAccess(void)
                                       config.main_mem.ready_cycles +
                                       config.main_mem.send_chunk_cycles;
 
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&main_mem, &access));
 }
 
 void test_UnalignedBusWidthAccess(void)
@@ -100,7 +101,7 @@ void test_UnalignedBusWidthAccess(void)
                                       config.main_mem.ready_cycles +
                                       (2 * config.main_mem.send_chunk_cycles);
 
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&main_mem, &access));
 }
 
 void test_LargeAccess(void)
@@ -119,7 +120,7 @@ void test_LargeAccess(void)
                                       config.main_mem.ready_cycles +
                                       (8 * config.main_mem.send_chunk_cycles);
 
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&main_mem, &access));
 }
 
 void test_LargeUnalignedAccess(void)
@@ -138,7 +139,7 @@ void test_LargeUnalignedAccess(void)
                                       config.main_mem.ready_cycles +
                                       (9 * config.main_mem.send_chunk_cycles);
 
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&main_mem, &access));
 }
 
 void test_AccessTypeDoesntMatter(void)
@@ -149,11 +150,11 @@ void test_AccessTypeDoesntMatter(void)
     };
 
     access.type = TYPE_INSTR;
-    uint32_t instruction_access_time    = MainMem_Access(&access);
+    uint32_t instruction_access_time    = MainMem_Access(&main_mem, &access);
     access.type = TYPE_READ;
-    uint32_t read_access_time           = MainMem_Access(&access);
+    uint32_t read_access_time           = MainMem_Access(&main_mem, &access);
     access.type = TYPE_WRITE;
-    uint32_t write_access_time          = MainMem_Access(&access);
+    uint32_t write_access_time          = MainMem_Access(&main_mem, &access);
 
     TEST_ASSERT_EQUAL_UINT32(instruction_access_time, read_access_time);
     TEST_ASSERT_EQUAL_UINT32(instruction_access_time, write_access_time);

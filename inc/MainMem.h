@@ -23,12 +23,17 @@
 
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
+
+typedef struct {
+    memory_param_t * mem_config;
+} main_mem_t;
+
 /* --- PUBLIC MACROS -------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-void MainMem_Create(config_t * configp);
-uint32_t MainMem_Access(access_t * accessp);
+void MainMem_Create(main_mem_t * memp, config_t * configp);
+uint32_t MainMem_Access(main_mem_t * memp, access_t * accessp);
 
 /** @} defgroup MAINMEM */
 

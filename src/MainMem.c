@@ -12,6 +12,7 @@
 #include "MainMem.h"
 
 #include "Config.h"
+#include "Util.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -25,8 +26,6 @@
 
 static config_t * config;
 
-//static uint64_t unaligned_address_mask;
-
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 void MainMem_Create(config_t * configp)
@@ -36,13 +35,17 @@ void MainMem_Create(config_t * configp)
 
 uint32_t MainMem_Access(access_t * accessp)
 {
-    (void) accessp;
-    //uint32_t access_cycles = config->main_mem.send_address_cycles +
-    //                         config->main_mem.ready_cycles;
+    uint32_t access_cycles = config->main_mem.send_address_cycles +
+                             config->main_mem.ready_cycles;
 
-    //uint64_t address = accessp->address;
 
-    return 75;
+    uint64_t address_alignment = accessp->address % config->main_mem.chunk_size_bytes;
+    uint32_t aligned_n_bytes = accessp->n_bytes + address_alignment;
+    uint32_t n_chunks = ((aligned_n_bytes - 1) / config->main_mem.chunk_size_bytes) + 1;
+
+    access_cycles += n_chunks * config->main_mem.send_chunk_cycles;
+
+    return access_cycles;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

@@ -46,25 +46,6 @@ void tearDown(void)
 {
 }
 
-void test_AlignedSmallerThanBusAccess(void)
-{
-    access_t access = {
-        .type       = 'I',
-        .address    = 0x08004580,
-        .n_bytes    = 4,
-    };
-
-    TEST_ASSERT_MESSAGE( (access.address % config.main_mem.chunk_size_bytes == 0) &&
-                         (access.n_bytes < config.main_mem.chunk_size_bytes),
-                         "Test parameters need attention");
-
-    uint32_t expected_access_cycles = config.main_mem.send_address_cycles +
-                                      config.main_mem.ready_cycles +
-                                      config.main_mem.send_chunk_cycles;
-
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
-}
-
 void test_AlignedBusWidthAccess(void)
 {
     access_t access = {
@@ -84,7 +65,25 @@ void test_AlignedBusWidthAccess(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
 }
 
-#if 0
+void test_AlignedSmallerThanBusAccess(void)
+{
+    access_t access = {
+        .type       = 'I',
+        .address    = 0x08004580,
+        .n_bytes    = 4,
+    };
+
+    TEST_ASSERT_MESSAGE( (access.address % config.main_mem.chunk_size_bytes == 0) &&
+                         (access.n_bytes < config.main_mem.chunk_size_bytes),
+                         "Test parameters need attention");
+
+    uint32_t expected_access_cycles = config.main_mem.send_address_cycles +
+                                      config.main_mem.ready_cycles +
+                                      config.main_mem.send_chunk_cycles;
+
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
+}
+
 void test_UnalignedBusWidthAccess(void)
 {
     access_t access = {
@@ -103,7 +102,6 @@ void test_UnalignedBusWidthAccess(void)
 
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
 }
-#endif
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 

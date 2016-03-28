@@ -1,15 +1,17 @@
 /**
- * @file    Util.c
+ * @file    MainMem.c
  * @author  Austin Glaser <austin@boulderes.com>
- * @brief   Util Source
+ * @brief   MainMem Source
  *
- * @addtogroup UTIL
+ * @addtogroup MAINMEM
  * @{
  */
 
 /* --- PRIVATE DEPENDENCIES ------------------------------------------------- */
 
-#include "Util.h"
+#include "MainMem.h"
+
+#include "Config.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -20,13 +22,29 @@
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
+
+static config_t * config;
+
+//static uint64_t unaligned_address_mask;
+
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-uint32_t HighestSetBitIndex(uint64_t value)
+void MainMem_Create(config_t * configp)
 {
-    return 63 - __builtin_clzll(value);
+    config = configp;
+}
+
+uint32_t MainMem_Access(access_t * accessp)
+{
+    (void) accessp;
+    //uint32_t access_cycles = config->main_mem.send_address_cycles +
+    //                         config->main_mem.ready_cycles;
+
+    //uint64_t address = accessp->address;
+
+    return 75;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-/** @} addtogroup UTIL */
+/** @} addtogroup MAINMEM */

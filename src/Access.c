@@ -25,7 +25,7 @@
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
-static bool isValidType(uint8_t type);
+static inline bool isValidType(uint8_t type);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -48,7 +48,7 @@ void Access_ParseLine(const char * line, access_t * access)
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static bool isValidType(uint8_t type)
+static inline bool isValidType(uint8_t type)
 {
     return (type == TYPE_INSTR) || (type == TYPE_WRITE) || (type == TYPE_READ);
 }

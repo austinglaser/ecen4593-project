@@ -30,12 +30,16 @@
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
 static config_t config;
+static main_mem_t dummy_main_mem;
+static l2_cache_t l2_cache;
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 void setUp(void)
 {
     SetDefaultConfigValues(&config);
+
+    L2Cache_Create(&l2_cache, &dummy_main_mem, &config);
 }
 
 void tearDown(void)
@@ -50,17 +54,6 @@ void test_InstructionAccessToEmptyCacheShouldMiss(void)
         .n_bytes = 8,
     };
 
-    config_t config = {
-        .l2 = {
-            .miss_time_cycles = 1,
-        },
-    };
-
-    main_mem_t dummy_main_mem;
-
-    l2_cache_t l2_cache;
-    L2Cache_Create(&l2_cache, &dummy_main_mem, &config);
-
     uint32_t main_mem_access_cycles = 75;
     MainMem_Access_ExpectAndReturn(&dummy_main_mem, &access, main_mem_access_cycles);
 
@@ -73,21 +66,25 @@ void test_ReadAccessToEmptyCacheShouldMiss(void)
     access_t access = {
         .type = TYPE_READ,
         .address = 0x10123420,
-        .n_bytes = 8,
+        .n_bytes = 2,
     };
 
-    config_t config = {
-        .l2 = {
-            .miss_time_cycles = 1,
-        },
+    uint32_t main_mem_access_cycles = 32;
+    MainMem_Access_ExpectAndReturn(&dummy_main_mem, &access, main_mem_access_cycles);
+
+    uint32_t expected_access_cycles = main_mem_access_cycles + config.l2.miss_time_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(&l2_cache, &access));
+}
+
+void test_WriteAccessToEmptyCacheShouldMiss(void)
+{
+    access_t access = {
+        .type = TYPE_WRITE,
+        .address = 0x10123420,
+        .n_bytes = 32,
     };
 
-    main_mem_t dummy_main_mem;
-
-    l2_cache_t l2_cache;
-    L2Cache_Create(&l2_cache, &dummy_main_mem, &config);
-
-    uint32_t main_mem_access_cycles = 75;
+    uint32_t main_mem_access_cycles = 256;
     MainMem_Access_ExpectAndReturn(&dummy_main_mem, &access, main_mem_access_cycles);
 
     uint32_t expected_access_cycles = main_mem_access_cycles + config.l2.miss_time_cycles;

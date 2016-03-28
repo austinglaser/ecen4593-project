@@ -49,7 +49,7 @@ void tearDown(void)
 void test_AlignedBusWidthAccess(void)
 {
     access_t access = {
-        .type       = 'I',
+        .type       = TYPE_WRITE,
         .address    = 0x08004580,
         .n_bytes    = 8,
     };
@@ -68,7 +68,7 @@ void test_AlignedBusWidthAccess(void)
 void test_AlignedSmallerThanBusAccess(void)
 {
     access_t access = {
-        .type       = 'I',
+        .type       = TYPE_READ,
         .address    = 0x08004580,
         .n_bytes    = 4,
     };
@@ -87,7 +87,7 @@ void test_AlignedSmallerThanBusAccess(void)
 void test_UnalignedBusWidthAccess(void)
 {
     access_t access = {
-        .type       = 'I',
+        .type       = TYPE_INSTR,
         .address    = 0x08004584,
         .n_bytes    = 8,
     };

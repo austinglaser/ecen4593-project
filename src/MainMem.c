@@ -41,7 +41,7 @@ uint32_t MainMem_Access(access_t * accessp)
 
     uint64_t address_alignment = accessp->address % config->main_mem.chunk_size_bytes;
     uint32_t aligned_n_bytes = accessp->n_bytes + address_alignment;
-    uint32_t n_chunks = ((aligned_n_bytes - 1) / config->main_mem.chunk_size_bytes) + 1;
+    uint32_t n_chunks = CEIL_DIVIDE(aligned_n_bytes, config->main_mem.chunk_size_bytes);
 
     access_cycles += n_chunks * config->main_mem.send_chunk_cycles;
 

@@ -18,6 +18,8 @@
 #include "Config.h"
 #include "Access.h"
 
+#include "MainMem.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -25,14 +27,15 @@
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 
 typedef struct {
-    uint32_t dummy;
+    main_mem_t * memp;
+    cache_param_t * configp;
 } l2_cache_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-void L2Cache_Create(l2_cache_t * cachep, config_t * configp);
+void L2Cache_Create(l2_cache_t * cachep, main_mem_t * memp, config_t * configp);
 uint32_t L2Cache_Access(l2_cache_t * cachep, access_t * accessp);
 
 /** @} defgroup L2CACHE */

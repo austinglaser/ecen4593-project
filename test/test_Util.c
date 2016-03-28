@@ -115,6 +115,29 @@ void test_NotPowersOfTwo(void)
     TEST_ASSERT(!IS_POWER_OF_TWO((1 << 30) + 1));
 }
 
+void test_CeilDivide_should_BeRegularDivision_when_DivisorIsDivisible(void)
+{
+    TEST_ASSERT_EQUAL(1,    CEIL_DIVIDE(3, 3));
+    TEST_ASSERT_EQUAL(2,    CEIL_DIVIDE(24, 12));
+    TEST_ASSERT_EQUAL(5,    CEIL_DIVIDE(5, 1));
+    TEST_ASSERT_EQUAL(321,  CEIL_DIVIDE(642, 2));
+}
+
+void test_CeilDivide_should_ReturnZero_when_DividentIsZero(void)
+{
+    TEST_ASSERT_EQUAL(0, CEIL_DIVIDE(0, 1));
+    TEST_ASSERT_EQUAL(0, CEIL_DIVIDE(0, 12));
+    TEST_ASSERT_EQUAL(0, CEIL_DIVIDE(0, INT_MAX));
+}
+
+void test_CeilDivide_should_RoundUp_when_DivisorIsNotDivisible(void)
+{
+    TEST_ASSERT_EQUAL(2, CEIL_DIVIDE(4, 3));
+    TEST_ASSERT_EQUAL(3, CEIL_DIVIDE(25, 12));
+    TEST_ASSERT_EQUAL(3, CEIL_DIVIDE(35, 12));
+    TEST_ASSERT_EQUAL(4, CEIL_DIVIDE(37, 12));
+}
+
 void test_HighestSetBitIndex_should_ReturnZero_when_PassedZero(void)
 {
     TEST_ASSERT_EQUAL_UINT32(0, HighestSetBitIndex(0));

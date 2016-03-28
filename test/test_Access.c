@@ -27,7 +27,7 @@
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
-static void lineShouldCauseException(const char * line, CEXCEPTION_T expected_e, const char * message);
+static void shouldCauseException(const char * line, access_t * access, CEXCEPTION_T expected_e, const char * message);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -107,39 +107,50 @@ void test_NewlineDoesntMatter(void)
 
 void test_NullPointerThrowsException(void)
 {
-    lineShouldCauseException(NULL, ARGUMENT_ERROR, "Should catch null line");
-
-    // Explicit because we need to pass null pointer
-    CEXCEPTION_T e = CEXCEPTION_NONE;
-    Try {
-        Access_ParseLine("R 7f81ce441b80 8\n", NULL);
-    }
-    Catch (e) {
-    }
-    TEST_ASSERT_EQUAL_HEX32_MESSAGE(ARGUMENT_ERROR, e, "Should catch null access struct");
+    access_t dummy_access;
+    shouldCauseException(NULL,
+                         &dummy_access,
+                         ARGUMENT_ERROR,
+                         "Should catch null line");
+    shouldCauseException("R 7f81ce441b80 8\n",
+                         NULL,
+                         ARGUMENT_ERROR,
+                         "Should catch null access struct");
 }
 
 void test_InvalidOperationThrowsException(void)
 {
-    lineShouldCauseException("D 7f81ce441b80 8\n", INVALID_OPERATION, "Should catch invalid operation");
+    access_t dummy_access;
+    shouldCauseException("D 7f81ce441b80 8\n",
+                         &dummy_access,
+                         INVALID_OPERATION,
+                         "Should catch invalid operation");
 }
 
 void test_SyntaxErrorThrowsException(void)
 {
-    lineShouldCauseException("can't even handle all these syntax errors", SYNTAX_ERROR, "Should catch invalid syntax");
-    lineShouldCauseException("R 948nothexffc 10", SYNTAX_ERROR, "Should catch invalid syntax");
-    lineShouldCauseException("R 7fff5a8487d8 woooord", SYNTAX_ERROR, "Should catch invalid syntax");
+    access_t dummy_access;
+    shouldCauseException("can't even handle all these syntax errors",
+                         &dummy_access,
+                         SYNTAX_ERROR,
+                         "Should catch invalid syntax");
+    shouldCauseException("R 948nothexffc 10",
+                         &dummy_access,
+                         SYNTAX_ERROR,
+                         "Should catch invalid syntax");
+    shouldCauseException("R 7fff5a8487d8 woooord",
+                         &dummy_access,
+                         SYNTAX_ERROR,
+                         "Should catch invalid syntax");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static void lineShouldCauseException(const char * line, CEXCEPTION_T expected_e, const char * message)
+static void shouldCauseException(const char * line, access_t * access, CEXCEPTION_T expected_e, const char * message)
 {
-    access_t dummy_access;
-
     CEXCEPTION_T e = CEXCEPTION_NONE;
     Try {
-        Access_ParseLine(line, &dummy_access);
+        Access_ParseLine(line, access);
     }
     Catch (e) {
     }

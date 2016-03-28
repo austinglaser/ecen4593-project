@@ -103,6 +103,25 @@ void test_UnalignedBusWidthAccess(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
 }
 
+void test_AccessTypeDoesntMatter(void)
+{
+    access_t access = {
+        .address    = 0x08004580,
+        .n_bytes    = 8,
+    };
+
+    access.type = TYPE_INSTR;
+    uint32_t instruction_access_time    = MainMem_Access(&access);
+    access.type = TYPE_READ;
+    uint32_t read_access_time           = MainMem_Access(&access);
+    access.type = TYPE_WRITE;
+    uint32_t write_access_time           = MainMem_Access(&access);
+
+    TEST_ASSERT_EQUAL_UINT32(instruction_access_time, read_access_time);
+    TEST_ASSERT_EQUAL_UINT32(instruction_access_time, write_access_time);
+    TEST_ASSERT_EQUAL_UINT32(read_access_time, write_access_time);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_MAINMEM */

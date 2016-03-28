@@ -1,21 +1,19 @@
 /**
- * @file    unity_ConfigHelper.c
+ * @file    unity_Helper.c
  * @author  Austin Glaser <austin@boulderes.com>
- * @brief   UnityConfigHelper Source
+ * @brief   UnityHelper Source
  *
- * @addtogroup UNITY_CONFIGHELPER
+ * @addtogroup UNITY_HELPER
  * @{
  */
 
 /* --- PRIVATE DEPENDENCIES ------------------------------------------------- */
 
+#include "unity_Helper.h"
 #include "unity.h"
-#include "unity_ConfigHelper.h"
-#include "Config.h"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <string.h>
 
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
@@ -95,6 +93,16 @@ void AssertEqual_memory_param_t(memory_param_t expected,
     UNITY_TEST_ASSERT_EQUAL_UINT32(expected.chunk_size_bytes, actual.chunk_size_bytes, line, sub_msg);
 }
 
+void AssertEqual_access_t(access_t expected,
+                          access_t actual,
+                          unsigned short line,
+                          const char * message)
+{
+    UNITY_TEST_ASSERT_EQUAL_UINT8(expected.type, actual.type, line, message);
+    UNITY_TEST_ASSERT_EQUAL_HEX64(expected.address, actual.address, line, message);
+    UNITY_TEST_ASSERT_EQUAL_UINT32(expected.n_bytes, actual.n_bytes, line, message);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 static void sncat_if_nonnull(char * out, unsigned int len, const char * base, const char * ext)
@@ -106,4 +114,4 @@ static void sncat_if_nonnull(char * out, unsigned int len, const char * base, co
              ext_nonempty ? ext  : "");
 }
 
-/** @} addtogroup UNITY_CONFIGHELPER */
+/** @} addtogroup UNITY_HELPER */

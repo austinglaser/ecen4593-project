@@ -18,7 +18,7 @@
 #include "ConfigDefaults.h"
 
 #include "test_utilities.h"
-#include "unity_ConfigHelper.h"
+#include "unity_Helper.h"
 
 #include <stdbool.h>
 #include <stdint.h>

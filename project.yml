@@ -73,6 +73,8 @@
   :plugins:
     - :ignore
     - :callback
+  :unity_helper: "test/support/unity_Helper.h"
+  :includes: []
   :treat_as:
     uint8:    HEX8
     uint16:   HEX16

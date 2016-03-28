@@ -1,13 +1,13 @@
 /**
- * @file    unity_ConfigHelper.h
+ * @file    unity_Helper.h
  * @author  Austin Glaser <austin@boulderes.com>
- * @brief   UnityConfigHelper Interface
+ * @brief   UnityHelper Interface
  */
 
-#ifndef UNITY_CONFIGHELPER_H
-#define UNITY_CONFIGHELPER_H
+#ifndef UNITY_HELPER_H
+#define UNITY_HELPER_H
 
-/**@defgroup UNITY_CONFIGHELPER UnityConfigHelper
+/**@defgroup UNITY_HELPER UnityHelper
  * @{ 
  *
  * @brief
@@ -16,6 +16,7 @@
 /* --- PUBLIC DEPENDENCIES -------------------------------------------------- */
 
 #include "Config.h"
+#include "Access.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -27,20 +28,29 @@
 #define UNITY_TEST_ASSERT_EQUAL_config_t(expected, actual, line, message) \
             AssertEqual_config_t(expected, actual, line, message)
 
-#define UNITY_TEST_ASSERT_EQUAL_cache_param_t(expected, actual, line, message) \
-            AssertEqual_cache_param_t(expected, actual, line, message)
-
-#define UNITY_TEST_ASSERT_EQUAL_memory_param_t(expected, actual, line, message) \
-            AssertEqual_memory_param_t(expected, actual, line, message)
-
 #define TEST_ASSERT_EQUAL_config_t(expected, actual) \
             UNITY_TEST_ASSERT_EQUAL_config_t(expected, actual, __LINE__, NULL)
+
+
+#define UNITY_TEST_ASSERT_EQUAL_cache_param_t(expected, actual, line, message) \
+            AssertEqual_cache_param_t(expected, actual, line, message)
 
 #define TEST_ASSERT_EQUAL_cache_param_t(expected, actual) \
             UNITY_TEST_ASSERT_EQUAL_cache_param_t(expected, actual, __LINE__, NULL)
 
+
+#define UNITY_TEST_ASSERT_EQUAL_memory_param_t(expected, actual, line, message) \
+            AssertEqual_memory_param_t(expected, actual, line, message)
+
 #define TEST_ASSERT_EQUAL_memory_param_t(expected, actual) \
             UNITY_TEST_ASSERT_EQUAL_memory_param_t(expected, actual, __LINE__, NULL)
+
+
+#define UNITY_TEST_ASSERT_EQUAL_access_t(expected, actual, line, message) \
+            AssertEqual_access_t(expected, actual, line, message)
+
+#define TEST_ASSERT_EQUAL_access_t(expected, actual) \
+            UNITY_TEST_ASSERT_EQUAL_access_t(expected, actual, __LINE__, NULL)
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -60,6 +70,11 @@ void AssertEqual_memory_param_t(memory_param_t expected,
                                 unsigned short line,
                                 const char * message);
 
-/** @} defgroup UNITY_CONFIGHELPER */
+void AssertEqual_access_t(access_t expected,
+                          access_t actual,
+                          unsigned short line,
+                          const char * message);
 
-#endif /* ifndef UNITY_CONFIGHELPER_H */
+/** @} defgroup UNITY_HELPER */
+
+#endif /* ifndef UNITY_HELPER_H */

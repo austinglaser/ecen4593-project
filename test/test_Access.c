@@ -111,11 +111,11 @@ void test_NullPointerThrowsException(void)
     shouldCauseException(NULL,
                          &dummy_access,
                          ARGUMENT_ERROR,
-                         "Should catch null line");
+                         "No exception on null line");
     shouldCauseException("R 7f81ce441b80 8\n",
                          NULL,
                          ARGUMENT_ERROR,
-                         "Should catch null access struct");
+                         "No exception on null access struct");
 }
 
 void test_InvalidOperationThrowsException(void)
@@ -124,7 +124,16 @@ void test_InvalidOperationThrowsException(void)
     shouldCauseException("D 7f81ce441b80 8\n",
                          &dummy_access,
                          INVALID_OPERATION,
-                         "Should catch invalid operation");
+                         "No exception on invalid operation");
+}
+
+void test_InvalidAccessSizeThrowsException(void)
+{
+    access_t dummy_access;
+    shouldCauseException("I 7f81ce441b80 9\n",
+                         &dummy_access,
+                         INVALID_ACCESS_SIZE,
+                         "No exception on invalid access size");
 }
 
 void test_SyntaxErrorThrowsException(void)
@@ -133,15 +142,15 @@ void test_SyntaxErrorThrowsException(void)
     shouldCauseException("can't even handle all these syntax errors",
                          &dummy_access,
                          SYNTAX_ERROR,
-                         "Should catch invalid syntax");
+                         "No exception on invalid syntax");
     shouldCauseException("R 948nothexffc 10",
                          &dummy_access,
                          SYNTAX_ERROR,
-                         "Should catch invalid syntax");
+                         "No exception on invalid syntax");
     shouldCauseException("R 7fff5a8487d8 woooord",
                          &dummy_access,
                          SYNTAX_ERROR,
-                         "Should catch invalid syntax");
+                         "No exception on invalid syntax");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

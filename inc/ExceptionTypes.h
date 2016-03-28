@@ -30,6 +30,7 @@ enum EXCEPTION_TYPES {
     BAD_CONFIG_VALUE,           /**< Bad value in configuration */
     BAD_CONFIG_FILE,            /**< Invalid configuration file */
     INVALID_OPERATION,          /**< Bad operation specifier */
+    INVALID_ACCESS_SIZE,        /**< Bad number of bytes accessed */
     MAX_EXCEPTION_N,            /**< Total number of exception types */
     INVALID_EXCEPTION           /**< An invalid exception */
 };

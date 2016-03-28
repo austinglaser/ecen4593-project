@@ -44,6 +44,10 @@ void Access_ParseLine(const char * line, access_t * access)
     if (!isValidType(access->type)) {
         ThrowHere(INVALID_OPERATION);
     }
+
+    if (access->n_bytes > 8) {
+        ThrowHere(INVALID_ACCESS_SIZE);
+    }
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

@@ -115,6 +115,29 @@ void test_NotPowersOfTwo(void)
     TEST_ASSERT(!IS_POWER_OF_TWO((1 << 30) + 1));
 }
 
+void test_HighestSetBitIndex_should_ReturnZero_when_PassedZero(void)
+{
+    TEST_ASSERT_EQUAL_UINT32(0, HighestSetBitIndex(0));
+}
+
+void test_HighestSetBitIndex_should_ReturnOnlySetBit_when_PassedPowerOf2(void)
+{
+    TEST_ASSERT_EQUAL_UINT32(0, HighestSetBitIndex(0x01));
+    TEST_ASSERT_EQUAL_UINT32(1, HighestSetBitIndex(0x02));
+    TEST_ASSERT_EQUAL_UINT32(2, HighestSetBitIndex(0x04));
+    TEST_ASSERT_EQUAL_UINT32(4, HighestSetBitIndex(0x10));
+    TEST_ASSERT_EQUAL_UINT32(63, HighestSetBitIndex(0x8000000000000000));
+}
+
+void test_HighestSetBitIndex_should_ReturnHighestSetBit_when_PassedNonPowerOf2(void)
+{
+    TEST_ASSERT_EQUAL_UINT32(1, HighestSetBitIndex(0x03));
+    TEST_ASSERT_EQUAL_UINT32(2, HighestSetBitIndex(0x05));
+    TEST_ASSERT_EQUAL_UINT32(3, HighestSetBitIndex(0x0F));
+    TEST_ASSERT_EQUAL_UINT32(5, HighestSetBitIndex(0x21));
+    TEST_ASSERT_EQUAL_UINT32(63, HighestSetBitIndex(0x8000143235990345));
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_UTIL */

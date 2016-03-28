@@ -29,6 +29,8 @@
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
+uint32_t HighestSetBitIndex(uint64_t value);
+
 /** @} defgroup UTIL */
 
 #endif /* ifndef UTIL_H */

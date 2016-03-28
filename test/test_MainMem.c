@@ -103,6 +103,44 @@ void test_UnalignedBusWidthAccess(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
 }
 
+void test_LargeAccess(void)
+{
+    access_t access = {
+        .type       = TYPE_INSTR,
+        .address    = 0x08004580,
+        .n_bytes    = 64,
+    };
+
+    TEST_ASSERT_MESSAGE( (access.address % config.main_mem.chunk_size_bytes == 0) &&
+                         (access.n_bytes > config.main_mem.chunk_size_bytes),
+                         "Test parameters need attention");
+
+    uint32_t expected_access_cycles = config.main_mem.send_address_cycles +
+                                      config.main_mem.ready_cycles +
+                                      (8 * config.main_mem.send_chunk_cycles);
+
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
+}
+
+void test_LargeUnalignedAccess(void)
+{
+    access_t access = {
+        .type       = TYPE_INSTR,
+        .address    = 0x08004581,
+        .n_bytes    = 64,
+    };
+
+    TEST_ASSERT_MESSAGE( (access.address % config.main_mem.chunk_size_bytes != 0) &&
+                         (access.n_bytes > config.main_mem.chunk_size_bytes),
+                         "Test parameters need attention");
+
+    uint32_t expected_access_cycles = config.main_mem.send_address_cycles +
+                                      config.main_mem.ready_cycles +
+                                      (9 * config.main_mem.send_chunk_cycles);
+
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, MainMem_Access(&access));
+}
+
 void test_AccessTypeDoesntMatter(void)
 {
     access_t access = {

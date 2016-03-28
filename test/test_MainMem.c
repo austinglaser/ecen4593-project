@@ -115,7 +115,7 @@ void test_AccessTypeDoesntMatter(void)
     access.type = TYPE_READ;
     uint32_t read_access_time           = MainMem_Access(&access);
     access.type = TYPE_WRITE;
-    uint32_t write_access_time           = MainMem_Access(&access);
+    uint32_t write_access_time          = MainMem_Access(&access);
 
     TEST_ASSERT_EQUAL_UINT32(instruction_access_time, read_access_time);
     TEST_ASSERT_EQUAL_UINT32(instruction_access_time, write_access_time);

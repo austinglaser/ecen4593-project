@@ -18,6 +18,8 @@
 #include "CExceptionConfig.h"
 #include "ExceptionTypes.h"
 
+#include "ConfigDefaults.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -35,10 +37,7 @@ static main_mem_t main_mem;
 
 void setUp(void)
 {
-    config.main_mem.send_address_cycles = 10;
-    config.main_mem.ready_cycles        = 50;
-    config.main_mem.send_chunk_cycles   = 15;
-    config.main_mem.chunk_size_bytes    = 8;
+    SetDefaultConfigValues(&config);
 
     MainMem_Create(&main_mem, &config);
 }

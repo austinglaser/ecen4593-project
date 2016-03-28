@@ -24,26 +24,26 @@
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
-static config_t * config;
+static memory_param_t * mem_config;
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 void MainMem_Create(config_t * configp)
 {
-    config = configp;
+    mem_config = &configp->main_mem;
 }
 
 uint32_t MainMem_Access(access_t * accessp)
 {
-    uint32_t access_cycles = config->main_mem.send_address_cycles +
-                             config->main_mem.ready_cycles;
+    uint32_t access_cycles = mem_config->send_address_cycles +
+                             mem_config->ready_cycles;
 
 
-    uint64_t address_alignment = accessp->address % config->main_mem.chunk_size_bytes;
+    uint64_t address_alignment = accessp->address % mem_config->chunk_size_bytes;
     uint32_t aligned_n_bytes = accessp->n_bytes + address_alignment;
-    uint32_t n_chunks = CEIL_DIVIDE(aligned_n_bytes, config->main_mem.chunk_size_bytes);
+    uint32_t n_chunks = CEIL_DIVIDE(aligned_n_bytes, mem_config->chunk_size_bytes);
 
-    access_cycles += n_chunks * config->main_mem.send_chunk_cycles;
+    access_cycles += n_chunks * mem_config->send_chunk_cycles;
 
     return access_cycles;
 }

@@ -12,6 +12,8 @@
 #include "unity.h"
 #include "L2Cache.h"
 
+#include "Util.h"
+
 #include "CException.h"
 #include "CExceptionConfig.h"
 #include "ExceptionTypes.h"

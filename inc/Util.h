@@ -32,6 +32,8 @@
 
 uint32_t HighestSetBitIndex(uint64_t value);
 
+uint64_t BlockAlignmentMask(uint32_t block_size);
+
 /** @} defgroup UTIL */
 
 #endif /* ifndef UTIL_H */

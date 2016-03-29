@@ -12,6 +12,7 @@
 #include "unity.h"
 #include "MainMem.h"
 
+#include "Util.h"
 #include "Config.h"
 
 #include "CException.h"

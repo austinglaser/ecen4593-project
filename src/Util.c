@@ -11,6 +11,10 @@
 
 #include "Util.h"
 
+#include "CException.h"
+#include "CExceptionConfig.h"
+#include "ExceptionTypes.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -25,6 +29,15 @@
 uint32_t HighestSetBitIndex(uint64_t value)
 {
     return 63 - __builtin_clzll(value);
+}
+
+uint64_t BlockAlignmentMask(uint32_t block_size)
+{
+    if (!IS_POWER_OF_TWO(block_size)) {
+        ThrowHere(ARGUMENT_ERROR);
+    }
+
+    return ~(((uint64_t) block_size) - 1);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

@@ -158,23 +158,50 @@ void test_MissAcrossCacheBoundaryShouldCauseTwoBlockAccess(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(&l2_cache, &access));
 }
 
-#if 0
 void test_SuccessiveAccessesToDifferentBlocksShouldBothMiss(void)
 {
+    TEST_IGNORE_MESSAGE("Waiting on cache block implementation");
+
     access_t access1 = {
         .type = TYPE_READ,
         .address = 0x0000,
         .n_bytes = 7,
     };
+    access_t expected_memory_access1 = {
+        .type = TYPE_READ,
+        .address = access1.address,
+        .n_bytes = config.l2.block_size_bytes,
+    };
+
     access_t access2 = {
         .type = TYPE_READ,
         .address = access1.address + config.l2.block_size_bytes,
         .n_bytes = 32,
     };
+    access_t expected_memory_access2 = {
+        .type = TYPE_READ,
+        .address = access2.address,
+        .n_bytes = config.l2.block_size_bytes,
+    };
 
-    uint32_t main
+
+    uint32_t main_mem_access_cycles1 = 35;
+    uint32_t main_mem_access_cycles2 = 68;
+
+    MainMem_Access_ExpectAndReturn(&dummy_main_mem, &expected_memory_access1, main_mem_access_cycles1);
+    MainMem_Access_ExpectAndReturn(&dummy_main_mem, &expected_memory_access2, main_mem_access_cycles2);
+
+    uint32_t expected_access_cycles1 = config.l2.miss_time_cycles +
+                                       main_mem_access_cycles1 +
+                                       config.l2.hit_time_cycles;
+
+    uint32_t expected_access_cycles2 = config.l2.miss_time_cycles +
+                                       main_mem_access_cycles2 +
+                                       config.l2.hit_time_cycles;
+
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles1, L2Cache_Access(&l2_cache, &access1));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles2, L2Cache_Access(&l2_cache, &access2));
 }
-#endif
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 

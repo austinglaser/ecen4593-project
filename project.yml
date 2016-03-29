@@ -82,10 +82,16 @@
     int8:     INT8
     bool:     UINT8
 
-#:tools:
-# Ceedling defaults to using gcc for compiling, linking, etc.
-# As [:tools] is blank, gcc will be used (so long as it's in your system path)
-# See documentation to configure a given toolchain for use
+:tools:
+  :test_fixture:
+    :executable: valgrind
+    :name: 'Valgrind memory checker'
+    :stderr_redirect: :unix
+    :arguments:
+      - -q
+      - --leak-check=full
+      - --error-exitcode=128
+      - "${1}"
 
 :plugins:
   :load_paths:

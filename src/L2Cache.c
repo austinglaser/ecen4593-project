@@ -43,7 +43,7 @@ uint32_t L2Cache_Access(l2_cache_t * cachep, access_t * accessp)
 
         uint64_t aligned_address = accessp->address & ~(cachep->block_alignment_mask);
         uint64_t start_block = accessp->address & ~(cachep->block_alignment_mask);
-        uint64_t end_block = ( (accessp->address + accessp->n_bytes) &
+        uint64_t end_block = ( (accessp->address + accessp->n_bytes - 1) &
                                ~(cachep->block_alignment_mask) ) +
                              cachep->configp->block_size_bytes;
         uint64_t n_bytes = end_block - start_block;

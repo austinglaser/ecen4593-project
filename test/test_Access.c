@@ -13,6 +13,8 @@
 #include "Access.h"
 #include "unity_Helper.h"
 
+#include "Util.h"
+
 #include "CException.h"
 #include "CExceptionConfig.h"
 #include "ExceptionTypes.h"
@@ -134,6 +136,10 @@ void test_InvalidAccessSizeThrowsException(void)
                          &dummy_access,
                          INVALID_ACCESS_SIZE,
                          "No exception on invalid access size");
+    shouldCauseException("R 7681cef81b80 0\n",
+                         &dummy_access,
+                         INVALID_ACCESS_SIZE,
+                         "No exception on invalid access size");
 }
 
 void test_SyntaxErrorThrowsException(void)
@@ -151,6 +157,83 @@ void test_SyntaxErrorThrowsException(void)
                          &dummy_access,
                          SYNTAX_ERROR,
                          "No exception on invalid syntax");
+}
+
+void test_Access_Align_should_NotModifyAccess_when_AccessIsAlreadyAligned(void)
+{
+    access_t access = {
+        .type = TYPE_INSTR,
+        .address = 0x00000000,
+        .n_bytes = 8,
+    };
+
+    access_t aligned_access;
+    Access_Align(&aligned_access, &access, 8);
+
+    access_t expected_access;
+    memcpy(&expected_access, &access, sizeof(access));
+
+    TEST_ASSERT_EQUAL_access_t(expected_access, aligned_access);
+}
+
+void test_Access_Align_should_ExpandToBlockSize_when_AccessIsSmallerThanABlock(void)
+{
+    access_t access = {
+        .type = TYPE_WRITE,
+        .address = 0x00000000,
+        .n_bytes = 4,
+    };
+
+    access_t aligned_access;
+    Access_Align(&aligned_access, &access, 16);
+
+    access_t expected_access = {
+        .type = TYPE_WRITE,
+        .address = 0x00000000,
+        .n_bytes = 16,
+    };
+
+    TEST_ASSERT_EQUAL_access_t(expected_access, aligned_access);
+}
+
+void test_Access_Align_should_SetAddressToBlockBeginning_when_AddressIsUnaligned(void)
+{
+    access_t access = {
+        .type = TYPE_READ,
+        .address = 0x00000004,
+        .n_bytes = 12,
+    };
+
+    access_t aligned_access;
+    Access_Align(&aligned_access, &access, 16);
+
+    access_t expected_access = {
+        .type = TYPE_READ,
+        .address = 0x00000000,
+        .n_bytes = 16,
+    };
+
+    TEST_ASSERT_EQUAL_access_t(expected_access, aligned_access);
+}
+
+void test_Access_Align_should_AccessMultipleBlocks_when_AccessSpansMultipleBlocks(void)
+{
+    access_t access = {
+        .type = TYPE_READ,
+        .address = 0x00000004,
+        .n_bytes = 13,
+    };
+
+    access_t aligned_access;
+    Access_Align(&aligned_access, &access, 16);
+
+    access_t expected_access = {
+        .type = TYPE_READ,
+        .address = 0x00000000,
+        .n_bytes = 32,
+    };
+
+    TEST_ASSERT_EQUAL_access_t(expected_access, aligned_access);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

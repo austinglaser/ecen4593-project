@@ -26,7 +26,6 @@
 
 typedef struct {
     memory_param_t * configp;
-    uint64_t chunk_alignment_mask;
 } main_mem_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */

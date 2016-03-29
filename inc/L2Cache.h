@@ -30,7 +30,6 @@ typedef struct {
     main_mem_t      * memp;
     cache_param_t   * configp;
     bool            has_been_accessed;
-    uint64_t        block_alignment_mask;
 } l2_cache_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */

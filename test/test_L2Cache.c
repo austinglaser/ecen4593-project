@@ -12,6 +12,7 @@
 #include "unity.h"
 #include "L2Cache.h"
 
+#include "Access.h"
 #include "Util.h"
 
 #include "CException.h"

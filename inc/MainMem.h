@@ -25,7 +25,8 @@
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 
 typedef struct {
-    memory_param_t * mem_config;
+    memory_param_t * configp;
+    uint64_t chunk_alignment_mask;
 } main_mem_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */

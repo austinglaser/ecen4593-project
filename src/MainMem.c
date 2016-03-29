@@ -14,6 +14,7 @@
 #include "Config.h"
 #include "Util.h"
 
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -27,20 +28,26 @@
 
 void MainMem_Create(main_mem_t * memp, config_t * configp)
 {
-    memp->mem_config = &configp->main_mem;
+    memp->configp               = &configp->main_mem;
+
+    // Chunk size is guaranteed to be a power of two
+    memp->chunk_alignment_mask  = configp->main_mem.chunk_size_bytes - 1;
+
 }
 
 uint32_t MainMem_Access(main_mem_t * memp, access_t * accessp)
 {
-    uint32_t access_cycles = memp->mem_config->send_address_cycles +
-                             memp->mem_config->ready_cycles;
+    uint32_t access_cycles = memp->configp->send_address_cycles +
+                             memp->configp->ready_cycles;
 
+    uint64_t start_chunk = accessp->address & ~(memp->chunk_alignment_mask);
+    uint64_t end_chunk = ( ((accessp->address + accessp->n_bytes) - 1) &
+                           ~(memp->chunk_alignment_mask) ) +
+                         memp->configp->chunk_size_bytes;
+    uint32_t aligned_n_bytes = end_chunk - start_chunk;
+    uint32_t n_chunks = aligned_n_bytes / memp->configp->chunk_size_bytes;
 
-    uint64_t address_alignment = accessp->address % memp->mem_config->chunk_size_bytes;
-    uint32_t aligned_n_bytes = accessp->n_bytes + address_alignment;
-    uint32_t n_chunks = CEIL_DIVIDE(aligned_n_bytes, memp->mem_config->chunk_size_bytes);
-
-    access_cycles += n_chunks * memp->mem_config->send_chunk_cycles;
+    access_cycles += n_chunks * memp->configp->send_chunk_cycles;
 
     return access_cycles;
 }

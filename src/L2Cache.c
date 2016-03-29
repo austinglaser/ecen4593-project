@@ -26,9 +26,12 @@
 
 void L2Cache_Create(l2_cache_t * cachep, main_mem_t * memp, config_t * configp)
 {
-    cachep->memp                = memp;
-    cachep->configp             = &configp->l2;
-    cachep->has_been_accessed   = false;
+    cachep->memp                    = memp;
+    cachep->configp                 = &configp->l2;
+    cachep->has_been_accessed       = false;
+
+    // Block size is guaranteed to be a power of two
+    cachep->block_alignment_mask    = configp->l2.block_size_bytes - 1;
 }
 
 uint32_t L2Cache_Access(l2_cache_t * cachep, access_t * accessp)
@@ -37,7 +40,21 @@ uint32_t L2Cache_Access(l2_cache_t * cachep, access_t * accessp)
 
     if (!cachep->has_been_accessed) {
         access_time_cycles += cachep->configp->miss_time_cycles;
-        access_time_cycles += MainMem_Access(cachep->memp, accessp);
+
+        uint64_t aligned_address = accessp->address & ~(cachep->block_alignment_mask);
+        uint64_t start_block = accessp->address & ~(cachep->block_alignment_mask);
+        uint64_t end_block = ( (accessp->address + accessp->n_bytes) &
+                               ~(cachep->block_alignment_mask) ) +
+                             cachep->configp->block_size_bytes;
+        uint64_t n_bytes = end_block - start_block;
+
+        access_t main_mem_access = {
+            .type = accessp->type,
+            .address = aligned_address,
+            .n_bytes = n_bytes,
+        };
+        access_time_cycles += MainMem_Access(cachep->memp, &main_mem_access);
+
         cachep->has_been_accessed = true;
     }
 

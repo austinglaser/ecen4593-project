@@ -36,6 +36,9 @@ struct _cache_sets_t {
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
+
+static block_t * CacheSet_GetBlock(cache_sets_t sets, uint64_t address);
+
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -86,14 +89,13 @@ uint32_t CacheSet_Get_BlockSize(cache_sets_t sets)
 
 bool CacheSet_Contains(cache_sets_t sets, uint64_t address)
 {
-    uint32_t block = address & sets->block_mask;
-    return (sets->blocks[block].address) == address;
+    block_t * block = CacheSet_GetBlock(sets, address);
+    return (block->address) == address;
 }
 
 bool CacheSet_Write(cache_sets_t sets, uint64_t address)
 {
-    uint32_t block_index = address & sets->block_mask;
-    block_t * block = &(sets->blocks[block_index]);
+    block_t * block = CacheSet_GetBlock(sets, address);
 
     bool data_present = block->valid;
     if (data_present) {
@@ -105,8 +107,7 @@ bool CacheSet_Write(cache_sets_t sets, uint64_t address)
 
 uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
 {
-    uint32_t block_index = address & sets->block_mask;
-    block_t * block = &(sets->blocks[block_index]);
+    block_t * block = CacheSet_GetBlock(sets, address);
 
     uint64_t old_address = 0;
     if (block->valid && block->dirty) {
@@ -121,5 +122,11 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
+
+static block_t * CacheSet_GetBlock(cache_sets_t sets, uint64_t address)
+{
+    uint32_t block_index = address & sets->block_mask;
+    return &(sets->blocks[block_index]);
+}
 
 /** @} addtogroup CACHESET */

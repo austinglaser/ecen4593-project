@@ -27,7 +27,6 @@
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
 const uint32_t n_sets           = 16;
-const uint32_t set_length       = 4;
 const uint32_t block_size_bytes = 4;
 cache_sets_t cache_sets;
 
@@ -35,7 +34,7 @@ cache_sets_t cache_sets;
 
 void setUp(void)
 {
-    cache_sets = CacheSet_Create_Sets(n_sets, set_length, block_size_bytes);
+    cache_sets = CacheSet_Create_Sets(n_sets, 1, block_size_bytes);
 }
 
 void tearDown(void)
@@ -50,7 +49,7 @@ void test_CacheSet_Get_NSets_should_ReturnNumberOfSets(void)
 
 void test_CacheSet_Get_SetLength_should_ReturnLengthOfSets(void)
 {
-    TEST_ASSERT_EQUAL(set_length, CacheSet_Get_SetLength(cache_sets));
+    TEST_ASSERT_EQUAL(1, CacheSet_Get_SetLength(cache_sets));
 }
 
 void test_CacheSet_Get_BlockSize_should_ReturnSizeOfBlocks(void)
@@ -76,6 +75,30 @@ void test_CacheSet_Contains_should_ReturnTrue_when_BlockHasBeenInserted(void)
     CacheSet_Insert(cache_sets, address);
 
     TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address), "Failed to find inserted block");
+}
+
+void test_CacheSet_Contains_should_ReturnFalse_when_DifferentBlockHasBeenInserted(void)
+{
+    uint64_t address = 0x7ff04300;
+    CacheSet_Insert(cache_sets, address);
+
+    TEST_ASSERT_FALSE_MESSAGE(CacheSet_Contains(cache_sets, address + block_size_bytes), "Found wrong block");
+    TEST_ASSERT_FALSE_MESSAGE(CacheSet_Contains(cache_sets, address - block_size_bytes), "Found wrong block");
+}
+
+void test_CacheSet_Contains_should_ReportTrue_when_MultipleBlocksInDifferentSetsHaveBeenSaved(void)
+{
+    uint64_t address1 = 0x7ff04300;
+    uint64_t address2 = address1 + block_size_bytes;
+    uint64_t address3 = address1 - block_size_bytes;
+
+    CacheSet_Insert(cache_sets, address1);
+    CacheSet_Insert(cache_sets, address2);
+    CacheSet_Insert(cache_sets, address3);
+
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address1), "Failed to find inserted block");
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address2), "Failed to find inserted block");
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address3), "Failed to find inserted block");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

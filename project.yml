@@ -33,6 +33,7 @@
         - -Wall
         - -Wstrict-prototypes
         - -Werror
+        - -std=c11
   :release:
     :compile:
       :*:
@@ -40,6 +41,7 @@
         - -Wall
         - -Wstrict-prototypes
         - -Werror
+        - -std=c11
 
 :paths:
   :test:

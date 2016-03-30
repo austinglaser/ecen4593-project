@@ -45,6 +45,13 @@ static block_t * CacheSet_GetBlock(cache_sets_t sets, uint64_t address);
 
 cache_sets_t CacheSet_Create_Sets(uint32_t n_sets, uint32_t set_len_blocks, uint32_t block_size_bytes)
 {
+    if (!IS_POWER_OF_TWO(n_sets) ||
+        !IS_POWER_OF_TWO(set_len_blocks) ||
+        !IS_POWER_OF_TWO(block_size_bytes) ||
+        block_size_bytes < 4) {
+        return NULL;
+    }
+
     cache_sets_t sets = (cache_sets_t) malloc(sizeof(*sets) + sizeof(block_t) * n_sets);
     if (sets == NULL) {
         return NULL;

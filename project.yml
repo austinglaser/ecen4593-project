@@ -82,16 +82,16 @@
     int8:     INT8
     bool:     UINT8
 
-:tools:
-  :test_fixture:
-    :executable: valgrind
-    :name: 'Valgrind memory checker'
-    :stderr_redirect: :unix
-    :arguments:
-      - -q
-      - --leak-check=full
-      - --error-exitcode=128
-      - "${1}"
+#:tools:
+#  :test_fixture:
+#    :executable: valgrind
+#    :name: 'Valgrind memory checker'
+#    :stderr_redirect: :unix
+#    :arguments:
+#      - -q
+#      - --leak-check=full
+#      - --error-exitcode=128
+#      - "${1}"
 
 :plugins:
   :load_paths:

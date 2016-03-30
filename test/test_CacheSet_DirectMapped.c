@@ -101,6 +101,45 @@ void test_CacheSet_Contains_should_ReportTrue_when_MultipleBlocksInDifferentSets
     TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address3), "Failed to find inserted block");
 }
 
+void test_CacheSet_Insert_should_KickOutOldBlock_when_TwoAddressesMappedToSameBlockAreInserted(void)
+{
+    uint64_t address1 = 0x7ff04300;
+    uint64_t address2 = address1 + block_size_bytes * n_sets;
+
+    CacheSet_Insert(cache_sets, address1);
+    CacheSet_Insert(cache_sets, address2);
+
+    TEST_ASSERT_FALSE_MESSAGE(CacheSet_Contains(cache_sets, address1), "Found block that should have been kicked out");
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address2), "Failed to find inserted block");
+}
+
+void test_CacheSet_Write_should_Fail_when_BlockIsntPresent(void)
+{
+    uint64_t address = 0x7ff04300;
+
+    TEST_ASSERT_FALSE_MESSAGE(CacheSet_Write(cache_sets, address), "Write succeeded to a non-present block");
+}
+
+void test_CacheSet_Write_should_Succeed_when_BlockIsPresent(void)
+{
+    uint64_t address = 0x7ff04300;
+
+    CacheSet_Insert(cache_sets, address);
+
+    TEST_ASSERT_MESSAGE(CacheSet_Write(cache_sets, address), "Write failed to a present block");
+}
+
+void test_CacheSet_Insert_should_KickOutDirtyBlock_when_BlockHasBeenWritten(void)
+{
+    uint64_t address1 = 0x7ff04300;
+    uint64_t address2 = address1 + block_size_bytes * n_sets;
+
+    CacheSet_Insert(cache_sets, address1);
+    CacheSet_Write(cache_sets, address1);
+
+    TEST_ASSERT_EQUAL_HEX64(address1, CacheSet_Insert(cache_sets, address2));
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_CACHESET */

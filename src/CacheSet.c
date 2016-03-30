@@ -22,6 +22,7 @@
 
 typedef struct block_t {
     bool valid;
+    bool dirty;
     uint64_t address;
 } block_t;
 
@@ -54,6 +55,7 @@ cache_sets_t CacheSet_Create_Sets(uint32_t n_sets, uint32_t set_len_blocks, uint
     uint32_t i;
     for (i = 0; i < n_sets; i++) {
         sets->blocks[i].valid   = false;
+        sets->blocks[i].dirty   = false;
         sets->blocks[i].address = 0;
     }
 
@@ -88,13 +90,34 @@ bool CacheSet_Contains(cache_sets_t sets, uint64_t address)
     return (sets->blocks[block].address) == address;
 }
 
+bool CacheSet_Write(cache_sets_t sets, uint64_t address)
+{
+    uint32_t block_index = address & sets->block_mask;
+    block_t * block = &(sets->blocks[block_index]);
+
+    bool data_present = block->valid;
+    if (data_present) {
+        block->dirty = true;
+    }
+
+    return data_present;
+}
+
 uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
 {
-    uint32_t block = address & sets->block_mask;
-    sets->blocks[block].valid   = true;
-    sets->blocks[block].address = address;
+    uint32_t block_index = address & sets->block_mask;
+    block_t * block = &(sets->blocks[block_index]);
 
-    return 0;
+    uint64_t old_address = 0;
+    if (block->valid && block->dirty) {
+        old_address = block->address;
+    }
+
+    block->valid   = true;
+    block->dirty   = false;
+    block->address = address;
+
+    return old_address;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

@@ -42,7 +42,7 @@ void setUp(void)
 {
     SetDefaultConfigValues(&config);
 
-    L2Cache_Create(&l2_cache, &dummy_main_mem, &config);
+    L2Cache_Create(&l2_cache, dummy_main_mem, &config);
 }
 
 void tearDown(void)
@@ -64,7 +64,7 @@ void test_InstructionAccessToEmptyCacheShouldMiss(void)
     };
 
     uint32_t main_mem_access_cycles = 75;
-    MainMem_Access_ExpectAndReturn(&dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
 
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
@@ -87,7 +87,7 @@ void test_ReadAccessToEmptyCacheShouldMiss(void)
     };
 
     uint32_t main_mem_access_cycles = 32;
-    MainMem_Access_ExpectAndReturn(&dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
 
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
@@ -110,7 +110,7 @@ void test_WriteAccessToEmptyCacheShouldMiss(void)
     };
 
     uint32_t main_mem_access_cycles = 256;
-    MainMem_Access_ExpectAndReturn(&dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
 
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
@@ -150,7 +150,7 @@ void test_MissAcrossCacheBoundaryShouldCauseTwoBlockAccess(void)
     };
 
     uint32_t main_mem_access_cycles = 132;
-    MainMem_Access_ExpectAndReturn(&dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
 
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
@@ -189,8 +189,8 @@ void test_SuccessiveAccessesToDifferentBlocksShouldBothMiss(void)
     uint32_t main_mem_access_cycles1 = 35;
     uint32_t main_mem_access_cycles2 = 68;
 
-    MainMem_Access_ExpectAndReturn(&dummy_main_mem, &expected_memory_access1, main_mem_access_cycles1);
-    MainMem_Access_ExpectAndReturn(&dummy_main_mem, &expected_memory_access2, main_mem_access_cycles2);
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access1, main_mem_access_cycles1);
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access2, main_mem_access_cycles2);
 
     uint32_t expected_access_cycles1 = config.l2.miss_time_cycles +
                                        main_mem_access_cycles1 +

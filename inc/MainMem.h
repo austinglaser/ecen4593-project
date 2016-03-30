@@ -24,16 +24,15 @@
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 
-typedef struct {
-    memory_param_t * configp;
-} main_mem_t;
+typedef struct _main_mem_t * main_mem_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-void MainMem_Create(main_mem_t * memp, config_t * configp);
-uint32_t MainMem_Access(main_mem_t * memp, access_t * accessp);
+main_mem_t MainMem_Create(config_t * configp);
+void MainMem_Destroy(main_mem_t mem);
+uint32_t MainMem_Access(main_mem_t mem, access_t * accessp);
 
 /** @} defgroup MAINMEM */
 

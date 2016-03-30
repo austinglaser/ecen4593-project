@@ -17,38 +17,58 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
+
+struct _l2_cache_t {
+    main_mem_t        mem;
+    cache_param_t   * configp;
+    bool            has_been_accessed;
+};
+
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-void L2Cache_Create(l2_cache_t * cachep, main_mem_t mem, config_t * configp)
+l2_cache_t L2Cache_Create(main_mem_t mem, config_t * configp)
 {
-    cachep->mem                     = mem;
-    cachep->configp                 = &configp->l2;
-    cachep->has_been_accessed       = false;
+    l2_cache_t cache = (l2_cache_t) malloc(sizeof(*cache));
+    if (cache == NULL) {
+        return NULL;
+    }
+
+    cache->mem                     = mem;
+    cache->configp                 = &configp->l2;
+    cache->has_been_accessed       = false;
+
+    return cache;
 }
 
-uint32_t L2Cache_Access(l2_cache_t * cachep, access_t * accessp)
+void L2Cache_Destroy(l2_cache_t cache)
+{
+    if (cache) free(cache);
+}
+
+uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
 {
     uint32_t access_time_cycles = 0;
 
-    if (!cachep->has_been_accessed) {
-        access_time_cycles += cachep->configp->miss_time_cycles;
+    if (!cache->has_been_accessed) {
+        access_time_cycles += cache->configp->miss_time_cycles;
 
         access_t block_aligned_access;
-        Access_Align(&block_aligned_access, accessp, cachep->configp->block_size_bytes);
+        Access_Align(&block_aligned_access, accessp, cache->configp->block_size_bytes);
 
-        access_time_cycles += MainMem_Access(cachep->mem, &block_aligned_access);
+        access_time_cycles += MainMem_Access(cache->mem, &block_aligned_access);
 
-        cachep->has_been_accessed = true;
+        cache->has_been_accessed = true;
     }
 
-    access_time_cycles += cachep->configp->hit_time_cycles;
+    access_time_cycles += cache->configp->hit_time_cycles;
 
     return access_time_cycles;
 }

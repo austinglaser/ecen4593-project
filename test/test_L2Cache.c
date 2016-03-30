@@ -42,11 +42,12 @@ void setUp(void)
 {
     SetDefaultConfigValues(&config);
 
-    L2Cache_Create(&l2_cache, dummy_main_mem, &config);
+    l2_cache = L2Cache_Create(dummy_main_mem, &config);
 }
 
 void tearDown(void)
 {
+    L2Cache_Destroy(l2_cache);
 }
 
 void test_InstructionAccessToEmptyCacheShouldMiss(void)
@@ -69,7 +70,7 @@ void test_InstructionAccessToEmptyCacheShouldMiss(void)
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
                                       config.l2.hit_time_cycles;
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(&l2_cache, &access));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
 
 void test_ReadAccessToEmptyCacheShouldMiss(void)
@@ -92,7 +93,7 @@ void test_ReadAccessToEmptyCacheShouldMiss(void)
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
                                       config.l2.hit_time_cycles;
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(&l2_cache, &access));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
 
 void test_WriteAccessToEmptyCacheShouldMiss(void)
@@ -115,7 +116,7 @@ void test_WriteAccessToEmptyCacheShouldMiss(void)
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
                                       config.l2.hit_time_cycles;
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(&l2_cache, &access));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
 
 void test_RepeatedAccessShouldMissFirstThenHit(void)
@@ -129,10 +130,10 @@ void test_RepeatedAccessShouldMissFirstThenHit(void)
     uint32_t main_mem_access_cycles = 75;
     MainMem_Access_IgnoreAndReturn(main_mem_access_cycles);
 
-    L2Cache_Access(&l2_cache, &access);
+    L2Cache_Access(l2_cache, &access);
 
     uint32_t expected_hit_cycles = config.l2.hit_time_cycles;
-    TEST_ASSERT_EQUAL_UINT32(expected_hit_cycles, L2Cache_Access(&l2_cache, &access));
+    TEST_ASSERT_EQUAL_UINT32(expected_hit_cycles, L2Cache_Access(l2_cache, &access));
 }
 
 void test_MissAcrossCacheBoundaryShouldCauseTwoBlockAccess(void)
@@ -155,7 +156,7 @@ void test_MissAcrossCacheBoundaryShouldCauseTwoBlockAccess(void)
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
                                       config.l2.hit_time_cycles;
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(&l2_cache, &access));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
 
 #if 0
@@ -200,8 +201,8 @@ void test_SuccessiveAccessesToDifferentBlocksShouldBothMiss(void)
                                        main_mem_access_cycles2 +
                                        config.l2.hit_time_cycles;
 
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles1, L2Cache_Access(&l2_cache, &access1));
-    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles2, L2Cache_Access(&l2_cache, &access2));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles1, L2Cache_Access(l2_cache, &access1));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles2, L2Cache_Access(l2_cache, &access2));
 }
 #endif
 

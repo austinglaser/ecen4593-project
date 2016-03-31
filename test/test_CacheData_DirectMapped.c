@@ -88,6 +88,16 @@ void test_CacheData_Contains_should_ReportTrue_when_MultipleBlocksInDifferentSet
     TEST_ASSERT_MESSAGE(CacheData_Contains(cache_data, address3), "Failed to find inserted block");
 }
 
+void test_CacheData_Insert_should_NotKickout_when_TheSameBlockIsInserted(void)
+{
+    uint64_t address = 0x7ff04328;
+
+    CacheData_Read(cache_data, address);
+    CacheData_Write(cache_data, address);
+
+    TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, address));
+}
+
 void test_CacheData_Insert_should_KickOutOldBlock_when_TwoAddressesMappedToSameBlockAreInserted(void)
 {
     uint64_t address1 = 0x7ff04314;
@@ -173,16 +183,6 @@ void test_CacheData_Insert_should_BeAbleToFillCache(void)
         uint64_t old_block_address = old_base_address + offset;
         TEST_ASSERT_EQUAL_HEX64(old_block_address, CacheData_Read(cache_data, new_block_address));
     }
-}
-
-void test_CacheData_Insert_should_NotKickout_when_TheSameBlockIsInserted(void)
-{
-    uint64_t address = 0x7ff04328;
-
-    CacheData_Read(cache_data, address);
-    CacheData_Write(cache_data, address);
-
-    TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, address));
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

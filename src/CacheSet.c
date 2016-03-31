@@ -53,6 +53,7 @@ static set_head_t * CacheSet_GetSet(cache_sets_t sets, uint64_t address);
 static block_t * CacheSet_GetMatchingBlock(set_head_t * set, uint64_t address);
 static uint64_t CacheSet_BlockAlignAddress(cache_sets_t sets, uint64_t address);
 
+static uint64_t CacheSet_GetBlockForInsertion(cache_sets_t sets, set_head_t * set, block_t ** block, uint64_t address);
 static void CacheSet_RemoveBlock(set_head_t * set, block_t * block);
 static void CacheSet_InsertBlock(set_head_t * set, block_t * block);
 
@@ -128,38 +129,11 @@ bool CacheSet_Contains(cache_sets_t sets, uint64_t address)
 
 uint64_t CacheSet_Write(cache_sets_t sets, uint64_t address)
 {
+    block_t * block;
+
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
-
     set_head_t * set = CacheSet_GetSet(sets, aligned_address);
-    block_t * block = CacheSet_GetMatchingBlock(set, aligned_address);
-
-    uint64_t kickout_address = 0;
-
-    if (block != NULL) {
-        CacheSet_RemoveBlock(set, block);
-    }
-    else if (set->n_valid_blocks < sets->set_len_blocks) {
-        block = sets->next_free_block;
-        sets->next_free_block += 1;
-
-        set->n_valid_blocks += 1;
-    }
-    else {
-        block_t * oldest = set->oldest;
-        if (oldest->dirty) {
-            kickout_address = oldest->address;
-        }
-        block = oldest;
-
-        set->oldest = oldest->newer;
-
-        if (set->oldest) {
-            set->oldest->older = NULL;
-        }
-        else {
-            set->newest = NULL;
-        }
-    }
+    uint64_t kickout_address = CacheSet_GetBlockForInsertion(sets, set, &block, aligned_address);
 
     block->dirty     = true;
     block->address   = aligned_address;
@@ -173,37 +147,11 @@ uint64_t CacheSet_Write(cache_sets_t sets, uint64_t address)
 
 uint64_t CacheSet_Read(cache_sets_t sets, uint64_t address)
 {
+    block_t * block;
+
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
     set_head_t * set = CacheSet_GetSet(sets, aligned_address);
-    block_t * block = CacheSet_GetMatchingBlock(set, aligned_address);
-
-    uint64_t kickout_address = 0;
-
-    if (block != NULL) {
-        CacheSet_RemoveBlock(set, block);
-    }
-    else if (set->n_valid_blocks < sets->set_len_blocks) {
-        block = sets->next_free_block;
-        sets->next_free_block += 1;
-
-        set->n_valid_blocks += 1;
-    }
-    else {
-        block_t * oldest = set->oldest;
-        if (oldest->dirty) {
-            kickout_address = oldest->address;
-        }
-        block = oldest;
-
-        set->oldest = oldest->newer;
-
-        if (set->oldest) {
-            set->oldest->older = NULL;
-        }
-        else {
-            set->newest = NULL;
-        }
-    }
+    uint64_t kickout_address = CacheSet_GetBlockForInsertion(sets, set, &block, aligned_address);
 
     block->address   = aligned_address;
     block->newer     = NULL;
@@ -242,6 +190,44 @@ static block_t * CacheSet_GetMatchingBlock(set_head_t * set, uint64_t address)
 static uint64_t CacheSet_BlockAlignAddress(cache_sets_t sets, uint64_t address)
 {
     return address & sets->block_mask;
+}
+
+static uint64_t CacheSet_GetBlockForInsertion(cache_sets_t sets, set_head_t * set, block_t ** block, uint64_t address)
+{
+    *block = CacheSet_GetMatchingBlock(set, address);
+
+    uint64_t kickout_address = 0;
+
+    if (*block != NULL) {
+        // Block already in set
+        CacheSet_RemoveBlock(set, *block);
+    }
+    else if (set->n_valid_blocks < sets->set_len_blocks) {
+        // Set not full
+        *block = sets->next_free_block;
+        sets->next_free_block += 1;
+
+        set->n_valid_blocks += 1;
+    }
+    else {
+        // Set full
+        block_t * oldest = set->oldest;
+        if (oldest->dirty) {
+            kickout_address = oldest->address;
+        }
+        *block = oldest;
+
+        set->oldest = oldest->newer;
+
+        if (set->oldest) {
+            set->oldest->older = NULL;
+        }
+        else {
+            set->newest = NULL;
+        }
+    }
+
+    return kickout_address;
 }
 
 static void CacheSet_RemoveBlock(set_head_t * set, block_t * block)

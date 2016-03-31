@@ -32,7 +32,7 @@ void CacheSet_Destroy_Sets(cache_sets_t sets);
 
 bool CacheSet_Contains(cache_sets_t sets, uint64_t address);
 bool CacheSet_Write(cache_sets_t sets, uint64_t address);
-uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address);
+uint64_t CacheSet_Read(cache_sets_t sets, uint64_t address);
 
 /** @} defgroup CACHESET */
 

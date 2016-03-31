@@ -144,7 +144,7 @@ bool CacheSet_Write(cache_sets_t sets, uint64_t address)
     return data_present;
 }
 
-uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
+uint64_t CacheSet_Read(cache_sets_t sets, uint64_t address)
 {
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
     set_head_t * set = CacheSet_GetSet(sets, aligned_address);

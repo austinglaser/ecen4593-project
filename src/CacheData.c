@@ -96,6 +96,7 @@ cache_data_t CacheData_Create(uint32_t n_sets, uint32_t set_len_blocks, uint32_t
         data->all_blocks[i].dirty       = false;
         data->all_blocks[i].address     = 0;
         data->all_blocks[i].older       = NULL;
+        data->all_blocks[i].newer       = NULL;
     }
 
     for (i = 0; i < n_sets; i++) {

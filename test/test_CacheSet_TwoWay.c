@@ -58,4 +58,19 @@ void test_CacheSet_Insert_should_SaveTwoAddressesMappedToTheSameSet(void)
     TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address2), "Failed to store second address");
 }
 
+void test_CacheSet_Insert_should_KickOutOldestAddressFromSet(void)
+{
+    uint64_t address1 = 0x7ff38200;
+    uint64_t address2 = 0x7ff38300;
+    uint64_t address3 = 0x7ff38400;
+
+    CacheSet_Insert(cache_sets, address1);
+    CacheSet_Insert(cache_sets, address2);
+    CacheSet_Insert(cache_sets, address3);
+
+    TEST_ASSERT_FALSE_MESSAGE(CacheSet_Contains(cache_sets, address1), "Failed to kick out first address");
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address2), "Failed to store second address");
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address3), "Failed to store second address");
+}
+
 /** @} addtogroup TEST_CACHESET_TWOWAY */

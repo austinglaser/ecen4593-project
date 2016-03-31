@@ -53,6 +53,9 @@ static set_head_t * CacheSet_GetSet(cache_sets_t sets, uint64_t address);
 static block_t * CacheSet_GetMatchingBlock(set_head_t * set, uint64_t address);
 static uint64_t CacheSet_BlockAlignAddress(cache_sets_t sets, uint64_t address);
 
+static void CacheSet_RemoveBlock(set_head_t * set, block_t * block);
+static void CacheSet_InsertBlock(set_head_t * set, block_t * block);
+
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -134,31 +137,8 @@ bool CacheSet_Write(cache_sets_t sets, uint64_t address)
     if (data_present) {
         block->dirty = true;
 
-        if (block == set->newest) {
-            set->newest = block->older;
-        }
-        else if (block == set->oldest) {
-            set->oldest = block->newer;
-        }
-
-        if (block->newer) {
-            block->newer->older = block->older;
-        }
-        if (block->older) {
-            block->older->newer = block->newer;
-        }
-
-        if (set->oldest == NULL) {
-            set->oldest = block;
-        }
-
-        if (set->newest != NULL) {
-            set->newest->newer = block;
-        }
-
-        block->older = set->newest;
-        set->newest = block;
-
+        CacheSet_RemoveBlock(set, block);
+        CacheSet_InsertBlock(set, block);
     }
 
     return data_present;
@@ -168,29 +148,17 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
 {
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
     set_head_t * set = CacheSet_GetSet(sets, aligned_address);
-    block_t * insert_block = CacheSet_GetMatchingBlock(set, aligned_address);
+    block_t * block = CacheSet_GetMatchingBlock(set, aligned_address);
 
     uint64_t kickout_address = 0;
 
-    if (insert_block != NULL) {
-        if (insert_block == set->newest) {
-            set->newest = insert_block->older;
-        }
-        else if (insert_block == set->oldest) {
-            set->oldest = insert_block->newer;
-        }
-
-        if (insert_block->newer) {
-            insert_block->newer->older = insert_block->older;
-        }
-        if (insert_block->older) {
-            insert_block->older->newer = insert_block->newer;
-        }
+    if (block != NULL) {
+        CacheSet_RemoveBlock(set, block);
     }
     else if (set->n_valid_blocks < sets->set_len_blocks) {
-        insert_block = sets->next_free_block;
+        block = sets->next_free_block;
         sets->next_free_block += 1;
-        insert_block->dirty     = false;
+        block->dirty     = false;
 
         set->n_valid_blocks += 1;
     }
@@ -199,7 +167,7 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
         if (oldest->dirty) {
             kickout_address = oldest->address;
         }
-        insert_block = oldest;
+        block = oldest;
 
         set->oldest = oldest->newer;
 
@@ -210,23 +178,14 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
             set->newest = NULL;
         }
 
-        insert_block->dirty     = false;
+        block->dirty     = false;
     }
 
-    insert_block->address   = aligned_address;
-    insert_block->newer     = NULL;
-    insert_block->older     = NULL;
+    block->address   = aligned_address;
+    block->newer     = NULL;
+    block->older     = NULL;
 
-    if (set->oldest == NULL) {
-        set->oldest = insert_block;
-    }
-
-    if (set->newest != NULL) {
-        set->newest->newer = insert_block;
-    }
-
-    insert_block->older = set->newest;
-    set->newest = insert_block;
+    CacheSet_InsertBlock(set, block);
 
     return kickout_address;
 }
@@ -259,6 +218,37 @@ static block_t * CacheSet_GetMatchingBlock(set_head_t * set, uint64_t address)
 static uint64_t CacheSet_BlockAlignAddress(cache_sets_t sets, uint64_t address)
 {
     return address & sets->block_mask;
+}
+
+static void CacheSet_RemoveBlock(set_head_t * set, block_t * block)
+{
+    if (block == set->newest) {
+        set->newest = block->older;
+    }
+    if (block == set->oldest) {
+        set->oldest = block->newer;
+    }
+
+    if (block->newer) {
+        block->newer->older = block->older;
+    }
+    if (block->older) {
+        block->older->newer = block->newer;
+    }
+}
+
+static void CacheSet_InsertBlock(set_head_t * set, block_t * block)
+{
+    if (set->oldest == NULL) {
+        set->oldest = block;
+    }
+
+    if (set->newest != NULL) {
+        set->newest->newer = block;
+    }
+
+    block->older = set->newest;
+    set->newest = block;
 }
 
 /** @} addtogroup CACHESET */

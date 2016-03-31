@@ -12,6 +12,8 @@
 #include "CacheSet.h"
 #include "unity.h"
 
+#include "Util.h"
+
 #include "CException.h"
 #include "CExceptionConfig.h"
 #include "ExceptionTypes.h"
@@ -26,9 +28,9 @@
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
-const uint32_t n_sets           = 16;
-const uint32_t block_size_bytes = 4;
-cache_sets_t cache_sets;
+static const uint32_t n_sets           = 16;
+static const uint32_t block_size_bytes = 4;
+static cache_sets_t cache_sets;
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
@@ -65,13 +67,13 @@ void test_CacheSet_Contains_should_ReturnFalse_when_CacheSetIsEmpty(void)
 
 void test_CacheSet_Insert_should_NotKickOutBlock_when_CacheSetIsEmpty(void)
 {
-    uint64_t address = 0x7ff04300;
+    uint64_t address = 0x7ff04304;
     TEST_ASSERT_EQUAL_HEX64(0, CacheSet_Insert(cache_sets, address));
 }
 
 void test_CacheSet_Contains_should_ReturnTrue_when_BlockHasBeenInserted(void)
 {
-    uint64_t address = 0x7ff04300;
+    uint64_t address = 0x7ff04308;
     CacheSet_Insert(cache_sets, address);
 
     TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address), "Failed to find inserted block");
@@ -79,7 +81,7 @@ void test_CacheSet_Contains_should_ReturnTrue_when_BlockHasBeenInserted(void)
 
 void test_CacheSet_Contains_should_ReturnFalse_when_DifferentBlockHasBeenInserted(void)
 {
-    uint64_t address = 0x7ff04300;
+    uint64_t address = 0x7ff0430c;
     CacheSet_Insert(cache_sets, address);
 
     TEST_ASSERT_FALSE_MESSAGE(CacheSet_Contains(cache_sets, address + block_size_bytes), "Found wrong block");
@@ -88,7 +90,7 @@ void test_CacheSet_Contains_should_ReturnFalse_when_DifferentBlockHasBeenInserte
 
 void test_CacheSet_Contains_should_ReportTrue_when_MultipleBlocksInDifferentSetsHaveBeenSaved(void)
 {
-    uint64_t address1 = 0x7ff04300;
+    uint64_t address1 = 0x7ff04310;
     uint64_t address2 = address1 + block_size_bytes;
     uint64_t address3 = address1 - block_size_bytes;
 
@@ -103,7 +105,7 @@ void test_CacheSet_Contains_should_ReportTrue_when_MultipleBlocksInDifferentSets
 
 void test_CacheSet_Insert_should_KickOutOldBlock_when_TwoAddressesMappedToSameBlockAreInserted(void)
 {
-    uint64_t address1 = 0x7ff04300;
+    uint64_t address1 = 0x7ff04314;
     uint64_t address2 = address1 + block_size_bytes * n_sets;
 
     CacheSet_Insert(cache_sets, address1);
@@ -115,14 +117,14 @@ void test_CacheSet_Insert_should_KickOutOldBlock_when_TwoAddressesMappedToSameBl
 
 void test_CacheSet_Write_should_Fail_when_BlockIsntPresent(void)
 {
-    uint64_t address = 0x7ff04300;
+    uint64_t address = 0x7ff04318;
 
     TEST_ASSERT_FALSE_MESSAGE(CacheSet_Write(cache_sets, address), "Write succeeded to a non-present block");
 }
 
 void test_CacheSet_Write_should_Succeed_when_BlockIsPresent(void)
 {
-    uint64_t address = 0x7ff04300;
+    uint64_t address = 0x7ff0431c;
 
     CacheSet_Insert(cache_sets, address);
 
@@ -131,13 +133,27 @@ void test_CacheSet_Write_should_Succeed_when_BlockIsPresent(void)
 
 void test_CacheSet_Insert_should_KickOutDirtyBlock_when_BlockHasBeenWritten(void)
 {
-    uint64_t address1 = 0x7ff04300;
+    uint64_t address1 = 0x7ff04320;
     uint64_t address2 = address1 + block_size_bytes * n_sets;
 
     CacheSet_Insert(cache_sets, address1);
     CacheSet_Write(cache_sets, address1);
 
     TEST_ASSERT_EQUAL_HEX64(address1, CacheSet_Insert(cache_sets, address2));
+}
+
+void test_CacheSet_Contains_should_IgnoreOffsetWithinBlock(void)
+{
+    uint64_t address1 = 0x7ff04324;
+    uint64_t address2 = address1 + 1;
+    uint64_t address3 = address1 + 3;
+    uint64_t address4 = address1 + block_size_bytes - 1;
+
+    CacheSet_Insert(cache_sets, address1);
+
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address2), "Offset within block should be ignored");
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address3), "Offset within block should be ignored");
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address4), "Offset within block should be ignored");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

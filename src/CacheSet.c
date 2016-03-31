@@ -13,9 +13,11 @@
 
 #include "Util.h"
 
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
@@ -30,7 +32,9 @@ struct _cache_sets_t {
     uint32_t n_sets;
     uint32_t set_len_blocks;
     uint32_t block_size_bytes;
+    uint64_t set_mask;
     uint64_t block_mask;
+    uint32_t set_index_shift;
     block_t blocks[];
 };
 
@@ -38,6 +42,7 @@ struct _cache_sets_t {
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
 static block_t * CacheSet_GetBlock(cache_sets_t sets, uint64_t address);
+static uint64_t CacheSet_BlockAlignAddress(cache_sets_t sets, uint64_t address);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -60,7 +65,9 @@ cache_sets_t CacheSet_Create_Sets(uint32_t n_sets, uint32_t set_len_blocks, uint
     sets->n_sets = n_sets;
     sets->set_len_blocks = set_len_blocks;
     sets->block_size_bytes = block_size_bytes;
-    sets->block_mask = n_sets - 1;
+    sets->set_index_shift = HighestBitSet_Uint32(block_size_bytes);
+    sets->set_mask = (n_sets - 1) << (sets->set_index_shift);
+    sets->block_mask = BlockAlignmentMask(block_size_bytes);
 
     uint32_t i;
     for (i = 0; i < n_sets; i++) {
@@ -96,13 +103,16 @@ uint32_t CacheSet_Get_BlockSize(cache_sets_t sets)
 
 bool CacheSet_Contains(cache_sets_t sets, uint64_t address)
 {
-    block_t * block = CacheSet_GetBlock(sets, address);
-    return (block->address) == address;
+    uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
+
+    block_t * block = CacheSet_GetBlock(sets, aligned_address);
+    return (block->address) == aligned_address;
 }
 
 bool CacheSet_Write(cache_sets_t sets, uint64_t address)
 {
-    block_t * block = CacheSet_GetBlock(sets, address);
+    uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
+    block_t * block = CacheSet_GetBlock(sets, aligned_address);
 
     bool data_present = block->valid;
     if (data_present) {
@@ -114,7 +124,8 @@ bool CacheSet_Write(cache_sets_t sets, uint64_t address)
 
 uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
 {
-    block_t * block = CacheSet_GetBlock(sets, address);
+    uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
+    block_t * block = CacheSet_GetBlock(sets, aligned_address);
 
     uint64_t old_address = 0;
     if (block->valid && block->dirty) {
@@ -123,7 +134,7 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
 
     block->valid   = true;
     block->dirty   = false;
-    block->address = address;
+    block->address = aligned_address;
 
     return old_address;
 }
@@ -132,8 +143,13 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
 
 static block_t * CacheSet_GetBlock(cache_sets_t sets, uint64_t address)
 {
-    uint32_t block_index = address & sets->block_mask;
+    uint32_t block_index = (address & sets->set_mask) >> sets->set_index_shift;
     return &(sets->blocks[block_index]);
+}
+
+static uint64_t CacheSet_BlockAlignAddress(cache_sets_t sets, uint64_t address)
+{
+    return address & sets->block_mask;
 }
 
 /** @} addtogroup CACHESET */

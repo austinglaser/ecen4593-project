@@ -13,11 +13,9 @@
 
 #include "Util.h"
 
-#include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
@@ -144,20 +142,36 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
 {
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
     set_head_t * set = CacheSet_GetSet(sets, aligned_address);
+    block_t * insert_block = CacheSet_GetMatchingBlock(set, aligned_address);
 
-    block_t * insert_block;
-    uint64_t old_address = 0;
+    uint64_t kickout_address = 0;
 
-    if (set->n_valid_blocks < sets->set_len_blocks) {
+    if (insert_block != NULL) {
+        if (insert_block == set->newest) {
+            set->newest = insert_block->older;
+        }
+        else if (insert_block == set->oldest) {
+            set->oldest = insert_block->newer;
+        }
+
+        if (insert_block->newer) {
+            insert_block->newer->older = insert_block->older;
+        }
+        if (insert_block->older) {
+            insert_block->older->newer = insert_block->newer;
+        }
+    }
+    else if (set->n_valid_blocks < sets->set_len_blocks) {
         insert_block = sets->next_free_block;
         sets->next_free_block += 1;
+        insert_block->dirty     = false;
 
         set->n_valid_blocks += 1;
     }
     else {
         block_t * oldest = set->oldest;
         if (oldest->dirty) {
-            old_address = oldest->address;
+            kickout_address = oldest->address;
         }
         insert_block = oldest;
 
@@ -169,9 +183,10 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
         else {
             set->newest = NULL;
         }
+
+        insert_block->dirty     = false;
     }
 
-    insert_block->dirty     = false;
     insert_block->address   = aligned_address;
     insert_block->newer     = NULL;
     insert_block->older     = NULL;
@@ -187,7 +202,7 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
     insert_block->older = set->newest;
     set->newest = insert_block;
 
-    return old_address;
+    return kickout_address;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

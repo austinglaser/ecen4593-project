@@ -164,6 +164,16 @@ void test_CacheSet_Insert_should_BeAbleToFillCache(void)
     }
 }
 
+void test_CacheSet_Insert_should_NotKickout_when_TheSameBlockIsInserted(void)
+{
+    uint64_t address = 0x7ff04328;
+
+    CacheSet_Insert(cache_sets, address);
+    CacheSet_Write(cache_sets, address);
+
+    TEST_ASSERT_EQUAL_HEX64(0, CacheSet_Insert(cache_sets, address));
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_CACHESET */

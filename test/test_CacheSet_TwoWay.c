@@ -96,7 +96,7 @@ void test_CacheSet_Insert_should_BeAbleToFillCache(void)
         for (j = 0; j < set_len; j++) {
             uint64_t block_address = (base_address) +
                                      (i * block_size_bytes) +
-                                     (j * block_size_bytes * n_sets / set_len);
+                                     (j * block_size_bytes * n_sets);
             TEST_ASSERT_EQUAL_HEX64(0, CacheSet_Insert(cache_sets, block_address));
 
             // So we see a dirty kickout if anything is overwritten

@@ -145,27 +145,27 @@ void test_CeilDivide_should_RoundUp_when_DivisorIsNotDivisible(void)
     TEST_ASSERT_EQUAL(4, CEIL_DIVIDE(37, 12));
 }
 
-void test_HighestSetBitIndex_should_ReturnZero_when_PassedZero(void)
+void test_HighestBitSet_Uint64_should_ReturnZero_when_PassedZero(void)
 {
-    TEST_ASSERT_EQUAL_UINT32(0, HighestSetBitIndex(0));
+    TEST_ASSERT_EQUAL_UINT32(0, HighestBitSet_Uint64(0));
 }
 
-void test_HighestSetBitIndex_should_ReturnOnlySetBit_when_PassedPowerOf2(void)
+void test_HighestBitSet_Uint64_should_ReturnOnlySetBit_when_PassedPowerOf2(void)
 {
-    TEST_ASSERT_EQUAL_UINT32(0, HighestSetBitIndex(0x01));
-    TEST_ASSERT_EQUAL_UINT32(1, HighestSetBitIndex(0x02));
-    TEST_ASSERT_EQUAL_UINT32(2, HighestSetBitIndex(0x04));
-    TEST_ASSERT_EQUAL_UINT32(4, HighestSetBitIndex(0x10));
-    TEST_ASSERT_EQUAL_UINT32(63, HighestSetBitIndex(0x8000000000000000));
+    TEST_ASSERT_EQUAL_UINT32(0, HighestBitSet_Uint64(0x01));
+    TEST_ASSERT_EQUAL_UINT32(1, HighestBitSet_Uint64(0x02));
+    TEST_ASSERT_EQUAL_UINT32(2, HighestBitSet_Uint64(0x04));
+    TEST_ASSERT_EQUAL_UINT32(4, HighestBitSet_Uint64(0x10));
+    TEST_ASSERT_EQUAL_UINT32(63, HighestBitSet_Uint64(0x8000000000000000));
 }
 
-void test_HighestSetBitIndex_should_ReturnHighestSetBit_when_PassedNonPowerOf2(void)
+void test_HighestBitSet_Uint64_should_ReturnHighestSetBit_when_PassedNonPowerOf2(void)
 {
-    TEST_ASSERT_EQUAL_UINT32(1, HighestSetBitIndex(0x03));
-    TEST_ASSERT_EQUAL_UINT32(2, HighestSetBitIndex(0x05));
-    TEST_ASSERT_EQUAL_UINT32(3, HighestSetBitIndex(0x0F));
-    TEST_ASSERT_EQUAL_UINT32(5, HighestSetBitIndex(0x21));
-    TEST_ASSERT_EQUAL_UINT32(63, HighestSetBitIndex(0x8000143235990345));
+    TEST_ASSERT_EQUAL_UINT32(1, HighestBitSet_Uint64(0x03));
+    TEST_ASSERT_EQUAL_UINT32(2, HighestBitSet_Uint64(0x05));
+    TEST_ASSERT_EQUAL_UINT32(3, HighestBitSet_Uint64(0x0F));
+    TEST_ASSERT_EQUAL_UINT32(5, HighestBitSet_Uint64(0x21));
+    TEST_ASSERT_EQUAL_UINT32(63, HighestBitSet_Uint64(0x8000143235990345));
 }
 
 void test_BlockAlignmentMask_should_CalculateMask_when_BlockSizeIsAPowerOfTwo(void)

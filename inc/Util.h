@@ -30,7 +30,7 @@
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-uint32_t HighestSetBitIndex(uint64_t value);
+uint32_t HighestBitSet_Uint64(uint64_t value);
 
 uint64_t BlockAlignmentMask(uint32_t block_size);
 

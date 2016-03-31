@@ -115,21 +115,6 @@ void CacheSet_Destroy_Sets(cache_sets_t cache_sets)
     }
 }
 
-uint32_t CacheSet_Get_NSets(cache_sets_t sets)
-{
-    return sets->n_sets;
-}
-
-uint32_t CacheSet_Get_SetLength(cache_sets_t sets)
-{
-    return sets->set_len_blocks;
-}
-
-uint32_t CacheSet_Get_BlockSize(cache_sets_t sets)
-{
-    return sets->block_size_bytes;
-}
-
 bool CacheSet_Contains(cache_sets_t sets, uint64_t address)
 {
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);

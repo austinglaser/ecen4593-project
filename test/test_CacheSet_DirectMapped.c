@@ -44,21 +44,6 @@ void tearDown(void)
     CacheSet_Destroy_Sets(cache_sets);
 }
 
-void test_CacheSet_Get_NSets_should_ReturnNumberOfSets(void)
-{
-    TEST_ASSERT_EQUAL(n_sets, CacheSet_Get_NSets(cache_sets));
-}
-
-void test_CacheSet_Get_SetLength_should_ReturnLengthOfSets(void)
-{
-    TEST_ASSERT_EQUAL(1, CacheSet_Get_SetLength(cache_sets));
-}
-
-void test_CacheSet_Get_BlockSize_should_ReturnSizeOfBlocks(void)
-{
-    TEST_ASSERT_EQUAL(block_size_bytes, CacheSet_Get_BlockSize(cache_sets));
-}
-
 void test_CacheSet_Contains_should_ReturnFalse_when_CacheSetIsEmpty(void)
 {
     uint64_t address = 0x7ff04300;

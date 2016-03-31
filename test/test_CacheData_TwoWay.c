@@ -46,7 +46,7 @@ void tearDown(void)
     CacheData_Destroy(cache_data);
 }
 
-void test_CacheData_Insert_should_SaveTwoAddressesMappedToTheSameSet(void)
+void test_CacheData_Read_should_SaveTwoAddressesMappedToTheSameSet(void)
 {
     uint64_t address1 = 0x7ff38200;
     uint64_t address2 = 0x7ff38300;
@@ -58,7 +58,7 @@ void test_CacheData_Insert_should_SaveTwoAddressesMappedToTheSameSet(void)
     TEST_ASSERT_MESSAGE(CacheData_Contains(cache_data, address2), "Failed to store second address");
 }
 
-void test_CacheData_Insert_should_KickOutOldestAddressFromSet(void)
+void test_CacheData_Read_should_KickOutOldestAddressFromSet(void)
 {
     uint64_t address1 = 0x7ff38200;
     uint64_t address2 = 0x7ff38300;
@@ -86,7 +86,7 @@ void test_CacheData_Write_should_MoveBlockToFrontOfLRU(void)
     TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, address3));
 }
 
-void test_CacheData_Insert_should_BeAbleToFillCache(void)
+void test_CacheData_Read_should_BeAbleToFillCache(void)
 {
     uint64_t base_address = 0x7000000;
 

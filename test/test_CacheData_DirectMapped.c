@@ -50,7 +50,7 @@ void test_CacheData_Contains_should_ReturnFalse_when_CacheDataIsEmpty(void)
     TEST_ASSERT_FALSE_MESSAGE(CacheData_Contains(cache_data, address), "Found block in empty cache set");
 }
 
-void test_CacheData_Insert_should_NotKickOutBlock_when_CacheDataIsEmpty(void)
+void test_CacheData_Read_should_NotKickOutBlock_when_CacheDataIsEmpty(void)
 {
     uint64_t address = 0x7ff04304;
     TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, address));
@@ -88,7 +88,7 @@ void test_CacheData_Contains_should_ReportTrue_when_MultipleBlocksInDifferentSet
     TEST_ASSERT_MESSAGE(CacheData_Contains(cache_data, address3), "Failed to find inserted block");
 }
 
-void test_CacheData_Insert_should_NotKickout_when_TheSameBlockIsInserted(void)
+void test_CacheData_Read_should_NotKickout_when_TheSameBlockIsInserted(void)
 {
     uint64_t address = 0x7ff04328;
 
@@ -98,7 +98,7 @@ void test_CacheData_Insert_should_NotKickout_when_TheSameBlockIsInserted(void)
     TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, address));
 }
 
-void test_CacheData_Insert_should_KickOutOldBlock_when_TwoAddressesMappedToSameBlockAreInserted(void)
+void test_CacheData_Read_should_KickOutOldBlock_when_TwoAddressesMappedToSameBlockAreInserted(void)
 {
     uint64_t address1 = 0x7ff04314;
     uint64_t address2 = address1 + block_size_bytes * n_sets;
@@ -137,7 +137,7 @@ void test_CacheData_Write_should_DirtyKickout_when_ReplacingBlock(void)
     TEST_ASSERT_EQUAL_HEX64_MESSAGE(address1, CacheData_Write(cache_data, address2), "Write didn't perform dirty kickout");
 }
 
-void test_CacheData_Insert_should_KickOutDirtyBlock_when_BlockHasBeenWritten(void)
+void test_CacheData_Read_should_KickOutDirtyBlock_when_BlockHasBeenWritten(void)
 {
     uint64_t address1 = 0x7ff04320;
     uint64_t address2 = address1 + block_size_bytes * n_sets;
@@ -162,7 +162,7 @@ void test_CacheData_Contains_should_IgnoreOffsetWithinBlock(void)
     TEST_ASSERT_MESSAGE(CacheData_Contains(cache_data, address4), "Offset within block should be ignored");
 }
 
-void test_CacheData_Insert_should_BeAbleToFillCache(void)
+void test_CacheData_Read_should_BeAbleToFillCache(void)
 {
     uint64_t base_address = 0x7000000;
 

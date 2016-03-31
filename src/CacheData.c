@@ -134,7 +134,7 @@ uint64_t CacheData_Write(cache_data_t data, uint64_t address)
 
     uint64_t aligned_address = CacheData_BlockAlignAddress(data, address);
     set_t * set = CacheData_GetSet(data, aligned_address);
-    uint64_t kickout_address = CacheData_GetBlockForInsertion(data, set, &block, aligned_address);
+    uint64_t dirty_kickout_address = CacheData_GetBlockForInsertion(data, set, &block, aligned_address);
 
     block->dirty     = true;
     block->address   = aligned_address;
@@ -143,7 +143,7 @@ uint64_t CacheData_Write(cache_data_t data, uint64_t address)
 
     CacheData_InsertBlock(set, block);
 
-    return kickout_address;
+    return dirty_kickout_address;
 }
 
 uint64_t CacheData_Read(cache_data_t data, uint64_t address)
@@ -152,7 +152,7 @@ uint64_t CacheData_Read(cache_data_t data, uint64_t address)
 
     uint64_t aligned_address = CacheData_BlockAlignAddress(data, address);
     set_t * set = CacheData_GetSet(data, aligned_address);
-    uint64_t kickout_address = CacheData_GetBlockForInsertion(data, set, &block, aligned_address);
+    uint64_t dirty_kickout_address = CacheData_GetBlockForInsertion(data, set, &block, aligned_address);
 
     block->address   = aligned_address;
     block->newer     = NULL;
@@ -160,7 +160,7 @@ uint64_t CacheData_Read(cache_data_t data, uint64_t address)
 
     CacheData_InsertBlock(set, block);
 
-    return kickout_address;
+    return dirty_kickout_address;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
@@ -197,7 +197,7 @@ static uint64_t CacheData_GetBlockForInsertion(cache_data_t data, set_t * set, b
 {
     *block = CacheData_GetMatchingBlock(set, address);
 
-    uint64_t kickout_address = 0;
+    uint64_t dirty_kickout_address = 0;
 
     if (*block != NULL) {
         // Block already in set
@@ -212,7 +212,7 @@ static uint64_t CacheData_GetBlockForInsertion(cache_data_t data, set_t * set, b
         // Set full
         block_t * oldest = set->oldest;
         if (oldest->dirty) {
-            kickout_address = oldest->address;
+            dirty_kickout_address = oldest->address;
         }
         *block = oldest;
 
@@ -226,7 +226,7 @@ static uint64_t CacheData_GetBlockForInsertion(cache_data_t data, set_t * set, b
         }
     }
 
-    return kickout_address;
+    return dirty_kickout_address;
 }
 
 static void CacheData_RemoveBlock(set_t * set, block_t * block)

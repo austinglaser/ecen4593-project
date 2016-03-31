@@ -166,6 +166,9 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
         if (set->oldest) {
             set->oldest->older = NULL;
         }
+        else {
+            set->newest = NULL;
+        }
     }
 
     insert_block->dirty     = false;
@@ -177,13 +180,12 @@ uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
         set->oldest = insert_block;
     }
 
-    if (set->newest != insert_block) {
-        if (set->newest != NULL) {
-            set->newest->newer = insert_block;
-        }
-        insert_block->older = set->newest;
-        set->newest = insert_block;
+    if (set->newest != NULL) {
+        set->newest->newer = insert_block;
     }
+
+    insert_block->older = set->newest;
+    set->newest = insert_block;
 
     return old_address;
 }

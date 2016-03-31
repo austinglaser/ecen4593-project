@@ -168,6 +168,15 @@ void test_CacheSet_Insert_should_BeAbleToFillCache(void)
         // So we see a dirty kickout if anything is overwritten
         CacheSet_Write(cache_sets, block_address);
     }
+
+    uint64_t old_base_address = base_address;
+    uint64_t new_base_address = 0x5000000;
+    for (i = 0; i < n_sets; i++) {
+        uint64_t offset = block_size_bytes * i;
+        uint64_t new_block_address = new_base_address + offset;
+        uint64_t old_block_address = old_base_address + offset;
+        TEST_ASSERT_EQUAL_HEX64(old_block_address, CacheSet_Insert(cache_sets, new_block_address));
+    }
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

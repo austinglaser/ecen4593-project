@@ -100,20 +100,31 @@ void test_CacheSet_Insert_should_KickOutOldBlock_when_TwoAddressesMappedToSameBl
     TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address2), "Failed to find inserted block");
 }
 
-void test_CacheSet_Write_should_Fail_when_BlockIsntPresent(void)
+void test_CacheSet_Write_should_AddBlock_when_BlockIsntPresent(void)
 {
     uint64_t address = 0x7ff04318;
 
-    TEST_ASSERT_FALSE_MESSAGE(CacheSet_Write(cache_sets, address), "Write succeeded to a non-present block");
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(0, CacheSet_Write(cache_sets, address), "Write kicked out dirty from empty cache");
 }
 
-void test_CacheSet_Write_should_Succeed_when_BlockIsPresent(void)
+void test_CacheSet_Write_should_NotDirtyKickout_when_WritingSameBlock(void)
 {
     uint64_t address = 0x7ff0431c;
 
     CacheSet_Read(cache_sets, address);
 
-    TEST_ASSERT_MESSAGE(CacheSet_Write(cache_sets, address), "Write failed to a present block");
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(0, CacheSet_Write(cache_sets, address), "Write kicked out dirty from the same block");
+}
+
+void test_CacheSet_Write_should_DirtyKickout_when_ReplacingBlock(void)
+{
+    uint64_t address1 = 0x7ff0431c;
+    uint64_t address2 = address1 + block_size_bytes * n_sets;
+
+    CacheSet_Read(cache_sets, address1);
+    CacheSet_Write(cache_sets, address1);
+
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(address1, CacheSet_Write(cache_sets, address2), "Write didn't perform dirty kickout");
 }
 
 void test_CacheSet_Insert_should_KickOutDirtyBlock_when_BlockHasBeenWritten(void)

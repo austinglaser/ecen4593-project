@@ -126,27 +126,10 @@ bool CacheSet_Contains(cache_sets_t sets, uint64_t address)
     return block != NULL;
 }
 
-bool CacheSet_Write(cache_sets_t sets, uint64_t address)
+uint64_t CacheSet_Write(cache_sets_t sets, uint64_t address)
 {
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
 
-    set_head_t * set = CacheSet_GetSet(sets, aligned_address);
-    block_t * block = CacheSet_GetMatchingBlock(set, aligned_address);
-
-    bool data_present = (block != NULL);
-    if (data_present) {
-        block->dirty = true;
-
-        CacheSet_RemoveBlock(set, block);
-        CacheSet_InsertBlock(set, block);
-    }
-
-    return data_present;
-}
-
-uint64_t CacheSet_Read(cache_sets_t sets, uint64_t address)
-{
-    uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
     set_head_t * set = CacheSet_GetSet(sets, aligned_address);
     block_t * block = CacheSet_GetMatchingBlock(set, aligned_address);
 
@@ -158,7 +141,6 @@ uint64_t CacheSet_Read(cache_sets_t sets, uint64_t address)
     else if (set->n_valid_blocks < sets->set_len_blocks) {
         block = sets->next_free_block;
         sets->next_free_block += 1;
-        block->dirty     = false;
 
         set->n_valid_blocks += 1;
     }
@@ -177,8 +159,50 @@ uint64_t CacheSet_Read(cache_sets_t sets, uint64_t address)
         else {
             set->newest = NULL;
         }
+    }
 
-        block->dirty     = false;
+    block->dirty     = true;
+    block->address   = aligned_address;
+    block->newer     = NULL;
+    block->older     = NULL;
+
+    CacheSet_InsertBlock(set, block);
+
+    return kickout_address;
+}
+
+uint64_t CacheSet_Read(cache_sets_t sets, uint64_t address)
+{
+    uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
+    set_head_t * set = CacheSet_GetSet(sets, aligned_address);
+    block_t * block = CacheSet_GetMatchingBlock(set, aligned_address);
+
+    uint64_t kickout_address = 0;
+
+    if (block != NULL) {
+        CacheSet_RemoveBlock(set, block);
+    }
+    else if (set->n_valid_blocks < sets->set_len_blocks) {
+        block = sets->next_free_block;
+        sets->next_free_block += 1;
+
+        set->n_valid_blocks += 1;
+    }
+    else {
+        block_t * oldest = set->oldest;
+        if (oldest->dirty) {
+            kickout_address = oldest->address;
+        }
+        block = oldest;
+
+        set->oldest = oldest->newer;
+
+        if (set->oldest) {
+            set->oldest->older = NULL;
+        }
+        else {
+            set->newest = NULL;
+        }
     }
 
     block->address   = aligned_address;

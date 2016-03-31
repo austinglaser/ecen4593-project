@@ -22,11 +22,18 @@
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
-typedef struct block_t {
-    bool valid;
+typedef struct _block_t {
     bool dirty;
     uint64_t address;
+    struct _block_t * newer;
+    struct _block_t * older;
 } block_t;
+
+typedef struct _set_head_t {
+    uint32_t n_valid_blocks;
+    struct _block_t * newest;
+    struct _block_t * oldest;
+} set_head_t;
 
 struct _cache_sets_t {
     uint32_t n_sets;
@@ -35,13 +42,17 @@ struct _cache_sets_t {
     uint64_t set_mask;
     uint64_t block_mask;
     uint32_t set_index_shift;
-    block_t blocks[];
+    block_t * all_blocks;
+    block_t * next_free_block;
+    set_head_t sets[];
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
-static block_t * CacheSet_GetBlock(cache_sets_t sets, uint64_t address);
+static uint32_t CacheSet_GetSetIndex(cache_sets_t sets, uint64_t address);
+static set_head_t * CacheSet_GetSet(cache_sets_t sets, uint64_t address);
+static block_t * CacheSet_GetMatchingBlock(set_head_t * set, uint64_t address);
 static uint64_t CacheSet_BlockAlignAddress(cache_sets_t sets, uint64_t address);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
@@ -57,23 +68,38 @@ cache_sets_t CacheSet_Create_Sets(uint32_t n_sets, uint32_t set_len_blocks, uint
         return NULL;
     }
 
-    cache_sets_t sets = (cache_sets_t) malloc(sizeof(*sets) + sizeof(block_t) * n_sets);
+    cache_sets_t sets = (cache_sets_t) malloc(sizeof(*sets) + sizeof(set_head_t) * n_sets);
     if (sets == NULL) {
         return NULL;
     }
 
+    uint32_t total_cache_blocks = n_sets * set_len_blocks;
+    sets->all_blocks = (block_t *) malloc(sizeof(block_t) * total_cache_blocks);
+    if (!sets->all_blocks) {
+        free(sets);
+        return NULL;
+    }
+    sets->next_free_block = sets->all_blocks;
+
     sets->n_sets = n_sets;
     sets->set_len_blocks = set_len_blocks;
     sets->block_size_bytes = block_size_bytes;
+
     sets->set_index_shift = HighestBitSet_Uint32(block_size_bytes);
     sets->set_mask = (n_sets - 1) << (sets->set_index_shift);
     sets->block_mask = AlignmentMask(block_size_bytes);
 
     uint32_t i;
+    for (i = 0; i < total_cache_blocks; i++) {
+        sets->all_blocks[i].dirty       = false;
+        sets->all_blocks[i].address     = 0;
+        sets->all_blocks[i].older       = NULL;
+    }
+
     for (i = 0; i < n_sets; i++) {
-        sets->blocks[i].valid   = false;
-        sets->blocks[i].dirty   = false;
-        sets->blocks[i].address = 0;
+        sets->sets[i].n_valid_blocks    = 0;
+        sets->sets[i].newest            = NULL;
+        sets->sets[i].oldest            = NULL;
     }
 
     return sets;
@@ -82,6 +108,9 @@ cache_sets_t CacheSet_Create_Sets(uint32_t n_sets, uint32_t set_len_blocks, uint
 void CacheSet_Destroy_Sets(cache_sets_t cache_sets)
 {
     if (cache_sets) {
+        if (cache_sets->all_blocks) {
+            free(cache_sets->all_blocks);
+        }
         free(cache_sets);
     }
 }
@@ -105,16 +134,20 @@ bool CacheSet_Contains(cache_sets_t sets, uint64_t address)
 {
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
 
-    block_t * block = CacheSet_GetBlock(sets, aligned_address);
-    return (block->address) == aligned_address;
+    set_head_t * set = CacheSet_GetSet(sets, aligned_address);
+    block_t * block = CacheSet_GetMatchingBlock(set, aligned_address);
+
+    return block != NULL;
 }
 
 bool CacheSet_Write(cache_sets_t sets, uint64_t address)
 {
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
-    block_t * block = CacheSet_GetBlock(sets, aligned_address);
 
-    bool data_present = block->valid;
+    set_head_t * set = CacheSet_GetSet(sets, aligned_address);
+    block_t * block = CacheSet_GetMatchingBlock(set, aligned_address);
+
+    bool data_present = (block != NULL);
     if (data_present) {
         block->dirty = true;
     }
@@ -125,26 +158,66 @@ bool CacheSet_Write(cache_sets_t sets, uint64_t address)
 uint64_t CacheSet_Insert(cache_sets_t sets, uint64_t address)
 {
     uint64_t aligned_address = CacheSet_BlockAlignAddress(sets, address);
-    block_t * block = CacheSet_GetBlock(sets, aligned_address);
+    set_head_t * set = CacheSet_GetSet(sets, aligned_address);
 
+    block_t * insert_block;
     uint64_t old_address = 0;
-    if (block->valid && block->dirty) {
-        old_address = block->address;
+
+    if (set->n_valid_blocks < sets->set_len_blocks) {
+        insert_block = sets->next_free_block;
+
+        sets->next_free_block += 1;
+        set->n_valid_blocks += 1;
+    }
+    else {
+        block_t * oldest = set->oldest;
+        if (oldest->dirty) {
+            old_address = oldest->address;
+        }
+        insert_block = oldest;
+
+        set->oldest = oldest->newer;
     }
 
-    block->valid   = true;
-    block->dirty   = false;
-    block->address = aligned_address;
+    insert_block->dirty     = false;
+    insert_block->address   = aligned_address;
+    insert_block->newer     = NULL;
+
+    if (set->oldest == NULL) {
+        set->oldest = insert_block;
+    }
+
+    if (set->newest != insert_block) {
+        insert_block->older = set->newest;
+    }
+    set->newest = insert_block;
 
     return old_address;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static block_t * CacheSet_GetBlock(cache_sets_t sets, uint64_t address)
+static uint32_t CacheSet_GetSetIndex(cache_sets_t sets, uint64_t address)
 {
-    uint32_t block_index = (address & sets->set_mask) >> sets->set_index_shift;
-    return &(sets->blocks[block_index]);
+    return (address & sets->set_mask) >> sets->set_index_shift;
+}
+
+static set_head_t * CacheSet_GetSet(cache_sets_t sets, uint64_t address)
+{
+    uint32_t set_index = CacheSet_GetSetIndex(sets, address);
+    return &(sets->sets[set_index]);
+}
+
+static block_t * CacheSet_GetMatchingBlock(set_head_t * set, uint64_t address)
+{
+    block_t * block;
+    for (block = set->newest; block != NULL; block = block->older) {
+        if (block->address == address) {
+            return block;
+        }
+    }
+
+    return NULL;
 }
 
 static uint64_t CacheSet_BlockAlignAddress(cache_sets_t sets, uint64_t address)

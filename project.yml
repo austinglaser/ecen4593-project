@@ -34,6 +34,7 @@
         - -Wstrict-prototypes
         - -Werror
         - -std=c11
+        - -g
   :release:
     :compile:
       :*:
@@ -42,6 +43,7 @@
         - -Wstrict-prototypes
         - -Werror
         - -std=c11
+        - -g
 
 :paths:
   :test:

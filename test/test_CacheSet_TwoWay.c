@@ -46,4 +46,16 @@ void tearDown(void)
     CacheSet_Destroy_Sets(cache_sets);
 }
 
+void test_CacheSet_Insert_should_SaveTwoAddressesMappedToTheSameSet(void)
+{
+    uint64_t address1 = 0x7ff38200;
+    uint64_t address2 = 0x7ff38300;
+
+    CacheSet_Insert(cache_sets, address1);
+    CacheSet_Insert(cache_sets, address2);
+
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address1), "Failed to store first address");
+    TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address2), "Failed to store second address");
+}
+
 /** @} addtogroup TEST_CACHESET_TWOWAY */

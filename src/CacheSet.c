@@ -133,6 +133,32 @@ bool CacheSet_Write(cache_sets_t sets, uint64_t address)
     bool data_present = (block != NULL);
     if (data_present) {
         block->dirty = true;
+
+        if (block == set->newest) {
+            set->newest = block->older;
+        }
+        else if (block == set->oldest) {
+            set->oldest = block->newer;
+        }
+
+        if (block->newer) {
+            block->newer->older = block->older;
+        }
+        if (block->older) {
+            block->older->newer = block->newer;
+        }
+
+        if (set->oldest == NULL) {
+            set->oldest = block;
+        }
+
+        if (set->newest != NULL) {
+            set->newest->newer = block;
+        }
+
+        block->older = set->newest;
+        set->newest = block;
+
     }
 
     return data_present;

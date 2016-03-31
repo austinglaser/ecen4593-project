@@ -73,7 +73,7 @@ void test_CacheSet_Insert_should_KickOutOldestAddressFromSet(void)
     TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address3), "Failed to store second address");
 }
 
-void test_CacheSet_Write_should_CauseDirtyKickout(void)
+void test_CacheSet_Write_should_MoveBlockToFrontOfLRU(void)
 {
     uint64_t address1 = 0x7ff38200;
     uint64_t address2 = 0x7ff38300;
@@ -83,7 +83,7 @@ void test_CacheSet_Write_should_CauseDirtyKickout(void)
     CacheSet_Insert(cache_sets, address2);
 
     CacheSet_Write(cache_sets, address1);
-    TEST_ASSERT_EQUAL_HEX64(address1, CacheSet_Insert(cache_sets, address3));
+    TEST_ASSERT_EQUAL_HEX64(0, CacheSet_Insert(cache_sets, address3));
 }
 
 void test_CacheSet_Insert_should_BeAbleToFillCache(void)

@@ -206,8 +206,6 @@ static uint64_t CacheSet_GetBlockForInsertion(cache_sets_t sets, set_head_t * se
         // Set not full
         *block = sets->next_free_block;
         sets->next_free_block += 1;
-
-        set->n_valid_blocks += 1;
     }
     else {
         // Set full
@@ -245,6 +243,8 @@ static void CacheSet_RemoveBlock(set_head_t * set, block_t * block)
     if (block->older) {
         block->older->newer = block->newer;
     }
+
+    set->n_valid_blocks -= 1;
 }
 
 static void CacheSet_InsertBlock(set_head_t * set, block_t * block)
@@ -259,6 +259,7 @@ static void CacheSet_InsertBlock(set_head_t * set, block_t * block)
 
     block->older = set->newest;
     set->newest = block;
+    set->n_valid_blocks += 1;
 }
 
 /** @} addtogroup CACHESET */

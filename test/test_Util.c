@@ -168,6 +168,29 @@ void test_HighestBitSet_Uint64_should_ReturnHighestSetBit_when_PassedNonPowerOf2
     TEST_ASSERT_EQUAL_UINT32(63, HighestBitSet_Uint64(0x8000143235990345));
 }
 
+void test_HighestBitSet_Uint32_should_ReturnZero_when_PassedZero(void)
+{
+    TEST_ASSERT_EQUAL_UINT32(0, HighestBitSet_Uint32(0));
+}
+
+void test_HighestBitSet_Uint32_should_ReturnOnlySetBit_when_PassedPowerOf2(void)
+{
+    TEST_ASSERT_EQUAL_UINT32(0, HighestBitSet_Uint32(0x01));
+    TEST_ASSERT_EQUAL_UINT32(1, HighestBitSet_Uint32(0x02));
+    TEST_ASSERT_EQUAL_UINT32(2, HighestBitSet_Uint32(0x04));
+    TEST_ASSERT_EQUAL_UINT32(4, HighestBitSet_Uint32(0x10));
+    TEST_ASSERT_EQUAL_UINT32(31, HighestBitSet_Uint32(0x80000000));
+}
+
+void test_HighestBitSet_Uint32_should_ReturnHighestSetBit_when_PassedNonPowerOf2(void)
+{
+    TEST_ASSERT_EQUAL_UINT32(1, HighestBitSet_Uint32(0x03));
+    TEST_ASSERT_EQUAL_UINT32(2, HighestBitSet_Uint32(0x05));
+    TEST_ASSERT_EQUAL_UINT32(3, HighestBitSet_Uint32(0x0F));
+    TEST_ASSERT_EQUAL_UINT32(5, HighestBitSet_Uint32(0x21));
+    TEST_ASSERT_EQUAL_UINT32(31, HighestBitSet_Uint32(0x800F59DC));
+}
+
 void test_BlockAlignmentMask_should_CalculateMask_when_BlockSizeIsAPowerOfTwo(void)
 {
     TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFFF, BlockAlignmentMask(1));

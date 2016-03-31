@@ -31,6 +31,11 @@ uint32_t HighestBitSet_Uint64(uint64_t value)
     return 63 - __builtin_clzll(value);
 }
 
+uint32_t HighestBitSet_Uint32(uint32_t value)
+{
+    return 31 - __builtin_clz(value);
+}
+
 uint64_t BlockAlignmentMask(uint32_t block_size)
 {
     if (!IS_POWER_OF_TWO(block_size)) {

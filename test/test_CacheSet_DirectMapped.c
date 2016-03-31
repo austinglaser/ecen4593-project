@@ -156,6 +156,20 @@ void test_CacheSet_Contains_should_IgnoreOffsetWithinBlock(void)
     TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address4), "Offset within block should be ignored");
 }
 
+void test_CacheSet_Insert_should_BeAbleToFillCache(void)
+{
+    uint64_t base_address = 0x7000000;
+
+    uint32_t i;
+    for (i = 0; i < n_sets; i++) {
+        uint64_t block_address = base_address + block_size_bytes * i;
+        TEST_ASSERT_EQUAL_HEX64(0, CacheSet_Insert(cache_sets, block_address));
+
+        // So we see a dirty kickout if anything is overwritten
+        CacheSet_Write(cache_sets, block_address);
+    }
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_CACHESET */

@@ -73,4 +73,36 @@ void test_CacheSet_Insert_should_KickOutOldestAddressFromSet(void)
     TEST_ASSERT_MESSAGE(CacheSet_Contains(cache_sets, address3), "Failed to store second address");
 }
 
+void test_CacheSet_Write_should_CauseDirtyKickout(void)
+{
+    uint64_t address1 = 0x7ff38200;
+    uint64_t address2 = 0x7ff38300;
+    uint64_t address3 = 0x7ff38400;
+
+    CacheSet_Insert(cache_sets, address1);
+    CacheSet_Insert(cache_sets, address2);
+
+    CacheSet_Write(cache_sets, address1);
+    TEST_ASSERT_EQUAL_HEX64(address1, CacheSet_Insert(cache_sets, address3));
+}
+
+void test_CacheSet_Insert_should_BeAbleToFillCache(void)
+{
+    uint64_t base_address = 0x7000000;
+
+    uint32_t i;
+    for (i = 0; i < n_sets; i++) {
+        uint32_t j;
+        for (j = 0; j < set_len; j++) {
+            uint64_t block_address = (base_address) +
+                                     (i * block_size_bytes) +
+                                     (j * block_size_bytes * n_sets / set_len);
+            TEST_ASSERT_EQUAL_HEX64(0, CacheSet_Insert(cache_sets, block_address));
+
+            // So we see a dirty kickout if anything is overwritten
+            CacheSet_Write(cache_sets, block_address);
+        }
+    }
+}
+
 /** @} addtogroup TEST_CACHESET_TWOWAY */

@@ -34,7 +34,7 @@ typedef struct _set_t {
 } set_t;
 
 struct _cache_data_t {
-    uint32_t n_data;
+    uint32_t n_sets;
     uint32_t set_len_blocks;
     uint32_t block_size_bytes;
     uint64_t set_mask;
@@ -61,21 +61,21 @@ static void CacheData_InsertBlock(set_t * set, block_t * block);
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-cache_data_t CacheData_Create(uint32_t n_data, uint32_t set_len_blocks, uint32_t block_size_bytes)
+cache_data_t CacheData_Create(uint32_t n_sets, uint32_t set_len_blocks, uint32_t block_size_bytes)
 {
-    if (!IS_POWER_OF_TWO(n_data) ||
+    if (!IS_POWER_OF_TWO(n_sets) ||
         !IS_POWER_OF_TWO(set_len_blocks) ||
         !IS_POWER_OF_TWO(block_size_bytes) ||
         block_size_bytes < 4) {
         return NULL;
     }
 
-    cache_data_t data = (cache_data_t) malloc(sizeof(*data) + sizeof(set_t) * n_data);
+    cache_data_t data = (cache_data_t) malloc(sizeof(*data) + sizeof(set_t) * n_sets);
     if (data == NULL) {
         return NULL;
     }
 
-    uint32_t total_cache_blocks = n_data * set_len_blocks;
+    uint32_t total_cache_blocks = n_sets * set_len_blocks;
     data->all_blocks = (block_t *) malloc(sizeof(block_t) * total_cache_blocks);
     if (!data->all_blocks) {
         free(data);
@@ -83,12 +83,12 @@ cache_data_t CacheData_Create(uint32_t n_data, uint32_t set_len_blocks, uint32_t
     }
     data->next_free_block = data->all_blocks;
 
-    data->n_data = n_data;
+    data->n_sets = n_sets;
     data->set_len_blocks = set_len_blocks;
     data->block_size_bytes = block_size_bytes;
 
     data->set_index_shift = HighestBitSet_Uint32(block_size_bytes);
-    data->set_mask = (n_data - 1) << (data->set_index_shift);
+    data->set_mask = (n_sets - 1) << (data->set_index_shift);
     data->block_mask = AlignmentMask(block_size_bytes);
 
     uint32_t i;
@@ -98,7 +98,7 @@ cache_data_t CacheData_Create(uint32_t n_data, uint32_t set_len_blocks, uint32_t
         data->all_blocks[i].older       = NULL;
     }
 
-    for (i = 0; i < n_data; i++) {
+    for (i = 0; i < n_sets; i++) {
         data->sets[i].n_valid_blocks    = 0;
         data->sets[i].newest            = NULL;
         data->sets[i].oldest            = NULL;

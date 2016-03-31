@@ -28,7 +28,7 @@
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
-static const uint32_t n_data           = 16;
+static const uint32_t n_sets           = 16;
 static const uint32_t block_size_bytes = 4;
 static cache_data_t cache_data;
 
@@ -36,7 +36,7 @@ static cache_data_t cache_data;
 
 void setUp(void)
 {
-    cache_data = CacheData_Create(n_data, 1, block_size_bytes);
+    cache_data = CacheData_Create(n_sets, 1, block_size_bytes);
 }
 
 void tearDown(void)
@@ -101,7 +101,7 @@ void test_CacheData_Insert_should_NotKickout_when_TheSameBlockIsInserted(void)
 void test_CacheData_Insert_should_KickOutOldBlock_when_TwoAddressesMappedToSameBlockAreInserted(void)
 {
     uint64_t address1 = 0x7ff04314;
-    uint64_t address2 = address1 + block_size_bytes * n_data;
+    uint64_t address2 = address1 + block_size_bytes * n_sets;
 
     CacheData_Read(cache_data, address1);
     CacheData_Read(cache_data, address2);
@@ -129,7 +129,7 @@ void test_CacheData_Write_should_NotDirtyKickout_when_WritingSameBlock(void)
 void test_CacheData_Write_should_DirtyKickout_when_ReplacingBlock(void)
 {
     uint64_t address1 = 0x7ff0431c;
-    uint64_t address2 = address1 + block_size_bytes * n_data;
+    uint64_t address2 = address1 + block_size_bytes * n_sets;
 
     CacheData_Read(cache_data, address1);
     CacheData_Write(cache_data, address1);
@@ -140,7 +140,7 @@ void test_CacheData_Write_should_DirtyKickout_when_ReplacingBlock(void)
 void test_CacheData_Insert_should_KickOutDirtyBlock_when_BlockHasBeenWritten(void)
 {
     uint64_t address1 = 0x7ff04320;
-    uint64_t address2 = address1 + block_size_bytes * n_data;
+    uint64_t address2 = address1 + block_size_bytes * n_sets;
 
     CacheData_Read(cache_data, address1);
     CacheData_Write(cache_data, address1);
@@ -167,7 +167,7 @@ void test_CacheData_Insert_should_BeAbleToFillCache(void)
     uint64_t base_address = 0x7000000;
 
     uint32_t i;
-    for (i = 0; i < n_data; i++) {
+    for (i = 0; i < n_sets; i++) {
         uint64_t block_address = base_address + block_size_bytes * i;
         TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, block_address));
 
@@ -177,7 +177,7 @@ void test_CacheData_Insert_should_BeAbleToFillCache(void)
 
     uint64_t old_base_address = base_address;
     uint64_t new_base_address = 0x5000000;
-    for (i = 0; i < n_data; i++) {
+    for (i = 0; i < n_sets; i++) {
         uint64_t offset = block_size_bytes * i;
         uint64_t new_block_address = new_base_address + offset;
         uint64_t old_block_address = old_base_address + offset;

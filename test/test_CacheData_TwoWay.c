@@ -28,7 +28,7 @@
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
-static const uint32_t n_data           = 16;
+static const uint32_t n_sets           = 16;
 static const uint32_t set_len          = 2;
 static const uint32_t block_size_bytes = 4;
 static cache_data_t cache_data;
@@ -38,7 +38,7 @@ static cache_data_t cache_data;
 
 void setUp(void)
 {
-    cache_data = CacheData_Create(n_data, set_len, block_size_bytes);
+    cache_data = CacheData_Create(n_sets, set_len, block_size_bytes);
 }
 
 void tearDown(void)
@@ -91,12 +91,12 @@ void test_CacheData_Insert_should_BeAbleToFillCache(void)
     uint64_t base_address = 0x7000000;
 
     uint32_t i;
-    for (i = 0; i < n_data; i++) {
+    for (i = 0; i < n_sets; i++) {
         uint32_t j;
         for (j = 0; j < set_len; j++) {
             uint64_t block_address = (base_address) +
                                      (i * block_size_bytes) +
-                                     (j * block_size_bytes * n_data);
+                                     (j * block_size_bytes * n_sets);
             TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, block_address));
 
             // So we see a dirty kickout if anything is overwritten
@@ -106,7 +106,7 @@ void test_CacheData_Insert_should_BeAbleToFillCache(void)
 
     uint64_t old_base_address = base_address;
     uint64_t new_base_address = 0x5000000;
-    for (i = 0; i < n_data; i++) {
+    for (i = 0; i < n_sets; i++) {
         uint64_t offset = i * block_size_bytes;
         uint64_t new_block_address = new_base_address + offset;
         uint64_t old_block_address = old_base_address + offset;

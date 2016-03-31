@@ -57,7 +57,7 @@ void Access_Align(access_t * aligned_access, access_t * unaligned_access, uint32
 {
     aligned_access->type = unaligned_access->type;
 
-    uint64_t alignment_mask = BlockAlignmentMask(block_size);
+    uint64_t alignment_mask = AlignmentMask(block_size);
 
     aligned_access->address = unaligned_access->address & alignment_mask;
 

@@ -67,7 +67,7 @@ cache_sets_t CacheSet_Create_Sets(uint32_t n_sets, uint32_t set_len_blocks, uint
     sets->block_size_bytes = block_size_bytes;
     sets->set_index_shift = HighestBitSet_Uint32(block_size_bytes);
     sets->set_mask = (n_sets - 1) << (sets->set_index_shift);
-    sets->block_mask = BlockAlignmentMask(block_size_bytes);
+    sets->block_mask = AlignmentMask(block_size_bytes);
 
     uint32_t i;
     for (i = 0; i < n_sets; i++) {

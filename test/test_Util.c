@@ -25,9 +25,9 @@
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
-static void BlockAlignmentMask_ShouldThrowExceptionWithInput(CEXCEPTION_T expected_e,
-                                                             uint32_t block_size,
-                                                             const char * message);
+static void AlignmentMask_ShouldThrowExceptionWithInput(CEXCEPTION_T expected_e,
+                                                        uint32_t block_size,
+                                                        const char * message);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -191,33 +191,33 @@ void test_HighestBitSet_Uint32_should_ReturnHighestSetBit_when_PassedNonPowerOf2
     TEST_ASSERT_EQUAL_UINT32(31, HighestBitSet_Uint32(0x800F59DC));
 }
 
-void test_BlockAlignmentMask_should_CalculateMask_when_BlockSizeIsAPowerOfTwo(void)
+void test_AlignmentMask_should_CalculateMask_when_BlockSizeIsAPowerOfTwo(void)
 {
-    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFFF, BlockAlignmentMask(1));
-    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFFE, BlockAlignmentMask(2));
-    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFFC, BlockAlignmentMask(4));
-    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFF8, BlockAlignmentMask(8));
-    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFF0, BlockAlignmentMask(16));
-    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFC0, BlockAlignmentMask(64));
-    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFF80000000, BlockAlignmentMask(UINT32_C(1) << 31));
+    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFFF, AlignmentMask(1));
+    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFFE, AlignmentMask(2));
+    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFFC, AlignmentMask(4));
+    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFF8, AlignmentMask(8));
+    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFF0, AlignmentMask(16));
+    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFFFFFFFFC0, AlignmentMask(64));
+    TEST_ASSERT_EQUAL_HEX64(0xFFFFFFFF80000000, AlignmentMask(UINT32_C(1) << 31));
 }
 
-void test_BlockAlignmentMask_should_ThrowException_when_BlockSizeIsNotAPowerOfTwo(void)
+void test_AlignmentMask_should_ThrowException_when_BlockSizeIsNotAPowerOfTwo(void)
 {
-    BlockAlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, 0, "Failed to catch non-power-of-two block size");
-    BlockAlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, 3, "Failed to catch non-power-of-two block size");
-    BlockAlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, 5, "Failed to catch non-power-of-two block size");
-    BlockAlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, 7, "Failed to catch non-power-of-two block size");
-    BlockAlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, (UINT32_C(1) << 31) + 1, "Failed to catch non-power-of-two block size");
+    AlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, 0, "Failed to catch non-power-of-two block size");
+    AlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, 3, "Failed to catch non-power-of-two block size");
+    AlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, 5, "Failed to catch non-power-of-two block size");
+    AlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, 7, "Failed to catch non-power-of-two block size");
+    AlignmentMask_ShouldThrowExceptionWithInput(ARGUMENT_ERROR, (UINT32_C(1) << 31) + 1, "Failed to catch non-power-of-two block size");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static void BlockAlignmentMask_ShouldThrowExceptionWithInput(CEXCEPTION_T expected_e, uint32_t block_size, const char * message)
+static void AlignmentMask_ShouldThrowExceptionWithInput(CEXCEPTION_T expected_e, uint32_t block_size, const char * message)
 {
     CEXCEPTION_T e = CEXCEPTION_NONE;
     Try {
-        BlockAlignmentMask(block_size);
+        AlignmentMask(block_size);
     }
     Catch (e) {
     }

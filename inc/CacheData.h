@@ -1,13 +1,13 @@
 /**
- * @file    CacheSet.h
+ * @file    CacheData.h
  * @author  Austin Glaser <austin@boulderes.com>
- * @brief   CacheSet Interface
+ * @brief   CacheData Interface
  */
 
-#ifndef CACHESET_H
-#define CACHESET_H
+#ifndef CACHEDATA_H
+#define CACHEDATA_H
 
-/**@defgroup CACHESET CacheSet
+/**@defgroup CACHEDATA CacheData
  * @{ 
  *
  * @brief
@@ -21,19 +21,19 @@
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 
-typedef struct _cache_sets_t * cache_sets_t;
+typedef struct _cache_data_t * cache_data_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-cache_sets_t CacheSet_Create_Sets(uint32_t n_sets, uint32_t set_len, uint32_t block_size_bytes);
-void CacheSet_Destroy_Sets(cache_sets_t sets);
+cache_data_t CacheData_Create(uint32_t n_data, uint32_t set_len, uint32_t block_size_bytes);
+void CacheData_Destroy(cache_data_t data);
 
-bool CacheSet_Contains(cache_sets_t sets, uint64_t address);
-uint64_t CacheSet_Write(cache_sets_t sets, uint64_t address);
-uint64_t CacheSet_Read(cache_sets_t sets, uint64_t address);
+bool CacheData_Contains(cache_data_t data, uint64_t address);
+uint64_t CacheData_Write(cache_data_t data, uint64_t address);
+uint64_t CacheData_Read(cache_data_t data, uint64_t address);
 
-/** @} defgroup CACHESET */
+/** @} defgroup CACHEDATA */
 
-#endif /* ifndef CACHESET_H */
+#endif /* ifndef CACHEDATA_H */

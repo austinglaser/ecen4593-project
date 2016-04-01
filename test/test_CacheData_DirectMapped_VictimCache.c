@@ -45,7 +45,7 @@ void tearDown(void)
     CacheData_Destroy(cache_data);
 }
 
-void test_CacheData_Read_should_SendBlockToVictimCache(void)
+void test_CacheData_Read_should_SendBlockToVictimCache_when_WritingAnotherBlock(void)
 {
     uint64_t base_address = 0x293800;
 
@@ -64,9 +64,34 @@ void test_CacheData_Read_should_SendBlockToVictimCache(void)
     address = base_address + ((victim_cache_len_blocks + 1) *
                               n_sets *
                               block_size_bytes);
-    TEST_ASSERT_EQUAL_HEX32_MESSAGE(base_address,
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(base_address,
                                     CacheData_Read(cache_data, address),
                                     "Didn't dirty kickout from victim cache");
+}
+
+void test_CacheData_Read_should_PullBlockBackFromVictimCache(void)
+{
+    uint64_t base_address = 0x823233300;
+
+    CacheData_Write(cache_data, base_address);
+    uint64_t address;
+    uint32_t i;
+    for (i = 0; i < victim_cache_len_blocks; i++) {
+        address = base_address + (i + 1) *
+                                 n_sets *
+                                 block_size_bytes;
+        CacheData_Write(cache_data, address);
+    }
+
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(0,
+                                    CacheData_Read(cache_data, base_address),
+                                    "Kicked out when should have just reshuffled");
+
+    address = base_address + (victim_cache_len_blocks + 1) * n_sets * block_size_bytes;
+    uint64_t expected_kickout_address = base_address + n_sets * block_size_bytes;
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(expected_kickout_address,
+                                    CacheData_Read(cache_data, address),
+                                    "Kicked out wrong block from victim cache");
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

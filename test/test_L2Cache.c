@@ -13,6 +13,7 @@
 #include "L2Cache.h"
 
 #include "Access.h"
+#include "CacheData.h"
 #include "Util.h"
 
 #include "CException.h"
@@ -159,11 +160,8 @@ void test_MissAcrossCacheBoundaryShouldCauseTwoBlockAccess(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
 
-#if 0
 void test_SuccessiveAccessesToDifferentBlocksShouldBothMiss(void)
 {
-    TEST_IGNORE_MESSAGE("Waiting on cache block implementation");
-
     access_t access1 = {
         .type = TYPE_READ,
         .address = 0x0000,
@@ -204,7 +202,6 @@ void test_SuccessiveAccessesToDifferentBlocksShouldBothMiss(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles1, L2Cache_Access(l2_cache, &access1));
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles2, L2Cache_Access(l2_cache, &access2));
 }
-#endif
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 

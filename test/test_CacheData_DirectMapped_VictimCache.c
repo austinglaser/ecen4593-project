@@ -94,6 +94,35 @@ void test_CacheData_Read_should_PullBlockBackFromVictimCache(void)
                                     "Kicked out wrong block from victim cache");
 }
 
+void test_DifferentSets_should_AllWriteToVictimCache(void)
+{
+    TEST_ASSERT_EQUAL_MESSAGE(2, victim_cache_len_blocks, "Test parameters need attention");
+    uint64_t base_address = 0x9820200;
+    uint64_t insertion_sequence[] = {
+        base_address,
+        base_address + block_size_bytes,
+        base_address + n_sets * block_size_bytes,
+        base_address + (n_sets + 1) * block_size_bytes,
+    };
+    uint32_t n_insertions = ARRAY_ELEMENTS(insertion_sequence);
+
+    uint32_t i;
+    for (i = 0; i < n_insertions; i++) {
+        TEST_ASSERT_EQUAL_HEX64_MESSAGE(0,
+                                        CacheData_Write(cache_data, insertion_sequence[i]),
+                                        "Kicked out early");
+    }
+
+    uint64_t address = base_address + (2 * n_sets + 1) * block_size_bytes;
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(insertion_sequence[0], CacheData_Read(cache_data, address), "Wrong kickout order");
+    address = base_address + 2 * n_sets * block_size_bytes;
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(insertion_sequence[1], CacheData_Read(cache_data, address), "Wrong kickout order");
+    address = base_address + 3 * n_sets * block_size_bytes;
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(insertion_sequence[3], CacheData_Read(cache_data, address), "Wrong kickout order");
+    address = base_address + (3 * n_sets + 1) * block_size_bytes;
+    TEST_ASSERT_EQUAL_HEX64_MESSAGE(insertion_sequence[2], CacheData_Read(cache_data, address), "Wrong kickout order");
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_CACHEDATA_DIRECTMAPPED_VICTIMCACHE */

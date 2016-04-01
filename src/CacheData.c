@@ -77,7 +77,7 @@ cache_data_t CacheData_Create(uint32_t n_sets, uint32_t set_len_blocks, uint32_t
 
     uint32_t total_cache_blocks = n_sets * set_len_blocks;
     data->all_blocks = (block_t *) malloc(sizeof(block_t) * total_cache_blocks);
-    if (!data->all_blocks) {
+    if (data->all_blocks == NULL) {
         free(data);
         return NULL;
     }

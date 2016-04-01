@@ -46,29 +46,33 @@ void tearDown(void)
 
 void test_FillItUp(void)
 {
+    result_t result;
     uint64_t base_address = 0x3213120;
 
     uint32_t i;
     for (i = 0; i < n_blocks; i++) {
         uint64_t address = base_address + i * block_size_bytes;
-        TEST_ASSERT_EQUAL_HEX64(0, CacheData_Write(cache_data, address));
+        TEST_ASSERT_EQUAL_HEX64(0, CacheData_Write(cache_data, address, &result));
+        TEST_ASSERT_EQUAL(RESULT_MISS, result);
     }
 }
 
 void test_KickItAllBackOut(void)
 {
+    result_t result;
     uint64_t base_address = 0x3213120;
 
     uint32_t i;
     for (i = 0; i < n_blocks; i++) {
         uint64_t address = base_address + i * block_size_bytes;
-        CacheData_Write(cache_data, address);
+        CacheData_Write(cache_data, address, &result);
     }
 
     for (i = 0; i < n_blocks; i++) {
         uint64_t new_address = base_address + (i + n_blocks) * block_size_bytes;
         uint64_t old_address = base_address + i * block_size_bytes;
-        TEST_ASSERT_EQUAL_HEX64(old_address, CacheData_Read(cache_data, new_address));
+        TEST_ASSERT_EQUAL_HEX64(old_address, CacheData_Read(cache_data, new_address, &result));
+        TEST_ASSERT_EQUAL(RESULT_MISS_DIRTY_KICKOUT, result);
     }
 }
 

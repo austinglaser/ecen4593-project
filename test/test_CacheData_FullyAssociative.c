@@ -47,12 +47,13 @@ void tearDown(void)
 
 void test_CacheData_Read_should_StoreAllBlocks(void)
 {
+    result_t result;
     uint64_t base_address = 0x71234200;
 
     uint32_t i;
     for (i = 0; i < set_len; i++) {
         uint64_t address = base_address + i * block_size_bytes;
-        CacheData_Read(cache_data, address);
+        CacheData_Read(cache_data, address, &result);
     }
 
     for (i = 0; i < set_len; i++) {
@@ -63,12 +64,13 @@ void test_CacheData_Read_should_StoreAllBlocks(void)
 
 void test_CacheData_Read_should_KickoutOldestBlock(void)
 {
+    result_t result;
     uint64_t base_address = 0x71234200;
 
     uint32_t i;
     for (i = 0; i < set_len + 1; i++) {
         uint64_t address = base_address + i * block_size_bytes;
-        CacheData_Read(cache_data, address);
+        CacheData_Read(cache_data, address, &result);
     }
 
     TEST_ASSERT_FALSE(CacheData_Contains(cache_data, base_address));
@@ -81,36 +83,40 @@ void test_CacheData_Read_should_KickoutOldestBlock(void)
 
 void test_CacheData_Read_should_KickoutOldestBlockDirty_when_BlockHasBeenWritten(void)
 {
+    result_t result;
     uint64_t base_address = 0x71234200;
 
-    CacheData_Write(cache_data, base_address);
+    CacheData_Write(cache_data, base_address, &result);
 
     uint32_t i;
     for (i = 1; i < set_len; i++) {
         uint64_t address = base_address + i * block_size_bytes;
-        CacheData_Read(cache_data, address);
+        CacheData_Read(cache_data, address, &result);
     }
 
-    TEST_ASSERT_EQUAL_HEX64(base_address, CacheData_Read(cache_data, base_address + set_len * block_size_bytes));
+    TEST_ASSERT_EQUAL_HEX64(base_address, CacheData_Read(cache_data, base_address + set_len * block_size_bytes, &result));
+    TEST_ASSERT_EQUAL(RESULT_MISS_DIRTY_KICKOUT, result);
 }
 
 void test_CacheData_Write_should_BringBlockToFrontOfLRU(void)
 {
+    result_t result;
     uint64_t base_address = 0x71234200;
 
     uint32_t i;
     for (i = 0; i < set_len; i++) {
         uint64_t address = base_address + i * block_size_bytes;
-        CacheData_Read(cache_data, address);
+        CacheData_Read(cache_data, address, &result);
     }
 
-    CacheData_Write(cache_data, base_address);
+    CacheData_Write(cache_data, base_address, &result);
 
     for (i = 0; i < set_len - 1; i++) {
         uint64_t address = base_address + (i + set_len) * block_size_bytes;
-        CacheData_Read(cache_data, address);
+        CacheData_Read(cache_data, address, &result);
     }
-    TEST_ASSERT_EQUAL_HEX(base_address, CacheData_Read(cache_data, base_address + 2 * set_len * i * block_size_bytes));
+    TEST_ASSERT_EQUAL_HEX64(base_address, CacheData_Read(cache_data, base_address + 2 * set_len * i * block_size_bytes, &result));
+    TEST_ASSERT_EQUAL(RESULT_MISS_DIRTY_KICKOUT, result);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

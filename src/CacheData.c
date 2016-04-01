@@ -50,7 +50,7 @@ struct _cache_data_t {
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
-static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access);
+static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access, result_t * result);
 
 static uint32_t CacheData_GetSetIndex(cache_data_t data, uint64_t address);
 static set_t * CacheData_GetSet(cache_data_t data, uint64_t address);
@@ -140,21 +140,21 @@ bool CacheData_Contains(cache_data_t data, uint64_t address)
     return block != NULL;
 }
 
-uint64_t CacheData_Write(cache_data_t data, uint64_t address)
+uint64_t CacheData_Write(cache_data_t data, uint64_t address, result_t * result)
 {
     uint64_t aligned_address = CacheData_BlockAlignAddress(data, address);
-    return CacheData_AccessBlock(data, aligned_address, true);
+    return CacheData_AccessBlock(data, aligned_address, true, result);
 }
 
-uint64_t CacheData_Read(cache_data_t data, uint64_t address)
+uint64_t CacheData_Read(cache_data_t data, uint64_t address, result_t * result)
 {
     uint64_t aligned_address = CacheData_BlockAlignAddress(data, address);
-    return CacheData_AccessBlock(data, aligned_address, false);
+    return CacheData_AccessBlock(data, aligned_address, false, result);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access)
+static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access, result_t * result)
 {
     uint64_t dirty_kickout_address = 0;
     set_t * set = CacheData_GetSet(data, address);
@@ -163,17 +163,22 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
     if (block != NULL) {
         // Block already in set
         CacheData_Set_RemoveBlock(set, block);
+        *result = RESULT_HIT;
     }
     else if (set->n_valid_blocks < data->set_len_blocks) {
         // Set not full
         block = data->next_free_block;
         data->next_free_block += 1;
+        *result = RESULT_MISS;
     }
     else {
         // Set full
         if (data->victim_set_len_blocks == 0) {
             block = set->oldest;
             dirty_kickout_address = CacheData_Set_RemoveBlock(set, block);
+            *result = (dirty_kickout_address != 0) ?
+                      RESULT_MISS_DIRTY_KICKOUT :
+                      RESULT_MISS;
         }
         else {
             set_t * victim_set = &(data->victim_set);
@@ -182,16 +187,21 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
             if (block != NULL) {
                 // Block in victim cache
                 CacheData_Set_RemoveBlock(victim_set, block);
+                *result = RESULT_HIT_VICTIM_CACHE;
             }
             else if (victim_set->n_valid_blocks < data->victim_set_len_blocks) {
                 // Victim cache not full
                 block = data->next_free_block;
                 data->next_free_block += 1;
+                *result = RESULT_MISS;
             }
             else {
                 // Victim cache full
                 block = victim_set->oldest;
                 dirty_kickout_address = CacheData_Set_RemoveBlock(victim_set, block);
+                *result = (dirty_kickout_address != 0) ?
+                          RESULT_MISS_DIRTY_KICKOUT :
+                          RESULT_MISS;
             }
 
             block_t * oldest = set->oldest;

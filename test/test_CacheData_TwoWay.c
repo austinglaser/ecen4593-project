@@ -48,11 +48,12 @@ void tearDown(void)
 
 void test_CacheData_Read_should_SaveTwoAddressesMappedToTheSameSet(void)
 {
+    result_t result;
     uint64_t address1 = 0x7ff38200;
     uint64_t address2 = 0x7ff38300;
 
-    CacheData_Read(cache_data, address1);
-    CacheData_Read(cache_data, address2);
+    CacheData_Read(cache_data, address1, &result);
+    CacheData_Read(cache_data, address2, &result);
 
     TEST_ASSERT_MESSAGE(CacheData_Contains(cache_data, address1), "Failed to store first address");
     TEST_ASSERT_MESSAGE(CacheData_Contains(cache_data, address2), "Failed to store second address");
@@ -60,13 +61,14 @@ void test_CacheData_Read_should_SaveTwoAddressesMappedToTheSameSet(void)
 
 void test_CacheData_Read_should_KickOutOldestAddressFromSet(void)
 {
+    result_t result;
     uint64_t address1 = 0x7ff38200;
     uint64_t address2 = 0x7ff38300;
     uint64_t address3 = 0x7ff38400;
 
-    CacheData_Read(cache_data, address1);
-    CacheData_Read(cache_data, address2);
-    CacheData_Read(cache_data, address3);
+    CacheData_Read(cache_data, address1, &result);
+    CacheData_Read(cache_data, address2, &result);
+    CacheData_Read(cache_data, address3, &result);
 
     TEST_ASSERT_FALSE_MESSAGE(CacheData_Contains(cache_data, address1), "Failed to kick out first address");
     TEST_ASSERT_MESSAGE(CacheData_Contains(cache_data, address2), "Failed to store second address");
@@ -75,19 +77,22 @@ void test_CacheData_Read_should_KickOutOldestAddressFromSet(void)
 
 void test_CacheData_Write_should_MoveBlockToFrontOfLRU(void)
 {
+    result_t result;
     uint64_t address1 = 0x7ff38200;
     uint64_t address2 = 0x7ff38300;
     uint64_t address3 = 0x7ff38400;
 
-    CacheData_Read(cache_data, address1);
-    CacheData_Read(cache_data, address2);
+    CacheData_Read(cache_data, address1, &result);
+    CacheData_Read(cache_data, address2, &result);
 
-    CacheData_Write(cache_data, address1);
-    TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, address3));
+    CacheData_Write(cache_data, address1, &result);
+    TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, address3, &result));
+    TEST_ASSERT_EQUAL(RESULT_MISS, result);
 }
 
 void test_CacheData_Read_should_BeAbleToFillCache(void)
 {
+    result_t result;
     uint64_t base_address = 0x7000000;
 
     uint32_t i;
@@ -97,10 +102,8 @@ void test_CacheData_Read_should_BeAbleToFillCache(void)
             uint64_t block_address = (base_address) +
                                      (i * block_size_bytes) +
                                      (j * block_size_bytes * n_sets);
-            TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, block_address));
-
-            // So we see a dirty kickout if anything is overwritten
-            CacheData_Write(cache_data, block_address);
+            TEST_ASSERT_EQUAL_HEX64(0, CacheData_Write(cache_data, block_address, &result));
+            TEST_ASSERT_EQUAL(RESULT_MISS, result);
         }
     }
 
@@ -110,7 +113,8 @@ void test_CacheData_Read_should_BeAbleToFillCache(void)
         uint64_t offset = i * block_size_bytes;
         uint64_t new_block_address = new_base_address + offset;
         uint64_t old_block_address = old_base_address + offset;
-        TEST_ASSERT_EQUAL_HEX64(old_block_address, CacheData_Read(cache_data, new_block_address));
+        TEST_ASSERT_EQUAL_HEX64(old_block_address, CacheData_Read(cache_data, new_block_address, &result));
+        TEST_ASSERT_EQUAL(RESULT_MISS_DIRTY_KICKOUT, result);
     }
 }
 

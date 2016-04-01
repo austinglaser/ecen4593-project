@@ -19,6 +19,14 @@
 #include <stdint.h>
 
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
+
+typedef enum {
+    RESULT_HIT = 0,
+    RESULT_HIT_VICTIM_CACHE,
+    RESULT_MISS,
+    RESULT_MISS_DIRTY_KICKOUT,
+} result_t;
+
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 
 typedef struct _cache_data_t * cache_data_t;
@@ -34,8 +42,8 @@ cache_data_t CacheData_Create(uint32_t n_sets,
 void CacheData_Destroy(cache_data_t data);
 
 bool CacheData_Contains(cache_data_t data, uint64_t address);
-uint64_t CacheData_Write(cache_data_t data, uint64_t address);
-uint64_t CacheData_Read(cache_data_t data, uint64_t address);
+uint64_t CacheData_Write(cache_data_t data, uint64_t address, result_t * result);
+uint64_t CacheData_Read(cache_data_t data, uint64_t address, result_t * result);
 
 /** @} defgroup CACHEDATA */
 

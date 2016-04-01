@@ -27,7 +27,10 @@ typedef struct _cache_data_t * cache_data_t;
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-cache_data_t CacheData_Create(uint32_t n_sets, uint32_t set_len, uint32_t block_size_bytes, uint32_t victim_cache_len);
+cache_data_t CacheData_Create(uint32_t n_sets,
+                              uint32_t set_len,
+                              uint32_t block_size_bytes,
+                              uint32_t victim_cache_len_blocks);
 void CacheData_Destroy(cache_data_t data);
 
 bool CacheData_Contains(cache_data_t data, uint64_t address);

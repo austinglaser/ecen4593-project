@@ -53,7 +53,7 @@ static set_t * CacheData_GetSet(cache_data_t data, uint64_t address);
 static block_t * CacheData_GetMatchingBlock(set_t * set, uint64_t address);
 static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address);
 
-static uint64_t CacheData_GetBlockForInsertion(cache_data_t data, set_t * set, block_t ** block, uint64_t address);
+static block_t * CacheData_GetBlockForInsertion(cache_data_t data, set_t * set, uint64_t address, uint64_t * dirty_kickout_address);
 static void CacheData_RemoveBlock(set_t * set, block_t * block);
 static void CacheData_InsertBlock(set_t * set, block_t * block);
 
@@ -130,11 +130,10 @@ bool CacheData_Contains(cache_data_t data, uint64_t address)
 
 uint64_t CacheData_Write(cache_data_t data, uint64_t address)
 {
-    block_t * block;
-
+    uint64_t dirty_kickout_address;
     uint64_t aligned_address = CacheData_BlockAlignAddress(data, address);
     set_t * set = CacheData_GetSet(data, aligned_address);
-    uint64_t dirty_kickout_address = CacheData_GetBlockForInsertion(data, set, &block, aligned_address);
+    block_t * block = CacheData_GetBlockForInsertion(data, set, aligned_address, &dirty_kickout_address);
 
     block->dirty     = true;
     block->address   = aligned_address;
@@ -148,11 +147,10 @@ uint64_t CacheData_Write(cache_data_t data, uint64_t address)
 
 uint64_t CacheData_Read(cache_data_t data, uint64_t address)
 {
-    block_t * block;
-
+    uint64_t dirty_kickout_address;
     uint64_t aligned_address = CacheData_BlockAlignAddress(data, address);
     set_t * set = CacheData_GetSet(data, aligned_address);
-    uint64_t dirty_kickout_address = CacheData_GetBlockForInsertion(data, set, &block, aligned_address);
+    block_t * block = CacheData_GetBlockForInsertion(data, set, aligned_address, &dirty_kickout_address);
 
     block->address   = aligned_address;
     block->newer     = NULL;
@@ -193,28 +191,28 @@ static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address)
     return address & data->block_mask;
 }
 
-static uint64_t CacheData_GetBlockForInsertion(cache_data_t data, set_t * set, block_t ** block, uint64_t address)
+static block_t * CacheData_GetBlockForInsertion(cache_data_t data, set_t * set, uint64_t address, uint64_t * dirty_kickout_address)
 {
-    *block = CacheData_GetMatchingBlock(set, address);
+    block_t * block = CacheData_GetMatchingBlock(set, address);
 
-    uint64_t dirty_kickout_address = 0;
+    *dirty_kickout_address = 0;
 
-    if (*block != NULL) {
+    if (block != NULL) {
         // Block already in set
-        CacheData_RemoveBlock(set, *block);
+        CacheData_RemoveBlock(set, block);
     }
     else if (set->n_valid_blocks < data->set_len_blocks) {
         // Set not full
-        *block = data->next_free_block;
+        block = data->next_free_block;
         data->next_free_block += 1;
     }
     else {
         // Set full
         block_t * oldest = set->oldest;
         if (oldest->dirty) {
-            dirty_kickout_address = oldest->address;
+            *dirty_kickout_address = oldest->address;
         }
-        *block = oldest;
+        block = oldest;
 
         set->oldest = oldest->newer;
 
@@ -226,7 +224,7 @@ static uint64_t CacheData_GetBlockForInsertion(cache_data_t data, set_t * set, b
         }
     }
 
-    return dirty_kickout_address;
+    return block;
 }
 
 static void CacheData_RemoveBlock(set_t * set, block_t * block)

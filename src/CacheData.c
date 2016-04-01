@@ -56,8 +56,8 @@ static block_t * CacheData_GetMatchingBlock(set_t * set, uint64_t address);
 static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address);
 
 static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access);
-static uint64_t CacheData_RemoveBlock(set_t * set, block_t * block);
-static void CacheData_InsertBlockAsNewest(set_t * set, block_t * block);
+static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block);
+static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -189,7 +189,7 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
 
     if (block != NULL) {
         // Block already in set
-        CacheData_RemoveBlock(set, block);
+        CacheData_Set_RemoveBlock(set, block);
     }
     else if (set->n_valid_blocks < data->set_len_blocks) {
         // Set not full
@@ -200,7 +200,7 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
         // Set full
         if (data->victim_cache_len_blocks == 0) {
             block = set->oldest;
-            dirty_kickout_address = CacheData_RemoveBlock(set, block);
+            dirty_kickout_address = CacheData_Set_RemoveBlock(set, block);
         }
         else {
             set_t * victim_cache = &(data->victim_cache);
@@ -208,7 +208,7 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
 
             if (block != NULL) {
                 // Block in victim cache
-                CacheData_RemoveBlock(victim_cache, block);
+                CacheData_Set_RemoveBlock(victim_cache, block);
             }
             else if (victim_cache->n_valid_blocks < data->victim_cache_len_blocks) {
                 // Victim cache not full
@@ -218,12 +218,12 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
             else {
                 // Victim cache full
                 block = victim_cache->oldest;
-                dirty_kickout_address = CacheData_RemoveBlock(victim_cache, block);
+                dirty_kickout_address = CacheData_Set_RemoveBlock(victim_cache, block);
             }
 
             block_t * oldest = set->oldest;
-            CacheData_RemoveBlock(set, oldest);
-            CacheData_InsertBlockAsNewest(victim_cache, oldest);
+            CacheData_Set_RemoveBlock(set, oldest);
+            CacheData_Set_InsertBlockAsNewest(victim_cache, oldest);
         }
     }
 
@@ -231,12 +231,12 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
         block->dirty = true;
     }
     block->address = address;
-    CacheData_InsertBlockAsNewest(set, block);
+    CacheData_Set_InsertBlockAsNewest(set, block);
 
     return dirty_kickout_address;
 }
 
-static uint64_t CacheData_RemoveBlock(set_t * set, block_t * block)
+static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block)
 {
     if (block == set->newest) {
         set->newest = block->older;
@@ -257,7 +257,7 @@ static uint64_t CacheData_RemoveBlock(set_t * set, block_t * block)
     return block->dirty ? block->address : 0;
 }
 
-static void CacheData_InsertBlockAsNewest(set_t * set, block_t * block)
+static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block)
 {
     if (set->oldest == NULL) {
         set->oldest = block;

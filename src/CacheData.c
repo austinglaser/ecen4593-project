@@ -50,12 +50,13 @@ struct _cache_data_t {
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
+static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access);
+
 static uint32_t CacheData_GetSetIndex(cache_data_t data, uint64_t address);
 static set_t * CacheData_GetSet(cache_data_t data, uint64_t address);
-static block_t * CacheData_GetMatchingBlock(set_t * set, uint64_t address);
 static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address);
 
-static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access);
+static block_t * CacheData_Set_GetMatchingBlock(set_t * set, uint64_t address);
 static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block);
 static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block);
 
@@ -134,7 +135,7 @@ bool CacheData_Contains(cache_data_t data, uint64_t address)
     uint64_t aligned_address = CacheData_BlockAlignAddress(data, address);
 
     set_t * set = CacheData_GetSet(data, aligned_address);
-    block_t * block = CacheData_GetMatchingBlock(set, aligned_address);
+    block_t * block = CacheData_Set_GetMatchingBlock(set, aligned_address);
 
     return block != NULL;
 }
@@ -153,39 +154,11 @@ uint64_t CacheData_Read(cache_data_t data, uint64_t address)
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static uint32_t CacheData_GetSetIndex(cache_data_t data, uint64_t address)
-{
-    return (address & data->set_mask) >> data->set_index_shift;
-}
-
-static set_t * CacheData_GetSet(cache_data_t data, uint64_t address)
-{
-    uint32_t set_index = CacheData_GetSetIndex(data, address);
-    return &(data->sets[set_index]);
-}
-
-static block_t * CacheData_GetMatchingBlock(set_t * set, uint64_t address)
-{
-    block_t * block;
-    for (block = set->newest; block != NULL; block = block->older) {
-        if (block->address == address) {
-            return block;
-        }
-    }
-
-    return NULL;
-}
-
-static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address)
-{
-    return address & data->block_mask;
-}
-
 static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access)
 {
     uint64_t dirty_kickout_address = 0;
     set_t * set = CacheData_GetSet(data, address);
-    block_t * block = CacheData_GetMatchingBlock(set, address);
+    block_t * block = CacheData_Set_GetMatchingBlock(set, address);
 
     if (block != NULL) {
         // Block already in set
@@ -204,7 +177,7 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
         }
         else {
             set_t * victim_set = &(data->victim_set);
-            block = CacheData_GetMatchingBlock(victim_set, address);
+            block = CacheData_Set_GetMatchingBlock(victim_set, address);
 
             if (block != NULL) {
                 // Block in victim cache
@@ -234,6 +207,34 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
     CacheData_Set_InsertBlockAsNewest(set, block);
 
     return dirty_kickout_address;
+}
+
+static uint32_t CacheData_GetSetIndex(cache_data_t data, uint64_t address)
+{
+    return (address & data->set_mask) >> data->set_index_shift;
+}
+
+static set_t * CacheData_GetSet(cache_data_t data, uint64_t address)
+{
+    uint32_t set_index = CacheData_GetSetIndex(data, address);
+    return &(data->sets[set_index]);
+}
+
+static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address)
+{
+    return address & data->block_mask;
+}
+
+static block_t * CacheData_Set_GetMatchingBlock(set_t * set, uint64_t address)
+{
+    block_t * block;
+    for (block = set->newest; block != NULL; block = block->older) {
+        if (block->address == address) {
+            return block;
+        }
+    }
+
+    return NULL;
 }
 
 static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block)

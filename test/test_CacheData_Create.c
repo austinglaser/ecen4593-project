@@ -33,11 +33,15 @@ void test_CacheData_Create_should_ReturnNonNull_when_GivenValidParameters(void)
 {
     cache_data_t cache_data;
 
-    cache_data = CacheData_Create(8, 4, 4, 0);
+    cache_data = CacheData_Create(8, 4, 4, 8);
     TEST_ASSERT_NOT_NULL(cache_data);
     CacheData_Destroy(cache_data);
 
-    cache_data = CacheData_Create(1, 4, 4, 0);
+    cache_data = CacheData_Create(1, 4, 4, 8);
+    TEST_ASSERT_NOT_NULL(cache_data);
+    CacheData_Destroy(cache_data);
+
+    cache_data = CacheData_Create(8, 1, 4, 8);
     TEST_ASSERT_NOT_NULL(cache_data);
     CacheData_Destroy(cache_data);
 
@@ -67,6 +71,12 @@ void test_CacheData_Create_shouild_ReturnNull_when_GivenNonPowerOfTwoBlockSize(v
 void test_CacheData_Create_shouild_ReturnNull_when_GivenBlockSizeSmallerThanAWord(void)
 {
     cache_data_t cache_data = CacheData_Create(8, 1, 2, 0);
+    TEST_ASSERT_NULL(cache_data);
+}
+
+void test_CacheData_Create_should_ReturnNull_when_GivenNonPowerOfTwoVictimCacheSize(void)
+{
+    cache_data_t cache_data = CacheData_Create(8, 4, 4, 3);
     TEST_ASSERT_NULL(cache_data);
 }
 

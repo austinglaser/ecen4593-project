@@ -63,11 +63,10 @@ static void CacheData_InsertBlockAsNewest(set_t * set, block_t * block);
 
 cache_data_t CacheData_Create(uint32_t n_sets, uint32_t set_len_blocks, uint32_t block_size_bytes, uint32_t victim_cache_len)
 {
-    UNUSED_VARIABLE(victim_cache_len);
-
     if (!IS_POWER_OF_TWO(n_sets) ||
         !IS_POWER_OF_TWO(set_len_blocks) ||
         !IS_POWER_OF_TWO(block_size_bytes) ||
+        (!IS_POWER_OF_TWO(victim_cache_len) && victim_cache_len != 0) ||
         block_size_bytes < 4) {
         return NULL;
     }

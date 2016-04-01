@@ -33,40 +33,40 @@ void test_CacheData_Create_should_ReturnNonNull_when_GivenValidParameters(void)
 {
     cache_data_t cache_data;
 
-    cache_data = CacheData_Create(8, 4, 4);
+    cache_data = CacheData_Create(8, 4, 4, 0);
     TEST_ASSERT_NOT_NULL(cache_data);
     CacheData_Destroy(cache_data);
 
-    cache_data = CacheData_Create(1, 4, 4);
+    cache_data = CacheData_Create(1, 4, 4, 0);
     TEST_ASSERT_NOT_NULL(cache_data);
     CacheData_Destroy(cache_data);
 
-    cache_data = CacheData_Create(8, 1, 4);
+    cache_data = CacheData_Create(8, 1, 4, 0);
     TEST_ASSERT_NOT_NULL(cache_data);
     CacheData_Destroy(cache_data);
 }
 
 void test_CacheData_Create_shouild_ReturnNull_when_GivenNonPowerOfTwoNumberOfSets(void)
 {
-    cache_data_t cache_data = CacheData_Create(3, 4, 4);
+    cache_data_t cache_data = CacheData_Create(3, 4, 4, 0);
     TEST_ASSERT_NULL(cache_data);
 }
 
 void test_CacheData_Create_shouild_ReturnNull_when_GivenNonPowerOfTwoSetLength(void)
 {
-    cache_data_t cache_data = CacheData_Create(8, 3, 4);
+    cache_data_t cache_data = CacheData_Create(8, 3, 4, 0);
     TEST_ASSERT_NULL(cache_data);
 }
 
 void test_CacheData_Create_shouild_ReturnNull_when_GivenNonPowerOfTwoBlockSize(void)
 {
-    cache_data_t cache_data = CacheData_Create(8, 1, 5);
+    cache_data_t cache_data = CacheData_Create(8, 1, 5, 0);
     TEST_ASSERT_NULL(cache_data);
 }
 
 void test_CacheData_Create_shouild_ReturnNull_when_GivenBlockSizeSmallerThanAWord(void)
 {
-    cache_data_t cache_data = CacheData_Create(8, 1, 2);
+    cache_data_t cache_data = CacheData_Create(8, 1, 2, 0);
     TEST_ASSERT_NULL(cache_data);
 }
 

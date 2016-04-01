@@ -34,11 +34,10 @@ static const uint32_t block_size_bytes = 32;
 static cache_data_t cache_data;
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
-/* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 void setUp(void)
 {
-    cache_data = CacheData_Create(n_sets, set_len, block_size_bytes);
+    cache_data = CacheData_Create(n_sets, set_len, block_size_bytes, 0);
 }
 
 void tearDown(void)
@@ -113,5 +112,7 @@ void test_CacheData_Write_should_BringBlockToFrontOfLRU(void)
     }
     TEST_ASSERT_EQUAL_HEX(base_address, CacheData_Read(cache_data, base_address + 2 * set_len * i * block_size_bytes));
 }
+
+/* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_CACHEDATA_FULLYASSOCIATIVE_FULLSIZE */

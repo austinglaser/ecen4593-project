@@ -36,7 +36,7 @@ static cache_data_t cache_data;
 
 void setUp(void)
 {
-    cache_data = CacheData_Create(n_sets, 1, block_size_bytes);
+    cache_data = CacheData_Create(n_sets, 1, block_size_bytes, 0);
 }
 
 void tearDown(void)

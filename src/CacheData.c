@@ -55,7 +55,7 @@ static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address)
 
 static block_t * CacheData_GetBlockForInsertion(cache_data_t data, set_t * set, uint64_t address, uint64_t * dirty_kickout_address);
 static void CacheData_RemoveBlock(set_t * set, block_t * block);
-static void CacheData_InsertBlock(set_t * set, block_t * block);
+static void CacheData_InsertBlockAsNewest(set_t * set, block_t * block);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -138,7 +138,7 @@ uint64_t CacheData_Write(cache_data_t data, uint64_t address)
     block->dirty     = true;
     block->address   = aligned_address;
 
-    CacheData_InsertBlock(set, block);
+    CacheData_InsertBlockAsNewest(set, block);
 
     return dirty_kickout_address;
 }
@@ -152,7 +152,7 @@ uint64_t CacheData_Read(cache_data_t data, uint64_t address)
 
     block->address   = aligned_address;
 
-    CacheData_InsertBlock(set, block);
+    CacheData_InsertBlockAsNewest(set, block);
 
     return dirty_kickout_address;
 }
@@ -242,7 +242,7 @@ static void CacheData_RemoveBlock(set_t * set, block_t * block)
     set->n_valid_blocks -= 1;
 }
 
-static void CacheData_InsertBlock(set_t * set, block_t * block)
+static void CacheData_InsertBlockAsNewest(set_t * set, block_t * block)
 {
     if (set->oldest == NULL) {
         set->oldest = block;
@@ -255,6 +255,7 @@ static void CacheData_InsertBlock(set_t * set, block_t * block)
     block->older = set->newest;
     block->newer = NULL;
     set->newest = block;
+
     set->n_valid_blocks += 1;
 }
 

@@ -36,14 +36,14 @@ typedef struct _set_t {
 struct _cache_data_t {
     uint32_t n_sets;
     uint32_t set_len_blocks;
-    uint32_t victim_cache_len_blocks;
+    uint32_t victim_set_len_blocks;
     uint32_t block_size_bytes;
     uint64_t set_mask;
     uint64_t block_mask;
     uint32_t set_index_shift;
     block_t * all_blocks;
     block_t * next_free_block;
-    set_t victim_cache;
+    set_t victim_set;
     set_t sets[];
 };
 
@@ -66,12 +66,12 @@ static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block);
 cache_data_t CacheData_Create(uint32_t n_sets,
                               uint32_t set_len_blocks,
                               uint32_t block_size_bytes,
-                              uint32_t victim_cache_len_blocks)
+                              uint32_t victim_set_len_blocks)
 {
     if (!IS_POWER_OF_TWO(n_sets) ||
         !IS_POWER_OF_TWO(set_len_blocks) ||
         !IS_POWER_OF_TWO(block_size_bytes) ||
-        (!IS_POWER_OF_TWO(victim_cache_len_blocks) && victim_cache_len_blocks != 0) ||
+        (!IS_POWER_OF_TWO(victim_set_len_blocks) && victim_set_len_blocks != 0) ||
         block_size_bytes < 4) {
         return NULL;
     }
@@ -81,7 +81,7 @@ cache_data_t CacheData_Create(uint32_t n_sets,
         return NULL;
     }
 
-    uint32_t total_cache_blocks = n_sets * set_len_blocks + victim_cache_len_blocks;
+    uint32_t total_cache_blocks = n_sets * set_len_blocks + victim_set_len_blocks;
     data->all_blocks = (block_t *) malloc(sizeof(block_t) * total_cache_blocks);
     if (data->all_blocks == NULL) {
         free(data);
@@ -91,16 +91,16 @@ cache_data_t CacheData_Create(uint32_t n_sets,
 
     data->n_sets                        = n_sets;
     data->set_len_blocks                = set_len_blocks;
-    data->victim_cache_len_blocks       = victim_cache_len_blocks;
+    data->victim_set_len_blocks         = victim_set_len_blocks;
     data->block_size_bytes              = block_size_bytes;
 
     data->set_index_shift               = HighestBitSet_Uint32(block_size_bytes);
     data->set_mask                      = (n_sets - 1) << (data->set_index_shift);
     data->block_mask                    = AlignmentMask(block_size_bytes);
 
-    data->victim_cache.n_valid_blocks   = 0;
-    data->victim_cache.newest           = NULL;
-    data->victim_cache.oldest           = NULL;
+    data->victim_set.n_valid_blocks     = 0;
+    data->victim_set.newest             = NULL;
+    data->victim_set.oldest             = NULL;
 
     uint32_t i;
     for (i = 0; i < n_sets; i++) {
@@ -198,32 +198,32 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
     }
     else {
         // Set full
-        if (data->victim_cache_len_blocks == 0) {
+        if (data->victim_set_len_blocks == 0) {
             block = set->oldest;
             dirty_kickout_address = CacheData_Set_RemoveBlock(set, block);
         }
         else {
-            set_t * victim_cache = &(data->victim_cache);
-            block = CacheData_GetMatchingBlock(victim_cache, address);
+            set_t * victim_set = &(data->victim_set);
+            block = CacheData_GetMatchingBlock(victim_set, address);
 
             if (block != NULL) {
                 // Block in victim cache
-                CacheData_Set_RemoveBlock(victim_cache, block);
+                CacheData_Set_RemoveBlock(victim_set, block);
             }
-            else if (victim_cache->n_valid_blocks < data->victim_cache_len_blocks) {
+            else if (victim_set->n_valid_blocks < data->victim_set_len_blocks) {
                 // Victim cache not full
                 block = data->next_free_block;
                 data->next_free_block += 1;
             }
             else {
                 // Victim cache full
-                block = victim_cache->oldest;
-                dirty_kickout_address = CacheData_Set_RemoveBlock(victim_cache, block);
+                block = victim_set->oldest;
+                dirty_kickout_address = CacheData_Set_RemoveBlock(victim_set, block);
             }
 
             block_t * oldest = set->oldest;
             CacheData_Set_RemoveBlock(set, oldest);
-            CacheData_Set_InsertBlockAsNewest(victim_cache, oldest);
+            CacheData_Set_InsertBlockAsNewest(victim_set, oldest);
         }
     }
 

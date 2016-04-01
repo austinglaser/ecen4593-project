@@ -137,8 +137,6 @@ uint64_t CacheData_Write(cache_data_t data, uint64_t address)
 
     block->dirty     = true;
     block->address   = aligned_address;
-    block->newer     = NULL;
-    block->older     = NULL;
 
     CacheData_InsertBlock(set, block);
 
@@ -153,8 +151,6 @@ uint64_t CacheData_Read(cache_data_t data, uint64_t address)
     block_t * block = CacheData_GetBlockForInsertion(data, set, aligned_address, &dirty_kickout_address);
 
     block->address   = aligned_address;
-    block->newer     = NULL;
-    block->older     = NULL;
 
     CacheData_InsertBlock(set, block);
 
@@ -257,6 +253,7 @@ static void CacheData_InsertBlock(set_t * set, block_t * block)
     }
 
     block->older = set->newest;
+    block->newer = NULL;
     set->newest = block;
     set->n_valid_blocks += 1;
 }

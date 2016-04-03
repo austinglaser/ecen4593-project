@@ -59,13 +59,13 @@ void Access_Align(access_t * aligned_access, access_t * unaligned_access, uint32
 
     uint64_t alignment_mask = AlignmentMask(block_size);
 
-    aligned_access->address = unaligned_access->address & alignment_mask;
 
     uint64_t start_block = unaligned_access->address & alignment_mask;
     uint64_t end_block = ( ( unaligned_access->address +
                              unaligned_access->n_bytes - 1 ) &
                            alignment_mask ) +
                          block_size;
+    aligned_access->address = start_block;
     aligned_access->n_bytes = end_block - start_block;
 }
 

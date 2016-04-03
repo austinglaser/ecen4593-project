@@ -25,16 +25,15 @@
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 
-typedef struct {
-    bool has_been_accessed;
-} l1_cache_t;
+typedef struct _l1_cache_t * l1_cache_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-void L1Cache_Create(l1_cache_t * cachep, config_t * configp, l2_cache_t * l2_cachep);
-uint32_t L1Cache_Access(l1_cache_t * cachep, access_t * accessp);
+l1_cache_t L1Cache_Create(l2_cache_t l2_cache, config_t const * configp);
+void L1Cache_Destroy(l1_cache_t cache);
+uint32_t L1Cache_Access(l1_cache_t cache, access_t const * access);
 
 /** @} defgroup L1CACHE */
 

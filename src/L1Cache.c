@@ -13,43 +13,42 @@
 #include "L2Cache.h"
 
 #include "Config.h"
+#include "Util.h"
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
+
+struct _l1_cache_t {
+};
+
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
-
-static config_t * config;
-static l2_cache_t * subcache;
-
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-void L1Cache_Create(l1_cache_t * cachep, config_t * configp, l2_cache_t * l2_cache)
+l1_cache_t L1Cache_Create(l2_cache_t l2_cache, config_t const * config)
 {
-    config = configp;
-    cachep->has_been_accessed = false;
+    UNUSED_VARIABLE(l2_cache);
+    UNUSED_VARIABLE(config);
 
-    subcache = l2_cache;
+    return NULL;
 }
 
-uint32_t L1Cache_Access(l1_cache_t * cachep, access_t * accessp)
+void L1Cache_Destroy(l1_cache_t cache)
 {
-    uint32_t cycles = 0;
-    if (!cachep->has_been_accessed) {
-        cycles = config->l1.miss_time_cycles;
-        cycles += L2Cache_Access(subcache, accessp);
-        cachep->has_been_accessed = true;
-    }
-    else {
-        cycles = config->l1.hit_time_cycles;
-    }
+    UNUSED_VARIABLE(cache);
+}
 
-    return cycles;
+uint32_t L1Cache_Access(l1_cache_t cache, access_t const * access)
+{
+    UNUSED_VARIABLE(cache);
+    UNUSED_VARIABLE(access);
+    return 0;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

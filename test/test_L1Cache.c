@@ -14,6 +14,7 @@
 
 #include "Config.h"
 #include "Access.h"
+#include "Util.h"
 
 #include "CException.h"
 #include "CExceptionConfig.h"
@@ -21,6 +22,7 @@
 #include "ConfigDefaults.h"
 
 #include "mock_L2Cache.h"
+#include "mock_CacheData.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -33,7 +35,7 @@
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
 static l1_cache_t l1_cache;
-static l2_cache_t l2_cache;
+static l2_cache_t dummy_l2_cache;
 static config_t config;
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -41,46 +43,12 @@ static config_t config;
 void setUp(void)
 {
     SetDefaultConfigValues(&config);
-    L1Cache_Create(&l1_cache, &config, &l2_cache);
+    l1_cache = L1Cache_Create(dummy_l2_cache, &config);
 }
 
 void tearDown(void)
 {
-}
-
-void test_WordReadFromEmptyCacheCausesMiss(void)
-{
-    access_t access = {
-        .type = TYPE_READ,
-        .address = 0x7f81ce2206b0,
-        .n_bytes = 4,
-    };
-
-    uint32_t l2_access_cycles = 34;
-    L2Cache_Access_ExpectAndReturn(&l2_cache, &access, l2_access_cycles);
-
-    uint32_t total_access_cycles = L1Cache_Access(&l1_cache, &access);
-
-    TEST_ASSERT_EQUAL_UINT32(l2_access_cycles + config.l1.miss_time_cycles, total_access_cycles);
-}
-
-void test_RepeatedByteReadCausesHit(void)
-{
-    access_t access = {
-        .type = TYPE_READ,
-        .address = 0x7fff5a8487d0,
-        .n_bytes = 1,
-    };
-
-
-    uint32_t l2_access_cycles = 123;
-    L2Cache_Access_ExpectAndReturn(&l2_cache, &access, l2_access_cycles);
-
-    uint32_t first_access_cycles = L1Cache_Access(&l1_cache, &access);
-    uint32_t second_access_cycles = L1Cache_Access(&l1_cache, &access);
-
-    TEST_ASSERT_EQUAL_UINT32(l2_access_cycles + config.l1.miss_time_cycles, first_access_cycles);
-    TEST_ASSERT_EQUAL_UINT32(config.l1.hit_time_cycles, second_access_cycles);
+    L1Cache_Destroy(l1_cache);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

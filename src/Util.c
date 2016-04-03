@@ -28,6 +28,8 @@
 
 uint32_t HighestBitSet(uint64_t value)
 {
+    if (value == 0) return 0;
+
     return 63 - __builtin_clzll(value);
 }
 

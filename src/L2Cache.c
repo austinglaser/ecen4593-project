@@ -68,23 +68,20 @@ void L2Cache_Destroy(l2_cache_t cache)
 
 uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
 {
-    uint32_t access_time_cycles = 0;
-
-    access_t block_aligned_access;
-    Access_Align(&block_aligned_access, accessp, cache->configp->block_size_bytes);
-
     // We assume for the following code that the original access did not span
     // multiple L2 blocks. This effectively assumes that the L2 block size is a
     // multiple of the L1 block size
 
     result_t result;
     uint64_t dirty_kickout_address;
-    if (block_aligned_access.type == TYPE_WRITE) {
-        dirty_kickout_address = CacheData_Write(cache->data, block_aligned_access.address, &result);
+    if (accessp->type == TYPE_WRITE) {
+        dirty_kickout_address = CacheData_Write(cache->data, accessp->address, &result);
     }
     else {
-        dirty_kickout_address = CacheData_Read(cache->data, block_aligned_access.address, &result);
+        dirty_kickout_address = CacheData_Read(cache->data, accessp->address, &result);
     }
+
+    uint32_t access_time_cycles = 0;
 
     if (result == RESULT_MISS_DIRTY_KICKOUT) {
         access_t dirty_write = {
@@ -97,12 +94,14 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
     }
 
     if (result == RESULT_MISS || result == RESULT_MISS_DIRTY_KICKOUT) {
-        if (block_aligned_access.type == TYPE_WRITE) {
-            block_aligned_access.type = TYPE_READ;
-        }
+        access_t miss_read = {
+            .type       = TYPE_READ,
+            .address    = accessp->address,
+            .n_bytes    = cache->configp->block_size_bytes,
+        };
 
         access_time_cycles += cache->configp->miss_time_cycles;
-        access_time_cycles += MainMem_Access(cache->mem, &block_aligned_access);
+        access_time_cycles += MainMem_Access(cache->mem, &miss_read);
     }
 
     access_time_cycles += cache->configp->hit_time_cycles;

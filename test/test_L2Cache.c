@@ -69,7 +69,7 @@ void tearDown(void)
     L2Cache_Destroy(l2_cache);
 }
 
-void test_InstructionMiss_should_CauseMainMemInstructionAccess(void)
+void test_InstructionMiss_should_CauseMainMemReadAccess(void)
 {
     access_t access = {
         .type = TYPE_INSTR,
@@ -78,7 +78,7 @@ void test_InstructionMiss_should_CauseMainMemInstructionAccess(void)
     };
 
     access_t expected_memory_access = {
-        .type = TYPE_INSTR,
+        .type = TYPE_READ,
         .address = 0x10123400,
         .n_bytes = config.l2.block_size_bytes,
     };

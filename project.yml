@@ -88,6 +88,7 @@
     - :ignore
     - :ignore_arg
     - :callback
+    - :return_thru_ptr
   :unity_helper: "test/support/unity_Helper.h"
   :includes: []
   :treat_as:

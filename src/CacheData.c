@@ -12,6 +12,7 @@
 #include "CacheData.h"
 
 #include "Util.h"
+#include "CException.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -43,6 +44,7 @@ struct _cache_data_t {
     uint32_t set_index_shift;
     block_t * all_blocks;
     block_t * next_free_block;
+    block_t * last_block;
     set_t victim_set;
     set_t sets[];
 };
@@ -89,7 +91,8 @@ cache_data_t CacheData_Create(uint32_t n_sets,
         free(data);
         return NULL;
     }
-    data->next_free_block = data->all_blocks;
+    data->next_free_block               = data->all_blocks;
+    data->last_block                    = data->all_blocks + total_cache_blocks;
 
     data->n_sets                        = n_sets;
     data->set_len_blocks                = set_len_blocks;
@@ -253,8 +256,16 @@ static block_t * CacheData_Set_GetMatchingBlock(set_t * set, uint64_t address)
 
 static block_t * CacheData_AllocateBlock(cache_data_t data)
 {
-    block_t * block = data->next_free_block;
-    data->next_free_block += 1;
+    block_t * block = NULL;
+    if (data->next_free_block < data->last_block) {
+        block = data->next_free_block;
+        data->next_free_block += 1;
+    }
+    else {
+        // Could possibly just malloc here. However, this would require special
+        // handling of free, and has performance implications.
+        ThrowHere(ALLOCATION_FAILURE);
+    }
     return block;
 }
 

@@ -41,6 +41,7 @@ static config_t config;
 static main_mem_t dummy_main_mem;
 static l2_cache_t l2_cache;
 static uint32_t l1_block_transfer_cycles;
+static uint32_t n_blocks;
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
@@ -51,6 +52,7 @@ void setUp(void)
     l1_block_transfer_cycles = config.l2.transfer_time_cycles *
                                (config.l1.block_size_bytes /
                                 config.l2.bus_width_bytes);
+    n_blocks = config.l2.cache_size_bytes / config.l2.block_size_bytes;
 
     l2_cache = L2Cache_Create(dummy_main_mem, &config);
 }
@@ -225,6 +227,56 @@ void test_AccessToTwoL1BlocksWithinTheSameL2BlockShouldMissThenHit(void)
 
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles1, L2Cache_Access(l2_cache, &access1));
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles2, L2Cache_Access(l2_cache, &access2));
+}
+
+void test_OverwriteOfDirtyBlockShouldDirtyKickoutFromVictimCache(void)
+{
+    uint64_t base_address = 0xf78d9ee40;
+    access_t access = {
+        .type = TYPE_WRITE,
+        .address = base_address,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    MainMem_Access_IgnoreAndReturn(0);
+    L2Cache_Access(l2_cache, &access);
+
+    uint32_t i;
+    access.type = TYPE_READ;
+    for (i = 1; i <= victim_cache_len; i++) {
+        access.address = base_address +
+                         (i * n_blocks * config.l2.block_size_bytes);
+        L2Cache_Access(l2_cache, &access);
+    }
+
+    access.address = base_address +
+                     ((victim_cache_len + 1) *
+                      n_blocks *
+                      config.l2.block_size_bytes);
+
+    access_t dirty_kickout_access = {
+        .type = TYPE_WRITE,
+        .address = base_address,
+        .n_bytes = config.l2.block_size_bytes,
+    };
+    uint32_t kickout_cycles = 38;
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &dirty_kickout_access, kickout_cycles);
+
+    access_t final_miss_access = {
+        .type = TYPE_READ,
+        .address = access.address,
+        .n_bytes = config.l2.block_size_bytes,
+    };
+    uint32_t final_miss_cycles = 229;
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &final_miss_access, final_miss_cycles);
+
+    uint32_t total_access_cycles = config.l2.miss_time_cycles +
+                                   kickout_cycles +
+                                   final_miss_cycles +
+                                   config.l2.hit_time_cycles +
+                                   l1_block_transfer_cycles;
+
+    TEST_ASSERT_EQUAL_UINT32(total_access_cycles, L2Cache_Access(l2_cache, &access));
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

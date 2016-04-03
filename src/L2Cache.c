@@ -78,15 +78,31 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
     // multiple of the L1 block size
 
     result_t result;
+    uint64_t dirty_kickout_address;
     if (block_aligned_access.type == TYPE_WRITE) {
-        CacheData_Write(cache->data, block_aligned_access.address, &result);
+        dirty_kickout_address = CacheData_Write(cache->data, block_aligned_access.address, &result);
     }
     else {
-        CacheData_Read(cache->data, block_aligned_access.address, &result);
+        dirty_kickout_address = CacheData_Read(cache->data, block_aligned_access.address, &result);
     }
-    if (result == RESULT_MISS) {
+
+    access_t dirty_write;
+    switch (result) {
+    case RESULT_MISS_DIRTY_KICKOUT:
+        dirty_write.type    = TYPE_WRITE;
+        dirty_write.address = dirty_kickout_address;
+        dirty_write.n_bytes = cache->configp->block_size_bytes;
+
+        access_time_cycles += MainMem_Access(cache->mem, &dirty_write);
+        // Intentional fallthrough
+
+    case RESULT_MISS:
         access_time_cycles += cache->configp->miss_time_cycles;
         access_time_cycles += MainMem_Access(cache->mem, &block_aligned_access);
+        break;
+
+    default:
+        break;
     }
 
     access_time_cycles += cache->configp->hit_time_cycles;

@@ -133,7 +133,7 @@ void Config_FromFile(const char * filename, config_t * configp)
             ThrowHere(BAD_CONFIG_FILE);
         }
 
-        unsigned int line_no = 1;
+        volatile unsigned int line_no = 1;
         CEXCEPTION_T e;
         Try {
             char line[128];

@@ -25,7 +25,7 @@
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
 
 // TODO: Find a way not to have to do this
-#define CEXCEPTION_T unsigned int
+#define CEXCEPTION_T volatile unsigned int
 
 /* --- PUBLIC DATATYPES ----------------------------------------------------- */
 /* --- PUBLIC MACROS -------------------------------------------------------- */

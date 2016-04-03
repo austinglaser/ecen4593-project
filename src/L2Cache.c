@@ -24,10 +24,10 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
 struct _l2_cache_t {
-    main_mem_t      mem;
-    cache_param_t   * configp;
-    uint32_t        bus_width_shift;
-    cache_data_t    data;
+    main_mem_t              mem;
+    cache_param_t const *   configp;
+    uint32_t                bus_width_shift;
+    cache_data_t            data;
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
@@ -36,7 +36,7 @@ struct _l2_cache_t {
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-l2_cache_t L2Cache_Create(main_mem_t mem, config_t * configp)
+l2_cache_t L2Cache_Create(main_mem_t mem, config_t const * configp)
 {
     l2_cache_t cache = (l2_cache_t) malloc(sizeof(*cache));
     if (cache == NULL) {
@@ -66,7 +66,7 @@ void L2Cache_Destroy(l2_cache_t cache)
     }
 }
 
-uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
+uint32_t L2Cache_Access(l2_cache_t cache, access_t const * accessp)
 {
     // We assume for the following code that the original access did not span
     // multiple L2 blocks. This effectively assumes that the L2 block size is a

@@ -40,7 +40,7 @@ typedef struct {
 
 void Access_ParseLine(const char * line, access_t * access);
 
-void Access_Align(access_t * aligned_access, access_t * unaligned_access, uint32_t block_size);
+void Access_Align(access_t * aligned_access, access_t const * unaligned_access, uint32_t block_size);
 
 /** @} defgroup ACCESS */
 

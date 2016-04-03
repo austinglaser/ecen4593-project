@@ -23,7 +23,7 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
 struct _main_mem_t {
-    memory_param_t * configp;
+    memory_param_t const * configp;
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
@@ -32,7 +32,7 @@ struct _main_mem_t {
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-main_mem_t MainMem_Create(config_t * configp)
+main_mem_t MainMem_Create(config_t const * configp)
 {
     main_mem_t mem = (main_mem_t) malloc(sizeof(*mem));
     if (mem == NULL) {
@@ -49,7 +49,7 @@ void MainMem_Destroy(main_mem_t mem)
     if (mem) free(mem);
 }
 
-uint32_t MainMem_Access(main_mem_t mem, access_t * accessp)
+uint32_t MainMem_Access(main_mem_t mem, access_t const * accessp)
 {
     uint32_t access_cycles = mem->configp->send_address_cycles +
                              mem->configp->ready_cycles;

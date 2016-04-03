@@ -137,7 +137,12 @@ bool CacheData_Contains(cache_data_t data, uint64_t address)
     set_t * set = CacheData_GetSet(data, aligned_address);
     block_t * block = CacheData_Set_GetMatchingBlock(set, aligned_address);
 
-    return block != NULL;
+    if (block != NULL) {
+        return true;
+    }
+
+    block_t * victim_block = CacheData_Set_GetMatchingBlock(&(data->victim_set), aligned_address);
+    return victim_block != NULL;
 }
 
 uint64_t CacheData_Write(cache_data_t data, uint64_t address, result_t * result)

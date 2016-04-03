@@ -159,6 +159,17 @@ void test_CacheData_Write_should_FillUpSetsAndVictimCache(void)
     }
 }
 
+void test_CacheData_Contains_should_FindBlockInVictimCache(void)
+{
+    result_t result;
+    uint64_t base_address = 0x98cf9990;
+
+    CacheData_Read(cache_data, base_address,                             &result);
+    CacheData_Read(cache_data, base_address + n_sets * block_size_bytes, &result);
+
+    TEST_ASSERT_MESSAGE(CacheData_Contains(cache_data, base_address), "Failed to find block in victim cache");
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_CACHEDATA_DIRECTMAPPED_VICTIMCACHE */

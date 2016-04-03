@@ -26,24 +26,34 @@
   :executable: .out
 
 :flags:
+  :warnings: &warning_flags
+    - -Wextra
+    - -Wall
+    - -Wstrict-prototypes
+    - -Werror
+  :optimizations: &opt_flags
+    - -Wno-strict-aliasing
+    - -O3
+    - -flto
+
   :test:
     :compile:
       :*:
-        - -Wextra
-        - -Wall
-        - -Wstrict-prototypes
-        - -Werror
+        - *warning_flags
         - -std=c11
-        - -g
+        #- *opt_flags
+    #:link:
+    #  :*:
+    #    - *opt_flags
   :release:
     :compile:
       :*:
-        - -Wextra
-        - -Wall
-        - -Wstrict-prototypes
-        - -Werror
+        - *warning_flags
         - -std=c11
-        - -g
+        #- *opt_flags
+    #:link:
+    #  :*:
+    #    - *opt_flags
 
 :paths:
   :test:

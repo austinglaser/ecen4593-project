@@ -88,6 +88,8 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
     }
 
     access_time_cycles += cache->configp->hit_time_cycles;
+    access_time_cycles += cache->configp->transfer_time_cycles *
+                          (accessp->n_bytes / cache->configp->bus_width_bytes);
 
     return access_time_cycles;
 }

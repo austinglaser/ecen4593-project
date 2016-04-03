@@ -27,6 +27,10 @@
 #include <stdint.h>
 
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
+
+// Hardcoded in test
+static const uint32_t victim_cache_len = 8;
+
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
@@ -36,12 +40,17 @@
 static config_t config;
 static main_mem_t dummy_main_mem;
 static l2_cache_t l2_cache;
+static uint32_t l1_block_transfer_cycles;
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 void setUp(void)
 {
     SetDefaultConfigValues(&config);
+
+    l1_block_transfer_cycles = config.l2.transfer_time_cycles *
+                               (config.l1.block_size_bytes /
+                                config.l2.bus_width_bytes);
 
     l2_cache = L2Cache_Create(dummy_main_mem, &config);
 }
@@ -70,7 +79,8 @@ void test_InstructionAccessToEmptyCacheShouldMiss(void)
 
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
-                                      config.l2.hit_time_cycles;
+                                      config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
 
@@ -93,7 +103,8 @@ void test_ReadAccessToEmptyCacheShouldMiss(void)
 
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
-                                      config.l2.hit_time_cycles;
+                                      config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
 
@@ -116,7 +127,8 @@ void test_WriteAccessToEmptyCacheShouldMiss(void)
 
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
                                       main_mem_access_cycles +
-                                      config.l2.hit_time_cycles;
+                                      config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
 
@@ -133,7 +145,8 @@ void test_RepeatedAccessShouldMissFirstThenHit(void)
 
     L2Cache_Access(l2_cache, &access);
 
-    uint32_t expected_hit_cycles = config.l2.hit_time_cycles;
+    uint32_t expected_hit_cycles = config.l2.hit_time_cycles +
+                                   l1_block_transfer_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_hit_cycles, L2Cache_Access(l2_cache, &access));
 }
 
@@ -169,11 +182,13 @@ void test_SuccessiveAccessesToDifferentBlocksShouldBothMiss(void)
 
     uint32_t expected_access_cycles1 = config.l2.miss_time_cycles +
                                        main_mem_access_cycles1 +
-                                       config.l2.hit_time_cycles;
+                                       config.l2.hit_time_cycles +
+                                       l1_block_transfer_cycles;
 
     uint32_t expected_access_cycles2 = config.l2.miss_time_cycles +
                                        main_mem_access_cycles2 +
-                                       config.l2.hit_time_cycles;
+                                       config.l2.hit_time_cycles +
+                                       l1_block_transfer_cycles;
 
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles1, L2Cache_Access(l2_cache, &access1));
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles2, L2Cache_Access(l2_cache, &access2));
@@ -203,8 +218,10 @@ void test_AccessToTwoL1BlocksWithinTheSameL2BlockShouldMissThenHit(void)
 
     uint32_t expected_access_cycles1 = config.l2.miss_time_cycles +
                                        main_mem_access_cycles +
-                                       config.l2.hit_time_cycles;
-    uint32_t expected_access_cycles2 = config.l2.hit_time_cycles;
+                                       config.l2.hit_time_cycles +
+                                       l1_block_transfer_cycles;
+    uint32_t expected_access_cycles2 = config.l2.hit_time_cycles +
+                                       l1_block_transfer_cycles;
 
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles1, L2Cache_Access(l2_cache, &access1));
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles2, L2Cache_Access(l2_cache, &access2));

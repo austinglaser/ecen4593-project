@@ -99,7 +99,7 @@ cache_data_t CacheData_Create(uint32_t n_sets,
     data->victim_set_len_blocks         = victim_set_len_blocks;
     data->block_size_bytes              = block_size_bytes;
 
-    data->set_index_shift               = HighestBitSet_Uint32(block_size_bytes);
+    data->set_index_shift               = HighestBitSet(block_size_bytes);
     data->set_mask                      = (n_sets - 1) << (data->set_index_shift);
     data->block_mask                    = AlignmentMask(block_size_bytes);
 

@@ -49,7 +49,7 @@ l2_cache_t L2Cache_Create(main_mem_t mem, config_t * configp)
     uint32_t set_len        = configp->l2.associativity;
     cache->mem              = mem;
     cache->configp          = &configp->l2;
-    cache->bus_width_shift  = HighestBitSet_Uint32(configp->l2.bus_width_bytes);
+    cache->bus_width_shift  = HighestBitSet(configp->l2.bus_width_bytes);
     cache->data             = CacheData_Create(n_sets,
                                                set_len,
                                                cache->configp->block_size_bytes,

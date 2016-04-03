@@ -101,6 +101,8 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
         access_time_cycles += MainMem_Access(cache->mem, &block_aligned_access);
         break;
 
+    case RESULT_HIT:
+    case RESULT_HIT_VICTIM_CACHE:
     default:
         break;
     }

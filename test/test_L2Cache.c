@@ -179,6 +179,37 @@ void test_SuccessiveAccessesToDifferentBlocksShouldBothMiss(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles2, L2Cache_Access(l2_cache, &access2));
 }
 
+void test_AccessToTwoL1BlocksWithinTheSameL2BlockShouldMissThenHit(void)
+{
+    access_t access1 = {
+        .type = TYPE_READ,
+        .address = 0xfac029320000,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+    access_t access2 = {
+        .type = TYPE_READ,
+        .address = access1.address + config.l1.block_size_bytes,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    access_t expected_memory_access = {
+        .type = TYPE_READ,
+        .address = access1.address,
+        .n_bytes = config.l2.block_size_bytes,
+    };
+
+    uint32_t main_mem_access_cycles = 23;
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
+
+    uint32_t expected_access_cycles1 = config.l2.miss_time_cycles +
+                                       main_mem_access_cycles +
+                                       config.l2.hit_time_cycles;
+    uint32_t expected_access_cycles2 = config.l2.hit_time_cycles;
+
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles1, L2Cache_Access(l2_cache, &access1));
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles2, L2Cache_Access(l2_cache, &access2));
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup TEST_L2CACHE */

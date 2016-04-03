@@ -83,10 +83,10 @@ void test_InstructionMiss_should_CauseMainMemInstructionAccess(void)
         .n_bytes = config.l2.block_size_bytes,
     };
 
-    result_t result_miss = RESULT_MISS;
+    result_t result = RESULT_MISS;
     CacheData_Read_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
     CacheData_Read_IgnoreArg_result();
-    CacheData_Read_ReturnThruPtr_result(&result_miss);
+    CacheData_Read_ReturnThruPtr_result(&result);
 
     uint32_t main_mem_access_cycles = 75;
     MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
@@ -112,10 +112,10 @@ void test_ReadMiss_should_CauseMainMemReadAccess(void)
         .n_bytes = config.l2.block_size_bytes,
     };
 
-    result_t result_miss = RESULT_MISS;
+    result_t result = RESULT_MISS;
     CacheData_Read_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
     CacheData_Read_IgnoreArg_result();
-    CacheData_Read_ReturnThruPtr_result(&result_miss);
+    CacheData_Read_ReturnThruPtr_result(&result);
 
     uint32_t main_mem_access_cycles = 32;
     MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
@@ -141,15 +141,205 @@ void test_WriteMiss_should_CauseMainMemReadAccess(void)
         .n_bytes = config.l2.block_size_bytes,
     };
 
-    result_t result_miss = RESULT_MISS;
+    result_t result = RESULT_MISS;
     CacheData_Write_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
     CacheData_Write_IgnoreArg_result();
-    CacheData_Write_ReturnThruPtr_result(&result_miss);
+    CacheData_Write_ReturnThruPtr_result(&result);
 
     uint32_t main_mem_access_cycles = 256;
     MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access, main_mem_access_cycles);
 
     uint32_t expected_access_cycles = config.l2.miss_time_cycles +
+                                      main_mem_access_cycles +
+                                      config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
+}
+
+void test_InstructionHit_should_not_CauseMainMemAccess(void)
+{
+    access_t access = {
+        .type = TYPE_INSTR,
+        .address = 0x10123400,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    result_t result = RESULT_HIT;
+    CacheData_Read_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
+    CacheData_Read_IgnoreArg_result();
+    CacheData_Read_ReturnThruPtr_result(&result);
+
+    uint32_t expected_access_cycles = config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
+}
+
+void test_ReadHit_should_not_CauseMainMemAccess(void)
+{
+    access_t access = {
+        .type = TYPE_READ,
+        .address = 0x10123400,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    result_t result = RESULT_HIT;
+    CacheData_Read_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
+    CacheData_Read_IgnoreArg_result();
+    CacheData_Read_ReturnThruPtr_result(&result);
+
+    uint32_t expected_access_cycles = config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
+}
+
+void test_WriteHit_should_not_CauseMainMemAccess(void)
+{
+    access_t access = {
+        .type = TYPE_WRITE,
+        .address = 0x10123400,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    result_t result = RESULT_HIT;
+    CacheData_Write_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
+    CacheData_Write_IgnoreArg_result();
+    CacheData_Write_ReturnThruPtr_result(&result);
+
+    uint32_t expected_access_cycles = config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
+}
+
+void test_InstructionVictimCacheHit_should_not_CauseMainMemAccess(void)
+{
+    access_t access = {
+        .type = TYPE_INSTR,
+        .address = 0x10123400,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    result_t result = RESULT_HIT_VICTIM_CACHE;
+    CacheData_Read_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
+    CacheData_Read_IgnoreArg_result();
+    CacheData_Read_ReturnThruPtr_result(&result);
+
+    uint32_t expected_access_cycles = config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
+}
+
+void test_ReadVictimCacheHit_should_not_CauseMainMemAccess(void)
+{
+    access_t access = {
+        .type = TYPE_READ,
+        .address = 0x10123400,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    result_t result = RESULT_HIT_VICTIM_CACHE;
+    CacheData_Read_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
+    CacheData_Read_IgnoreArg_result();
+    CacheData_Read_ReturnThruPtr_result(&result);
+
+    uint32_t expected_access_cycles = config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
+}
+
+void test_WriteVictimCacheHit_should_not_CauseMainMemAccess(void)
+{
+    access_t access = {
+        .type = TYPE_WRITE,
+        .address = 0x10123400,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    result_t result = RESULT_HIT_VICTIM_CACHE;
+    CacheData_Write_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
+    CacheData_Write_IgnoreArg_result();
+    CacheData_Write_ReturnThruPtr_result(&result);
+
+    uint32_t expected_access_cycles = config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
+}
+
+void test_ReadDirtyKickout_should_CauseWriteback(void)
+{
+    access_t access = {
+        .type = TYPE_READ,
+        .address = 0x10123400,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    access_t expected_dirty_writeback = {
+        .type = TYPE_WRITE,
+        .address = 0xf90dfca8500,
+        .n_bytes = config.l2.block_size_bytes,
+    };
+
+    access_t expected_memory_access = {
+        .type = TYPE_READ,
+        .address = 0x10123400,
+        .n_bytes = config.l2.block_size_bytes,
+    };
+
+    result_t result = RESULT_MISS_DIRTY_KICKOUT;
+    CacheData_Read_ExpectAndReturn(dummy_cache_data,
+                                   access.address,
+                                   NULL,
+                                   expected_dirty_writeback.address);
+    CacheData_Read_IgnoreArg_result();
+    CacheData_Read_ReturnThruPtr_result(&result);
+
+    uint32_t main_mem_writeback_cycles = 32;
+    uint32_t main_mem_access_cycles = 181;
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_dirty_writeback, main_mem_writeback_cycles);
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access,   main_mem_access_cycles);
+
+    uint32_t expected_access_cycles = config.l2.miss_time_cycles +
+                                      main_mem_writeback_cycles +
+                                      main_mem_access_cycles +
+                                      config.l2.hit_time_cycles +
+                                      l1_block_transfer_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
+}
+
+void test_WriteDirtyKickout_should_CauseWriteback(void)
+{
+    access_t access = {
+        .type = TYPE_WRITE,
+        .address = 0x10123400,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    access_t expected_dirty_writeback = {
+        .type = TYPE_WRITE,
+        .address = 0xf90dfca8500,
+        .n_bytes = config.l2.block_size_bytes,
+    };
+
+    access_t expected_memory_access = {
+        .type = TYPE_READ,
+        .address = 0x10123400,
+        .n_bytes = config.l2.block_size_bytes,
+    };
+
+    result_t result = RESULT_MISS_DIRTY_KICKOUT;
+    CacheData_Write_ExpectAndReturn(dummy_cache_data,
+                                    access.address,
+                                    NULL,
+                                    expected_dirty_writeback.address);
+    CacheData_Write_IgnoreArg_result();
+    CacheData_Write_ReturnThruPtr_result(&result);
+
+    uint32_t main_mem_writeback_cycles = 32;
+    uint32_t main_mem_access_cycles = 181;
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_dirty_writeback, main_mem_writeback_cycles);
+    MainMem_Access_ExpectAndReturn(dummy_main_mem, &expected_memory_access,   main_mem_access_cycles);
+
+    uint32_t expected_access_cycles = config.l2.miss_time_cycles +
+                                      main_mem_writeback_cycles +
                                       main_mem_access_cycles +
                                       config.l2.hit_time_cycles +
                                       l1_block_transfer_cycles;

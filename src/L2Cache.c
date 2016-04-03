@@ -97,6 +97,10 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
         // Intentional fallthrough
 
     case RESULT_MISS:
+        if (block_aligned_access.type == TYPE_WRITE) {
+            block_aligned_access.type = TYPE_READ;
+        }
+
         access_time_cycles += cache->configp->miss_time_cycles;
         access_time_cycles += MainMem_Access(cache->mem, &block_aligned_access);
         break;

@@ -26,6 +26,7 @@
 struct _l2_cache_t {
     main_mem_t      mem;
     cache_param_t   * configp;
+    uint32_t        bus_width_shift;
     cache_data_t    data;
 };
 
@@ -42,16 +43,17 @@ l2_cache_t L2Cache_Create(main_mem_t mem, config_t * configp)
         return NULL;
     }
 
-    uint32_t n_sets     = configp->l2.cache_size_bytes /
-                          configp->l2.block_size_bytes /
-                          configp->l2.associativity;
-    uint32_t set_len    = configp->l2.associativity;
-    cache->mem          = mem;
-    cache->configp      = &configp->l2;
-    cache->data         = CacheData_Create(n_sets,
-                                           set_len,
-                                           cache->configp->block_size_bytes,
-                                           8);
+    uint32_t n_sets         = configp->l2.cache_size_bytes /
+                              configp->l2.block_size_bytes /
+                              configp->l2.associativity;
+    uint32_t set_len        = configp->l2.associativity;
+    cache->mem              = mem;
+    cache->configp          = &configp->l2;
+    cache->bus_width_shift  = HighestBitSet_Uint32(configp->l2.bus_width_bytes);
+    cache->data             = CacheData_Create(n_sets,
+                                               set_len,
+                                               cache->configp->block_size_bytes,
+                                               8);
 
     return cache;
 }
@@ -89,7 +91,7 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
 
     access_time_cycles += cache->configp->hit_time_cycles;
     access_time_cycles += cache->configp->transfer_time_cycles *
-                          (accessp->n_bytes / cache->configp->bus_width_bytes);
+                          (accessp->n_bytes >> cache->bus_width_shift);
 
     return access_time_cycles;
 }

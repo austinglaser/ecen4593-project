@@ -71,6 +71,10 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t * accessp)
     access_t block_aligned_access;
     Access_Align(&block_aligned_access, accessp, cache->configp->block_size_bytes);
 
+    // We assume for the following code that the original access did not span
+    // multiple L2 blocks. This effectively assumes that the L2 block size is a
+    // multiple of the L1 block size
+
     result_t result;
     if (block_aligned_access.type == TYPE_WRITE) {
         CacheData_Write(cache->data, block_aligned_access.address, &result);

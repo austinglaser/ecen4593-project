@@ -56,6 +56,7 @@ static uint32_t CacheData_GetSetIndex(cache_data_t data, uint64_t address);
 static set_t * CacheData_GetSet(cache_data_t data, uint64_t address);
 static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address);
 
+static block_t * CacheData_AllocateBlock(cache_data_t data);
 static block_t * CacheData_Set_GetMatchingBlock(set_t * set, uint64_t address);
 static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block);
 static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block);
@@ -172,8 +173,7 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
     }
     else if (set->n_valid_blocks < data->set_len_blocks) {
         // Set not full
-        block = data->next_free_block;
-        data->next_free_block += 1;
+        block = CacheData_AllocateBlock(data);
         *result = RESULT_MISS;
     }
     else {
@@ -196,8 +196,7 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
             }
             else if (victim_set->n_valid_blocks < data->victim_set_len_blocks) {
                 // Victim cache not full
-                block = data->next_free_block;
-                data->next_free_block += 1;
+                block = CacheData_AllocateBlock(data);
                 *result = RESULT_MISS;
             }
             else {
@@ -250,6 +249,13 @@ static block_t * CacheData_Set_GetMatchingBlock(set_t * set, uint64_t address)
     }
 
     return NULL;
+}
+
+static block_t * CacheData_AllocateBlock(cache_data_t data)
+{
+    block_t * block = data->next_free_block;
+    data->next_free_block += 1;
+    return block;
 }
 
 static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block)

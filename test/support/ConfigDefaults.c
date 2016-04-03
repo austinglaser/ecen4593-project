@@ -24,28 +24,28 @@
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-void SetDefaultConfigValues(config_t * configp)
+void SetDefaultConfigValues(config_t * config)
 {
-    configp->l1.block_size_bytes            = 32;
-    configp->l1.cache_size_bytes            = 8192;
-    configp->l1.associativity               = 1;
-    configp->l1.hit_time_cycles             = 1;
-    configp->l1.miss_time_cycles            = 1;
-    configp->l1.transfer_time_cycles        = 0;  // Invalid
-    configp->l1.bus_width_bytes             = 0;  // Invalid
+    config->l1.block_size_bytes            = 32;
+    config->l1.cache_size_bytes            = 8192;
+    config->l1.associativity               = 1;
+    config->l1.hit_time_cycles             = 1;
+    config->l1.miss_time_cycles            = 1;
+    config->l1.transfer_time_cycles        = 0;  // Invalid
+    config->l1.bus_width_bytes             = 0;  // Invalid
 
-    configp->l2.block_size_bytes            = 64;
-    configp->l2.cache_size_bytes            = 32768;
-    configp->l2.associativity               = 1;
-    configp->l2.hit_time_cycles             = 8;
-    configp->l2.miss_time_cycles            = 10;
-    configp->l2.transfer_time_cycles        = 10;
-    configp->l2.bus_width_bytes             = 16;
+    config->l2.block_size_bytes            = 64;
+    config->l2.cache_size_bytes            = 32768;
+    config->l2.associativity               = 1;
+    config->l2.hit_time_cycles             = 8;
+    config->l2.miss_time_cycles            = 10;
+    config->l2.transfer_time_cycles        = 10;
+    config->l2.bus_width_bytes             = 16;
 
-    configp->main_mem.send_address_cycles   = 10;
-    configp->main_mem.ready_cycles          = 50;
-    configp->main_mem.send_chunk_cycles     = 15;
-    configp->main_mem.chunk_size_bytes      = 8;
+    config->main_mem.send_address_cycles   = 10;
+    config->main_mem.ready_cycles          = 50;
+    config->main_mem.send_chunk_cycles     = 15;
+    config->main_mem.chunk_size_bytes      = 8;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

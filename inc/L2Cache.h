@@ -32,9 +32,9 @@ typedef struct _l2_cache_t * l2_cache_t;
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-l2_cache_t L2Cache_Create(main_mem_t mem, config_t const * configp);
+l2_cache_t L2Cache_Create(main_mem_t mem, config_t const * config);
 void L2Cache_Destroy(l2_cache_t cache);
-uint32_t L2Cache_Access(l2_cache_t cache, access_t const * accessp);
+uint32_t L2Cache_Access(l2_cache_t cache, access_t const * access);
 
 /** @} defgroup L2CACHE */
 

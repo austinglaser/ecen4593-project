@@ -39,21 +39,21 @@ typedef struct {
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
-static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * configp);
+static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * config);
 
-static void cache_block_size_writer(uint32_t value, void * _cachep);
-static void cache_cache_size_writer(uint32_t value, void * _cachep);
-static void cache_associative_size_writer(uint32_t value, void * _cachep);
-static void cache_hit_time_writer(uint32_t value, void * _cachep);
-static void cache_miss_time_writer(uint32_t value, void * _cachep);
-static void l2_cache_transfer_time_writer(uint32_t value, void * _cachep);
-static void l2_cache_bus_width_writer(uint32_t value, void * _cachep);
+static void cache_block_size_writer(uint32_t value, void * _cache);
+static void cache_cache_size_writer(uint32_t value, void * _cache);
+static void cache_associative_size_writer(uint32_t value, void * _cache);
+static void cache_hit_time_writer(uint32_t value, void * _cache);
+static void cache_miss_time_writer(uint32_t value, void * _cache);
+static void l2_cache_transfer_time_writer(uint32_t value, void * _cache);
+static void l2_cache_bus_width_writer(uint32_t value, void * _cache);
 static void main_mem_send_address_writer(uint32_t value, void * _memp);
 static void main_mem_ready_writer(uint32_t value, void * _memp);
 static void main_mem_send_chunk_writer(uint32_t value, void * _memp);
 static void main_mem_chunk_size_writer(uint32_t value, void * _memp);
 
-static void * get_mem(const char * mem_name_str, config_t * configp);
+static void * get_mem(const char * mem_name_str, config_t * config);
 static const config_value_t * find_matching_config_value(const char * mem_name_str, const char * param_str);
 static bool is_matching_config_value(const config_value_t * config_valuep, const char * mem_name_str, const char * param_str);
 
@@ -78,37 +78,37 @@ static const config_value_t config_values[] = {
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-void Config_Defaults(config_t * configp)
+void Config_Defaults(config_t * config)
 {
-    configp->l1.block_size_bytes            = 32;
-    configp->l1.cache_size_bytes            = 8192;
-    configp->l1.associativity               = 1;
-    configp->l1.hit_time_cycles             = 1;
-    configp->l1.miss_time_cycles            = 1;
-    configp->l1.transfer_time_cycles        = 0;    // not valid for L1
-    configp->l1.bus_width_bytes             = 0;    // not valid for L1
+    config->l1.block_size_bytes            = 32;
+    config->l1.cache_size_bytes            = 8192;
+    config->l1.associativity               = 1;
+    config->l1.hit_time_cycles             = 1;
+    config->l1.miss_time_cycles            = 1;
+    config->l1.transfer_time_cycles        = 0;    // not valid for L1
+    config->l1.bus_width_bytes             = 0;    // not valid for L1
 
-    configp->l2.block_size_bytes            = 64;
-    configp->l2.cache_size_bytes            = 32768;
-    configp->l2.associativity               = 1;
-    configp->l2.hit_time_cycles             = 8;
-    configp->l2.miss_time_cycles            = 10;
-    configp->l2.transfer_time_cycles        = 10;
-    configp->l2.bus_width_bytes             = 16;
+    config->l2.block_size_bytes            = 64;
+    config->l2.cache_size_bytes            = 32768;
+    config->l2.associativity               = 1;
+    config->l2.hit_time_cycles             = 8;
+    config->l2.miss_time_cycles            = 10;
+    config->l2.transfer_time_cycles        = 10;
+    config->l2.bus_width_bytes             = 16;
 
-    configp->main_mem.send_address_cycles   = 10;
-    configp->main_mem.ready_cycles          = 50;
-    configp->main_mem.send_chunk_cycles     = 15;
-    configp->main_mem.chunk_size_bytes      = 8;
+    config->main_mem.send_address_cycles   = 10;
+    config->main_mem.ready_cycles          = 50;
+    config->main_mem.send_chunk_cycles     = 15;
+    config->main_mem.chunk_size_bytes      = 8;
 }
 
-void Config_ParseLine(const char * line, config_t * configp)
+void Config_ParseLine(const char * line, config_t * config)
 {
     char mem_name_str[64];
     char param_str[64];
     uint32_t value;
 
-    if (line == NULL || configp == NULL) {
+    if (line == NULL || config == NULL) {
         ThrowHere(ARGUMENT_ERROR);
     }
 
@@ -116,16 +116,16 @@ void Config_ParseLine(const char * line, config_t * configp)
         return;
     }
     else if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", mem_name_str, param_str, &value) == 3) {
-        write_value(mem_name_str, param_str, value, configp);
+        write_value(mem_name_str, param_str, value, config);
     }
     else {
         ThrowHere(SYNTAX_ERROR);
     }
 }
 
-void Config_FromFile(const char * filename, config_t * configp)
+void Config_FromFile(const char * filename, config_t * config)
 {
-    Config_Defaults(configp);
+    Config_Defaults(config);
 
     if (filename) {
         FILE * config_file = fopen(filename, "r");
@@ -138,7 +138,7 @@ void Config_FromFile(const char * filename, config_t * configp)
         Try {
             char line[128];
             while (fgets(line, sizeof(line), config_file)) {
-                Config_ParseLine(line, configp);
+                Config_ParseLine(line, config);
                 line_no++;
             }
         }
@@ -154,9 +154,9 @@ void Config_FromFile(const char * filename, config_t * configp)
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * configp)
+static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * config)
 {
-    void * memp = get_mem(mem_name_str, configp);
+    void * memp = get_mem(mem_name_str, config);
     const config_value_t * config_valuep = find_matching_config_value(mem_name_str, param_str);
     if (!config_valuep) {
         ThrowHere(BAD_CONFIG_PARAM);
@@ -165,54 +165,54 @@ static void write_value(const char * mem_name_str, const char * param_str, uint3
     config_valuep->value_writer(value, memp);
 }
 
-static void cache_block_size_writer(uint32_t value, void * _cachep)
+static void cache_block_size_writer(uint32_t value, void * _cache)
 {
     ensure_value_power_of_two(value);
 
-    cache_param_t * cachep = _cachep;
-    cachep->block_size_bytes = value;
+    cache_param_t * cache = _cache;
+    cache->block_size_bytes = value;
 }
 
-static void cache_cache_size_writer(uint32_t value, void * _cachep)
+static void cache_cache_size_writer(uint32_t value, void * _cache)
 {
     ensure_value_power_of_two(value);
 
-    cache_param_t * cachep = _cachep;
-    cachep->cache_size_bytes = value;
+    cache_param_t * cache = _cache;
+    cache->cache_size_bytes = value;
 }
 
-static void cache_associative_size_writer(uint32_t value, void * _cachep)
+static void cache_associative_size_writer(uint32_t value, void * _cache)
 {
     ensure_value_power_of_two(value);
 
-    cache_param_t * cachep = _cachep;
-    cachep->associativity = value;
+    cache_param_t * cache = _cache;
+    cache->associativity = value;
 }
 
-static void cache_hit_time_writer(uint32_t value, void * _cachep)
+static void cache_hit_time_writer(uint32_t value, void * _cache)
 {
-    cache_param_t * cachep = _cachep;
-    cachep->hit_time_cycles = value;
+    cache_param_t * cache = _cache;
+    cache->hit_time_cycles = value;
 }
 
-static void cache_miss_time_writer(uint32_t value, void * _cachep)
+static void cache_miss_time_writer(uint32_t value, void * _cache)
 {
-    cache_param_t * cachep = _cachep;
-    cachep->miss_time_cycles = value;
+    cache_param_t * cache = _cache;
+    cache->miss_time_cycles = value;
 }
 
-static void l2_cache_transfer_time_writer(uint32_t value, void * _cachep)
+static void l2_cache_transfer_time_writer(uint32_t value, void * _cache)
 {
-    cache_param_t * cachep = _cachep;
-    cachep->transfer_time_cycles = value;
+    cache_param_t * cache = _cache;
+    cache->transfer_time_cycles = value;
 }
 
-static void l2_cache_bus_width_writer(uint32_t value, void * _cachep)
+static void l2_cache_bus_width_writer(uint32_t value, void * _cache)
 {
     ensure_value_power_of_two(value);
 
-    cache_param_t * cachep = _cachep;
-    cachep->bus_width_bytes = value;
+    cache_param_t * cache = _cache;
+    cache->bus_width_bytes = value;
 }
 
 static void main_mem_send_address_writer(uint32_t value, void * _memp)
@@ -241,16 +241,16 @@ static void main_mem_chunk_size_writer(uint32_t value, void * _memp)
     memp->chunk_size_bytes = value;
 }
 
-static void * get_mem(const char * mem_name_str, config_t * configp)
+static void * get_mem(const char * mem_name_str, config_t * config)
 {
     if (strcmp(mem_name_str, L1_CACHE_STR) == 0) {
-        return &configp->l1;
+        return &config->l1;
     }
     else if (strcmp(mem_name_str, L2_CACHE_STR) == 0) {
-        return &configp->l2;
+        return &config->l2;
     }
     else if (strcmp(mem_name_str, MAIN_MEM_STR) == 0) {
-        return &configp->main_mem;
+        return &config->main_mem;
     }
     else {
         ThrowHere(BAD_CONFIG_CACHE);

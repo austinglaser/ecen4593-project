@@ -50,18 +50,18 @@ typedef struct config {
 
 /**@brief   Sets the default values in the config structure
  *
- * @apram[in] configp:      The struct to modify
+ * @apram[in] config:      The struct to modify
  */
-void Config_Defaults(config_t * configp);
+void Config_Defaults(config_t * config);
 
-/**@brief   Parses the given line, and modifies the appropriate value in configp */
-void Config_ParseLine(const char * line, config_t * configp);
+/**@brief   Parses the given line, and modifies the appropriate value in config */
+void Config_ParseLine(const char * line, config_t * config);
 
 /**@brief   Opens the file, and reads in all the config lines.
  *
  * If a value isn't specified, uses the default configuration value
  */
-void Config_FromFile(const char * filename, config_t * configp);
+void Config_FromFile(const char * filename, config_t * config);
 
 /** @} defgroup CONFIG */
 

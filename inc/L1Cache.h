@@ -31,7 +31,7 @@ typedef struct _l1_cache_t * l1_cache_t;
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-l1_cache_t L1Cache_Create(l2_cache_t l2_cache, config_t const * configp);
+l1_cache_t L1Cache_Create(l2_cache_t l2_cache, config_t const * config);
 void L1Cache_Destroy(l1_cache_t cache);
 uint32_t L1Cache_Access(l1_cache_t cache, access_t const * access);
 

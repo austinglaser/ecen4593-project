@@ -30,9 +30,9 @@ typedef struct _main_mem_t * main_mem_t;
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-main_mem_t MainMem_Create(config_t const * configp);
+main_mem_t MainMem_Create(config_t const * config);
 void MainMem_Destroy(main_mem_t mem);
-uint32_t MainMem_Access(main_mem_t mem, access_t const * accessp);
+uint32_t MainMem_Access(main_mem_t mem, access_t const * access);
 
 /** @} defgroup MAINMEM */
 

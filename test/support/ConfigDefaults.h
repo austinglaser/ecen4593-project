@@ -26,7 +26,7 @@
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-void SetDefaultConfigValues(config_t * configp);
+void SetDefaultConfigValues(config_t * config);
 
 /** @} defgroup CONFIGDEFAULTS */
 

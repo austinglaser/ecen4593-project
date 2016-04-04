@@ -60,7 +60,7 @@ void setUp(void)
                                      8,
                                      dummy_cache_data);
 
-    l2_cache = L2Cache_Create(dummy_main_mem, &config);
+    l2_cache = L2Cache_Create(dummy_main_mem, &(config.l2));
 }
 
 void tearDown(void)

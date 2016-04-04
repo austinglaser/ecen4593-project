@@ -53,7 +53,7 @@ void setUp(void)
                                      8,
                                      dummy_cache_data);
 
-    l1_cache = L1Cache_Create(dummy_l2_cache, &config);
+    l1_cache = L1Cache_Create(dummy_l2_cache, &(config.l1));
 }
 
 void tearDown(void)

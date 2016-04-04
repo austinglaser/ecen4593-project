@@ -36,23 +36,23 @@ struct _l1_cache_t {
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-l1_cache_t L1Cache_Create(l2_cache_t l2_cache, config_t const * config)
+l1_cache_t L1Cache_Create(l2_cache_t l2_cache, cache_param_t const * config)
 {
     l1_cache_t cache = (l1_cache_t) malloc(sizeof(*cache));
     if (cache == NULL) {
         return NULL;
     }
 
-    uint32_t n_sets         = config->l1.cache_size_bytes /
-                              config->l1.block_size_bytes /
-                              config->l1.associativity;
-    uint32_t set_len        = config->l1.associativity;
+    uint32_t n_sets         = config->cache_size_bytes /
+                              config->block_size_bytes /
+                              config->associativity;
+    uint32_t set_len        = config->associativity;
     cache->l2_cache         = l2_cache;
-    cache->config           = &config->l1;
-    cache->bus_width_shift  = HighestBitSet(config->l1.bus_width_bytes);
+    cache->config           = config;
+    cache->bus_width_shift  = HighestBitSet(config->bus_width_bytes);
     cache->data             = CacheData_Create(n_sets,
                                                set_len,
-                                               cache->config->block_size_bytes,
+                                               config->block_size_bytes,
                                                8);
 
     return cache;

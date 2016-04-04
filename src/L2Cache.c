@@ -13,6 +13,7 @@
 
 #include "Access.h"
 #include "CacheData.h"
+#include "Config.h"
 #include "MainMem.h"
 #include "Util.h"
 

@@ -10,9 +10,10 @@
 /* --- PRIVATE DEPENDENCIES ------------------------------------------------- */
 
 #include "L1Cache.h"
-#include "L2Cache.h"
 
+#include "CacheData.h"
 #include "Config.h"
+#include "L2Cache.h"
 #include "Util.h"
 
 #include <stdbool.h>
@@ -23,6 +24,10 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
 struct _l1_cache_t {
+    l2_cache_t              l2_cache;
+    cache_param_t const *   config;
+    uint32_t                bus_width_shift;
+    cache_data_t            data;
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
@@ -33,22 +38,74 @@ struct _l1_cache_t {
 
 l1_cache_t L1Cache_Create(l2_cache_t l2_cache, config_t const * config)
 {
-    UNUSED_VARIABLE(l2_cache);
-    UNUSED_VARIABLE(config);
+    l1_cache_t cache = (l1_cache_t) malloc(sizeof(*cache));
+    if (cache == NULL) {
+        return NULL;
+    }
 
-    return NULL;
+    uint32_t n_sets         = config->l1.cache_size_bytes /
+                              config->l1.block_size_bytes /
+                              config->l1.associativity;
+    uint32_t set_len        = config->l1.associativity;
+    cache->l2_cache         = l2_cache;
+    cache->config           = &config->l1;
+    cache->bus_width_shift  = HighestBitSet(config->l1.bus_width_bytes);
+    cache->data             = CacheData_Create(n_sets,
+                                               set_len,
+                                               cache->config->block_size_bytes,
+                                               8);
+
+    return cache;
 }
 
 void L1Cache_Destroy(l1_cache_t cache)
 {
-    UNUSED_VARIABLE(cache);
+    if (cache) {
+        CacheData_Destroy(cache->data);
+        free(cache);
+    }
 }
 
 uint32_t L1Cache_Access(l1_cache_t cache, access_t const * access)
 {
-    UNUSED_VARIABLE(cache);
-    UNUSED_VARIABLE(access);
-    return 0;
+    access_t block_aligned_access;
+    Access_Align(&block_aligned_access, access, cache->config->block_size_bytes);
+
+    result_t result;
+    uint64_t dirty_kickout_address;
+    if (access->type == TYPE_WRITE) {
+        dirty_kickout_address = CacheData_Write(cache->data, block_aligned_access.address, &result);
+    }
+    else {
+        dirty_kickout_address = CacheData_Read(cache->data, block_aligned_access.address, &result);
+    }
+
+    uint32_t access_time_cycles = 0;
+
+    if (result == RESULT_MISS_DIRTY_KICKOUT) {
+        access_t dirty_write = {
+            .type    = TYPE_WRITE,
+            .address = dirty_kickout_address,
+            .n_bytes = cache->config->block_size_bytes,
+        };
+
+        access_time_cycles += L2Cache_Access(cache->l2_cache, &dirty_write);
+    }
+
+    if (result == RESULT_MISS || result == RESULT_MISS_DIRTY_KICKOUT) {
+        access_t miss_read = {
+            .type       = TYPE_READ,
+            .address    = block_aligned_access.address,
+            .n_bytes    = cache->config->block_size_bytes,
+        };
+
+        access_time_cycles += cache->config->miss_time_cycles;
+        access_time_cycles += L2Cache_Access(cache->l2_cache, &miss_read);
+    }
+
+    access_time_cycles += cache->config->hit_time_cycles;
+
+    return access_time_cycles;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

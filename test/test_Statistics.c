@@ -47,10 +47,13 @@ void test_Statistics_Create_should_InitializeAllStatFields(void)
     Statistics_Create(&stats);
 
     TEST_ASSERT_EQUAL_UINT64(0, stats.read_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.read_count_misaligned);
     TEST_ASSERT_EQUAL_UINT64(0, stats.read_cycles);
     TEST_ASSERT_EQUAL_UINT64(0, stats.write_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.write_count_misaligned);
     TEST_ASSERT_EQUAL_UINT64(0, stats.write_cycles);
     TEST_ASSERT_EQUAL_UINT64(0, stats.instr_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.instr_count_misaligned);
     TEST_ASSERT_EQUAL_UINT64(0, stats.instr_cycles);
 
     TEST_ASSERT_EQUAL_STRING("L1i", stats.l1i.name);
@@ -87,9 +90,10 @@ void test_Statistics_RecordAccess_should_RecordReadAccess(void)
     };
 
     uint32_t cycles = 38;
-    Statistics_RecordAccess(&stats, &access, cycles);
+    Statistics_RecordAccess(&stats, &access, cycles, 1);
 
     TEST_ASSERT_EQUAL_UINT64(1,      stats.read_count);
+    TEST_ASSERT_EQUAL_UINT64(1,      stats.read_count_misaligned);
     TEST_ASSERT_EQUAL_UINT64(cycles, stats.read_cycles);
 
     TEST_ASSERT_EQUAL_UINT64(0, stats.write_count);
@@ -107,9 +111,10 @@ void test_Statistics_RecordAccess_should_RecordWriteAccess(void)
     };
 
     uint32_t cycles = 21;
-    Statistics_RecordAccess(&stats, &access, cycles);
+    Statistics_RecordAccess(&stats, &access, cycles, 1);
 
     TEST_ASSERT_EQUAL_UINT64(1,      stats.write_count);
+    TEST_ASSERT_EQUAL_UINT64(1,      stats.write_count_misaligned);
     TEST_ASSERT_EQUAL_UINT64(cycles, stats.write_cycles);
 
     TEST_ASSERT_EQUAL_UINT64(0, stats.read_count);
@@ -127,15 +132,56 @@ void test_Statistics_RecordAccess_should_RecordInstructionAccess(void)
     };
 
     uint32_t cycles = 111;
-    Statistics_RecordAccess(&stats, &access, cycles);
+    Statistics_RecordAccess(&stats, &access, cycles, 1);
 
     TEST_ASSERT_EQUAL_UINT64(1,      stats.instr_count);
+    TEST_ASSERT_EQUAL_UINT64(1,      stats.instr_count_misaligned);
     TEST_ASSERT_EQUAL_UINT64(cycles, stats.instr_cycles);
 
     TEST_ASSERT_EQUAL_UINT64(0, stats.read_count);
     TEST_ASSERT_EQUAL_UINT64(0, stats.read_cycles);
     TEST_ASSERT_EQUAL_UINT64(0, stats.write_count);
     TEST_ASSERT_EQUAL_UINT64(0, stats.write_cycles);
+}
+
+void test_Statistics_RecordAccess_should_RecordMisalignedAccess(void)
+{
+    access_t access;
+    uint32_t cycles;
+    uint32_t n_misaligned;
+
+    access.type    = TYPE_READ;
+    access.address = 0x0000;
+    access.n_bytes = 8;
+    cycles         = 38;
+    n_misaligned   = 2;
+    Statistics_RecordAccess(&stats, &access, cycles, n_misaligned);
+
+    TEST_ASSERT_EQUAL_UINT64(1,            stats.read_count);
+    TEST_ASSERT_EQUAL_UINT64(n_misaligned, stats.read_count_misaligned);
+    TEST_ASSERT_EQUAL_UINT64(cycles,       stats.read_cycles);
+
+    access.type    = TYPE_WRITE;
+    access.address = 0xfcfdabf;
+    access.n_bytes = 8;
+    cycles         = 118;
+    n_misaligned   = 3;
+    Statistics_RecordAccess(&stats, &access, cycles, n_misaligned);
+
+    TEST_ASSERT_EQUAL_UINT64(1,            stats.write_count);
+    TEST_ASSERT_EQUAL_UINT64(n_misaligned, stats.write_count_misaligned);
+    TEST_ASSERT_EQUAL_UINT64(cycles,       stats.write_cycles);
+
+    access.type    = TYPE_INSTR;
+    access.address = 0xfcfdabf;
+    access.n_bytes = 4;
+    cycles         = 21;
+    n_misaligned   = 2;
+    Statistics_RecordAccess(&stats, &access, cycles, n_misaligned);
+
+    TEST_ASSERT_EQUAL_UINT64(1,            stats.instr_count);
+    TEST_ASSERT_EQUAL_UINT64(n_misaligned, stats.instr_count_misaligned);
+    TEST_ASSERT_EQUAL_UINT64(cycles,       stats.instr_cycles);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

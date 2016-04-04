@@ -36,17 +36,19 @@ void Statistics_Create(stats_t * stats)
 
 void Statistics_RecordAccess(stats_t * stats, access_t const * access, uint32_t cycles)
 {
-    if (access->type == TYPE_READ) {
+    switch(access->type) {
+    case TYPE_READ:
         stats->read_count += 1;
         stats->read_cycles += cycles;
-    }
-    else if (access->type == TYPE_WRITE) {
+        break;
+    case TYPE_WRITE:
         stats->write_count += 1;
         stats->write_cycles += cycles;
-    }
-    else if (access->type == TYPE_INSTR) {
+        break;
+    case TYPE_INSTR:
         stats->instr_count += 1;
         stats->instr_cycles += cycles;
+        break;
     }
 }
 

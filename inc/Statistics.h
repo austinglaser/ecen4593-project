@@ -35,15 +35,15 @@ typedef struct _cache_stats_t {
 
 typedef struct _stats_t {
     uint64_t read_count;
-    uint64_t read_count_misaligned;
+    uint64_t read_count_aligned;
     uint64_t read_cycles;
 
     uint64_t write_count;
-    uint64_t write_count_misaligned;
+    uint64_t write_count_aligned;
     uint64_t write_cycles;
 
     uint64_t instr_count;
-    uint64_t instr_count_misaligned;
+    uint64_t instr_count_aligned;
     uint64_t instr_cycles;
 
     cache_stats_t l1i;
@@ -57,7 +57,7 @@ typedef struct _stats_t {
 
 void Statistics_Create(stats_t * stats);
 
-void Statistics_RecordAccess(stats_t * stats, access_t const * access, uint32_t cycles, uint32_t n_misaligned);
+void Statistics_RecordAccess(stats_t * stats, access_t const * access, uint32_t cycles, uint32_t n_aligned);
 
 /** @} defgroup STATISTICS */
 

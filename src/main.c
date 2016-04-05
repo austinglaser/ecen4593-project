@@ -27,7 +27,8 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
-static void DestroyAll(void);
+static void Memory_Create(stats_t * stats, config_t * config);
+static void Memory_Destroy(void);
 
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
@@ -66,10 +67,7 @@ int main(int argc, char const * const * const argv)
     stats_t stats;
     Statistics_Create(&stats);
 
-    main_mem = MainMem_Create(&config);
-    l2_cache = L2Cache_Create(main_mem, &(stats.l2), &(config.l2));
-    l1i_cache = L1Cache_Create(l2_cache, &(stats.l1i), &(config.l1));
-    l1d_cache = L1Cache_Create(l2_cache, &(stats.l1d), &(config.l1));
+    Memory_Create(&stats, &config);
 
     CEXCEPTION_T e;
     Try {
@@ -101,11 +99,11 @@ int main(int argc, char const * const * const argv)
         }
     }
     Catch (e) {
-        DestroyAll();
+        Memory_Destroy();
         UncaughtException(e);
     }
 
-    DestroyAll();
+    Memory_Destroy();
 
     Statistics_Print(&stats);
     printf("\n");
@@ -115,7 +113,15 @@ int main(int argc, char const * const * const argv)
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static void DestroyAll(void)
+static void Memory_Create(stats_t * stats, config_t * config)
+{
+    main_mem  = MainMem_Create(&(config->main_mem));
+    l2_cache  = L2Cache_Create(main_mem,  &(stats->l2),  &(config->l2));
+    l1i_cache = L1Cache_Create(l2_cache, &(stats->l1i), &(config->l1));
+    l1d_cache = L1Cache_Create(l2_cache, &(stats->l1d), &(config->l1));
+}
+
+static void Memory_Destroy(void)
 {
     L1Cache_Destroy(l1i_cache);
     L1Cache_Destroy(l1d_cache);

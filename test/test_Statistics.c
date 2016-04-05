@@ -160,6 +160,18 @@ void test_Statistics_RecordAccess_should_RecordMisalignedAccess(void)
     TEST_ASSERT_EQUAL_UINT64(cycles,    stats.instr_cycles);
 }
 
+void test_Statistics_RecordAccess_should_RecordMultipleAccesses(void)
+{
+    uint32_t cycles = 38;
+    Statistics_RecordAccess(&stats, TYPE_READ, cycles, 1);
+    Statistics_RecordAccess(&stats, TYPE_READ, cycles, 2);
+    Statistics_RecordAccess(&stats, TYPE_READ, cycles, 2);
+
+    TEST_ASSERT_EQUAL_UINT64(3,        stats.read_count);
+    TEST_ASSERT_EQUAL_UINT64(5,        stats.read_count_aligned);
+    TEST_ASSERT_EQUAL_UINT64(cycles*3, stats.read_cycles);
+}
+
 void test_Statistics_RecordCacheAccess_should_RecordCacheHit(void)
 {
     Statistics_RecordCacheAccess(&(stats.l1d), RESULT_HIT);
@@ -217,6 +229,30 @@ void test_Statistics_RecordCacheAccess_should_RecordCacheDirtyyKickout(void)
     TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.kickouts);
     TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.dirty_kickouts);
     TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.transfers);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.vc_hit_count);
+}
+
+void test_Statistics_RecordCacheAccess_should_IncrementForMultipleAccesses(void)
+{
+    Statistics_RecordCacheAccess(&(stats.l1d), RESULT_HIT);
+    Statistics_RecordCacheAccess(&(stats.l1d), RESULT_HIT);
+    Statistics_RecordCacheAccess(&(stats.l1d), RESULT_HIT);
+
+    TEST_ASSERT_EQUAL_UINT64(3, stats.l1d.hit_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.miss_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.kickouts);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.dirty_kickouts);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.transfers);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.vc_hit_count);
+
+    Statistics_RecordCacheAccess(&(stats.l1d), RESULT_MISS_DIRTY_KICKOUT);
+    Statistics_RecordCacheAccess(&(stats.l1d), RESULT_MISS_DIRTY_KICKOUT);
+
+    TEST_ASSERT_EQUAL_UINT64(3, stats.l1d.hit_count);
+    TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.miss_count);
+    TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.kickouts);
+    TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.dirty_kickouts);
+    TEST_ASSERT_EQUAL_UINT64(4, stats.l1d.transfers);
     TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.vc_hit_count);
 }
 

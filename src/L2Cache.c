@@ -58,6 +58,10 @@ l2_cache_t L2Cache_Create(main_mem_t mem, cache_stats_t * stats, cache_param_t c
                                                set_len,
                                                config->block_size_bytes,
                                                8);
+    if (cache->data == NULL) {
+        free(cache);
+        return NULL;
+    }
 
     return cache;
 }

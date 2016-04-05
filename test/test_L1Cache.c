@@ -40,7 +40,7 @@ static l1_cache_t   l1_cache;
 
 static l2_cache_t dummy_l2_cache;
 static cache_stats_t * dummy_cache_stats;
-static cache_data_t dummy_cache_data;
+static cache_data_t dummy_cache_data = (cache_data_t) 4;
 
 static config_t config;
 static uint32_t n_blocks;
@@ -65,6 +65,13 @@ void tearDown(void)
 {
     CacheData_Destroy_Expect(dummy_cache_data);
     L1Cache_Destroy(l1_cache);
+}
+
+void test_CacheData_Create_should_ReturnNULL_when_CacheDataAllocationFails(void)
+{
+    CacheData_Create_IgnoreAndReturn(NULL);
+
+    TEST_ASSERT_EQUAL_PTR(NULL, L1Cache_Create(dummy_l2_cache, dummy_cache_stats, &(config.l1)));
 }
 
 void test_InstructionMiss_should_CauseL2Read(void)

@@ -57,6 +57,10 @@ l1_cache_t L1Cache_Create(l2_cache_t l2_cache, cache_stats_t * stats, cache_para
                                                set_len,
                                                config->block_size_bytes,
                                                8);
+    if (cache->data == NULL) {
+        free(cache);
+        return NULL;
+    }
 
     return cache;
 }

@@ -42,7 +42,7 @@ static config_t config;
 
 static main_mem_t dummy_main_mem;
 static cache_stats_t * dummy_cache_stats;
-static cache_data_t dummy_cache_data;
+static cache_data_t dummy_cache_data = (cache_data_t)8;
 
 static l2_cache_t l2_cache;
 static uint32_t l1_block_transfer_cycles;
@@ -72,6 +72,13 @@ void tearDown(void)
 {
     CacheData_Destroy_Expect(dummy_cache_data);
     L2Cache_Destroy(l2_cache);
+}
+
+void test_CacheData_Create_should_ReturnNULL_when_CacheDataAllocationFails(void)
+{
+    CacheData_Create_IgnoreAndReturn(NULL);
+
+    TEST_ASSERT_EQUAL_PTR(NULL, L2Cache_Create(dummy_main_mem, dummy_cache_stats, &(config.l2)));
 }
 
 void test_InstructionMiss_should_CauseMainMemReadAccess(void)

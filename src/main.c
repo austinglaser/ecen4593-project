@@ -66,10 +66,10 @@ int main(int argc, char const * const * const argv)
     stats_t stats;
     Statistics_Create(&stats);
 
-    main_mem_t main_mem = MainMem_Create(&config);
-    l2_cache_t l2_cache = L2Cache_Create(main_mem, &(stats.l2), &(config.l2));
-    l1_cache_t l1i_cache = L1Cache_Create(l2_cache, &(stats.l1i), &(config.l1));
-    l1_cache_t l1d_cache = L1Cache_Create(l2_cache, &(stats.l1d), &(config.l1));
+    main_mem = MainMem_Create(&config);
+    l2_cache = L2Cache_Create(main_mem, &(stats.l2), &(config.l2));
+    l1i_cache = L1Cache_Create(l2_cache, &(stats.l1i), &(config.l1));
+    l1d_cache = L1Cache_Create(l2_cache, &(stats.l1d), &(config.l1));
 
     CEXCEPTION_T e;
     Try {

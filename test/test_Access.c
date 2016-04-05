@@ -132,10 +132,6 @@ void test_InvalidOperationThrowsException(void)
 void test_InvalidAccessSizeThrowsException(void)
 {
     access_t dummy_access;
-    shouldCauseException("I 7f81ce441b80 9\n",
-                         &dummy_access,
-                         INVALID_ACCESS_SIZE,
-                         "No exception on invalid access size");
     shouldCauseException("R 7681cef81b80 0\n",
                          &dummy_access,
                          INVALID_ACCESS_SIZE,

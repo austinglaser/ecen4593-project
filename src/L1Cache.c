@@ -11,11 +11,11 @@
 
 #include "L1Cache.h"
 
-#include "CacheData.h"
+#include "Access.h"
+#include "CacheInternals.h"
 #include "Config.h"
 #include "L2Cache.h"
 #include "Statistics.h"
-#include "Util.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -25,15 +25,14 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
 struct _l1_cache_t {
-    l2_cache_t              l2_cache;
-    cache_param_t const *   config;
-    cache_stats_t *         stats;
-    uint32_t                bus_width_shift;
-    cache_data_t            data;
+    cache_t internals;
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
+
+static uint32_t _L1Cache_AccessL2(void * _l2_cache, access_t const * access);
+
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -45,19 +44,8 @@ l1_cache_t L1Cache_Create(l2_cache_t l2_cache, cache_stats_t * stats, cache_para
         return NULL;
     }
 
-    uint32_t n_sets         = config->cache_size_bytes /
-                              config->block_size_bytes /
-                              config->associativity;
-    uint32_t set_len        = config->associativity;
-    cache->l2_cache         = l2_cache;
-    cache->config           = config;
-    cache->stats            = stats;
-    cache->bus_width_shift  = HighestBitSet(config->bus_width_bytes);
-    cache->data             = CacheData_Create(n_sets,
-                                               set_len,
-                                               config->block_size_bytes,
-                                               8);
-    if (cache->data == NULL) {
+    cache->internals = CacheInternals_Create(_L1Cache_AccessL2, l2_cache, stats, config);
+    if (cache->internals == NULL) {
         free(cache);
         return NULL;
     }
@@ -68,56 +56,22 @@ l1_cache_t L1Cache_Create(l2_cache_t l2_cache, cache_stats_t * stats, cache_para
 void L1Cache_Destroy(l1_cache_t cache)
 {
     if (cache) {
-        CacheData_Destroy(cache->data);
+        CacheInternals_Destroy(cache->internals);
         free(cache);
     }
 }
 
 uint32_t L1Cache_Access(l1_cache_t cache, access_t const * access)
 {
-    result_t result;
-    uint64_t dirty_kickout_address;
-    if (access->type == TYPE_WRITE) {
-        dirty_kickout_address = CacheData_Write(cache->data, access->address, &result);
-    }
-    else {
-        dirty_kickout_address = CacheData_Read(cache->data, access->address, &result);
-    }
-
-    uint32_t access_time_cycles = 0;
-
-    access_t dirty_write;
-    access_t miss_read;
-    switch (result) {
-    case RESULT_MISS_DIRTY_KICKOUT:
-        dirty_write.type    = TYPE_WRITE,
-        dirty_write.address = dirty_kickout_address,
-        dirty_write.n_bytes = cache->config->block_size_bytes,
-
-        access_time_cycles += L2Cache_Access(cache->l2_cache, &dirty_write);
-        // Intentional fallthrough
-
-    case RESULT_MISS:
-    case RESULT_MISS_KICKOUT:
-        miss_read.type       = TYPE_READ,
-        miss_read.address    = access->address,
-        miss_read.n_bytes    = cache->config->block_size_bytes,
-
-        access_time_cycles += cache->config->miss_time_cycles;
-        access_time_cycles += L2Cache_Access(cache->l2_cache, &miss_read);
-        break;
-
-    default:
-        break;
-    }
-
-    access_time_cycles += cache->config->hit_time_cycles;
-
-    Statistics_RecordCacheAccess(cache->stats, result);
-
-    return access_time_cycles;
+    return CacheInternals_Access(cache->internals, access);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
+
+static uint32_t _L1Cache_AccessL2(void * _l2_cache, access_t const * access)
+{
+    l2_cache_t l2_cache = _l2_cache;
+    return L2Cache_Access(l2_cache, access);
+}
 
 /** @} addtogroup L1CACHE */

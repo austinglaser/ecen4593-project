@@ -13,6 +13,7 @@
 #include "L1Cache.h"
 
 #include "Access.h"
+#include "CacheInternals.h"
 #include "Config.h"
 #include "Util.h"
 

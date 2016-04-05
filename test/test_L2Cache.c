@@ -13,6 +13,7 @@
 #include "L2Cache.h"
 
 #include "Access.h"
+#include "CacheInternals.h"
 #include "Util.h"
 
 #include "CException.h"

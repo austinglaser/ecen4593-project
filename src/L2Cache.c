@@ -12,7 +12,7 @@
 #include "L2Cache.h"
 
 #include "Access.h"
-#include "CacheData.h"
+#include "CacheInternals.h"
 #include "Config.h"
 #include "MainMem.h"
 #include "Statistics.h"
@@ -26,15 +26,16 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
 struct _l2_cache_t {
-    main_mem_t              mem;
-    cache_param_t const *   config;
-    cache_stats_t *         stats;
-    uint32_t                bus_width_shift;
-    cache_data_t            data;
+    cache_t               internals;
+    cache_param_t const * config;
+    uint32_t              bus_width_shift;
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
+
+static uint32_t _L2Cache_AccessMainMem(void * _main_mem, access_t const * access);
+
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -46,22 +47,14 @@ l2_cache_t L2Cache_Create(main_mem_t mem, cache_stats_t * stats, cache_param_t c
         return NULL;
     }
 
-    uint32_t n_sets         = config->cache_size_bytes /
-                              config->block_size_bytes /
-                              config->associativity;
-    uint32_t set_len        = config->associativity;
-    cache->mem              = mem;
-    cache->config           = config;
-    cache->stats            = stats;
-    cache->bus_width_shift  = HighestBitSet(config->bus_width_bytes);
-    cache->data             = CacheData_Create(n_sets,
-                                               set_len,
-                                               config->block_size_bytes,
-                                               8);
-    if (cache->data == NULL) {
+    cache->internals = CacheInternals_Create(_L2Cache_AccessMainMem, mem, stats, config);
+    if (cache->internals == NULL) {
         free(cache);
         return NULL;
     }
+
+    cache->config          = config;
+    cache->bus_width_shift = HighestBitSet(config->bus_width_bytes);
 
     return cache;
 }
@@ -69,62 +62,28 @@ l2_cache_t L2Cache_Create(main_mem_t mem, cache_stats_t * stats, cache_param_t c
 void L2Cache_Destroy(l2_cache_t cache)
 {
     if (cache) {
-        CacheData_Destroy(cache->data);
+        CacheInternals_Destroy(cache->internals);
         free(cache);
     }
 }
 
 uint32_t L2Cache_Access(l2_cache_t cache, access_t const * access)
 {
-    // We assume for the following code that the original access did not span
-    // multiple L2 blocks. This effectively assumes that the L2 block size is a
-    // multiple of the L1 block size
+    uint32_t access_time_cycles = CacheInternals_Access(cache->internals, access);
 
-    result_t result;
-    uint64_t dirty_kickout_address;
-    if (access->type == TYPE_WRITE) {
-        dirty_kickout_address = CacheData_Write(cache->data, access->address, &result);
-    }
-    else {
-        dirty_kickout_address = CacheData_Read(cache->data, access->address, &result);
-    }
-
-    uint32_t access_time_cycles = 0;
-
-    access_t dirty_write;
-    access_t miss_read;
-    switch (result) {
-    case RESULT_MISS_DIRTY_KICKOUT:
-        dirty_write.type    = TYPE_WRITE,
-        dirty_write.address = dirty_kickout_address,
-        dirty_write.n_bytes = cache->config->block_size_bytes,
-
-        access_time_cycles += MainMem_Access(cache->mem, &dirty_write);
-        // Intentional fallthrough
-
-    case RESULT_MISS:
-    case RESULT_MISS_KICKOUT:
-        miss_read.type       = TYPE_READ,
-        miss_read.address    = access->address,
-        miss_read.n_bytes    = cache->config->block_size_bytes,
-
-        access_time_cycles += cache->config->miss_time_cycles;
-        access_time_cycles += MainMem_Access(cache->mem, &miss_read);
-        break;
-
-    default:
-        break;
-    }
-
-    access_time_cycles += cache->config->hit_time_cycles;
     access_time_cycles += cache->config->transfer_time_cycles *
                           (access->n_bytes >> cache->bus_width_shift);
 
-    Statistics_RecordCacheAccess(cache->stats, result);
 
     return access_time_cycles;
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
+
+static uint32_t _L2Cache_AccessMainMem(void * _main_mem, access_t const * access)
+{
+    main_mem_t main_mem = _main_mem;
+    return MainMem_Access(main_mem, access);
+}
 
 /** @} addtogroup L2CACHE */

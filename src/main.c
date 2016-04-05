@@ -84,11 +84,13 @@ int main(int argc, char const * const * const argv)
             uint32_t n_aligned = l1_bus_aligned_access.n_bytes >> 2;
             l1_bus_aligned_access.n_bytes = 4;
 
-            l1_cache_t top_cache = (l1_bus_aligned_access.type == TYPE_INSTR) ?
-                                   l1i_cache :
-                                   l1d_cache;
-
+            l1_cache_t top_cache = l1d_cache;
             uint32_t access_cycles = 0;
+            if (l1_bus_aligned_access.type == TYPE_INSTR) {
+                top_cache = l1i_cache;
+                access_cycles = 1;
+            }
+
             uint32_t i;
             for (i = 0; i < n_aligned; i++) {
                 access_cycles += L1Cache_Access(top_cache, &l1_bus_aligned_access);

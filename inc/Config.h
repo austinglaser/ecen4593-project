@@ -63,6 +63,8 @@ void Config_ParseLine(const char * line, config_t * config);
  */
 void Config_FromFile(const char * filename, config_t * config);
 
+void Config_Print(config_t const * config);
+
 /** @} defgroup CONFIG */
 
 #endif /* ifndef CONFIG_H */

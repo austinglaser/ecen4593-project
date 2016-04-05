@@ -228,7 +228,7 @@ void test_Statistics_RecordCacheAccess_should_RecordCacheDirtyyKickout(void)
     TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.miss_count);
     TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.kickouts);
     TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.dirty_kickouts);
-    TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.transfers);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.transfers);
     TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.vc_hit_count);
 }
 
@@ -252,7 +252,7 @@ void test_Statistics_RecordCacheAccess_should_IncrementForMultipleAccesses(void)
     TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.miss_count);
     TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.kickouts);
     TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.dirty_kickouts);
-    TEST_ASSERT_EQUAL_UINT64(4, stats.l1d.transfers);
+    TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.transfers);
     TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.vc_hit_count);
 }
 

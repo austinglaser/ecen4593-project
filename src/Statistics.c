@@ -68,8 +68,6 @@ void Statistics_RecordCacheAccess(cache_stats_t * cache_stats, result_t result)
 
     case RESULT_MISS_DIRTY_KICKOUT:
         cache_stats->dirty_kickouts += 1;
-        // Dirty kickout is two transfers; up and down. Add an extra here
-        cache_stats->transfers += 1;
         // Intentional fallthrough
 
     case RESULT_MISS_KICKOUT:

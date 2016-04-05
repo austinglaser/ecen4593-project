@@ -86,7 +86,10 @@ void Statistics_Print(stats_t const * stats)
     printf("Ideal:             Exec. Time = %12" PRIu64 "; CPI = %5.1f\n",
            total_ideal_cycles,
            Statistics_CPI(total_ideal_cycles, stats->instr_count));
-    uint64_t total_aligned_cycles = stats->read_count_aligned + stats->write_count_aligned + stats->instr_count_aligned*2;
+    uint64_t total_aligned_cycles = stats->read_count_aligned +
+                                    stats->write_count_aligned +
+                                    stats->instr_count_aligned +
+                                    stats->instr_count;
     printf("Ideal mis-aligned: Exec. Time = %12" PRIu64 "; CPI = %5.1f\n",
            total_aligned_cycles,
            Statistics_CPI(total_aligned_cycles, stats->instr_count));

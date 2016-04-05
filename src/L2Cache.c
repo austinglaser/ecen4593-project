@@ -87,27 +87,29 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t const * access)
 
     uint32_t access_time_cycles = 0;
 
-    if (result == RESULT_MISS_DIRTY_KICKOUT) {
-        access_t dirty_write = {
-            .type    = TYPE_WRITE,
-            .address = dirty_kickout_address,
-            .n_bytes = cache->config->block_size_bytes,
-        };
+    access_t dirty_write;
+    access_t miss_read;
+    switch (result) {
+    case RESULT_MISS_DIRTY_KICKOUT:
+        dirty_write.type    = TYPE_WRITE,
+        dirty_write.address = dirty_kickout_address,
+        dirty_write.n_bytes = cache->config->block_size_bytes,
 
         access_time_cycles += MainMem_Access(cache->mem, &dirty_write);
-    }
+        // Intentional fallthrough
 
-    if (result == RESULT_MISS ||
-        result == RESULT_MISS_KICKOUT ||
-        result == RESULT_MISS_DIRTY_KICKOUT) {
-        access_t miss_read = {
-            .type       = TYPE_READ,
-            .address    = access->address,
-            .n_bytes    = cache->config->block_size_bytes,
-        };
+    case RESULT_MISS:
+    case RESULT_MISS_KICKOUT:
+        miss_read.type       = TYPE_READ,
+        miss_read.address    = access->address,
+        miss_read.n_bytes    = cache->config->block_size_bytes,
 
         access_time_cycles += cache->config->miss_time_cycles;
         access_time_cycles += MainMem_Access(cache->mem, &miss_read);
+        break;
+
+    default:
+        break;
     }
 
     access_time_cycles += cache->config->hit_time_cycles;

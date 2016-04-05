@@ -34,9 +34,9 @@ void Statistics_Create(stats_t * stats)
     stats->l2.name = "L2";
 }
 
-void Statistics_RecordAccess(stats_t * stats, access_t const * access, uint32_t cycles, uint32_t n_aligned)
+void Statistics_RecordAccess(stats_t * stats, uint8_t type, uint32_t cycles, uint32_t n_aligned)
 {
-    switch(access->type) {
+    switch(type) {
     case TYPE_READ:
         stats->read_count         += 1;
         stats->read_count_aligned += n_aligned;
@@ -52,6 +52,32 @@ void Statistics_RecordAccess(stats_t * stats, access_t const * access, uint32_t 
         stats->instr_count_aligned += n_aligned;
         stats->instr_cycles        += cycles;
         break;
+    }
+}
+
+void Statistics_RecordCacheAccess(cache_stats_t * cache_stats, result_t result)
+{
+    if (result == RESULT_HIT) {
+        cache_stats->hit_count += 1;
+    }
+    else if (result == RESULT_HIT_VICTIM_CACHE) {
+        cache_stats->hit_count += 1;
+        cache_stats->vc_hit_count += 1;
+    }
+    else if (result == RESULT_MISS) {
+        cache_stats->miss_count += 1;
+        cache_stats->transfers += 1;
+    }
+    else if (result == RESULT_MISS_KICKOUT) {
+        cache_stats->miss_count += 1;
+        cache_stats->kickouts += 1;
+        cache_stats->transfers += 1;
+    }
+    else if (result == RESULT_MISS_DIRTY_KICKOUT) {
+        cache_stats->miss_count += 1;
+        cache_stats->kickouts += 1;
+        cache_stats->dirty_kickouts += 1;
+        cache_stats->transfers += 2;
     }
 }
 

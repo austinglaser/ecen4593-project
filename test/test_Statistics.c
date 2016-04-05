@@ -83,14 +83,8 @@ void test_Statistics_Create_should_InitializeAllStatFields(void)
 
 void test_Statistics_RecordAccess_should_RecordReadAccess(void)
 {
-    access_t access = {
-        .type       = TYPE_READ,
-        .address    = 0x0000,
-        .n_bytes    = 4,
-    };
-
     uint32_t cycles = 38;
-    Statistics_RecordAccess(&stats, &access, cycles, 1);
+    Statistics_RecordAccess(&stats, TYPE_READ, cycles, 1);
 
     TEST_ASSERT_EQUAL_UINT64(1,      stats.read_count);
     TEST_ASSERT_EQUAL_UINT64(1,      stats.read_count_aligned);
@@ -104,14 +98,8 @@ void test_Statistics_RecordAccess_should_RecordReadAccess(void)
 
 void test_Statistics_RecordAccess_should_RecordWriteAccess(void)
 {
-    access_t access = {
-        .type       = TYPE_WRITE,
-        .address    = 0xfcddfbc,
-        .n_bytes    = 4,
-    };
-
     uint32_t cycles = 21;
-    Statistics_RecordAccess(&stats, &access, cycles, 1);
+    Statistics_RecordAccess(&stats, TYPE_WRITE, cycles, 1);
 
     TEST_ASSERT_EQUAL_UINT64(1,      stats.write_count);
     TEST_ASSERT_EQUAL_UINT64(1,      stats.write_count_aligned);
@@ -125,14 +113,8 @@ void test_Statistics_RecordAccess_should_RecordWriteAccess(void)
 
 void test_Statistics_RecordAccess_should_RecordInstructionAccess(void)
 {
-    access_t access = {
-        .type       = TYPE_INSTR,
-        .address    = 0xfcddfb4,
-        .n_bytes    = 4,
-    };
-
     uint32_t cycles = 111;
-    Statistics_RecordAccess(&stats, &access, cycles, 1);
+    Statistics_RecordAccess(&stats, TYPE_INSTR, cycles, 1);
 
     TEST_ASSERT_EQUAL_UINT64(1,      stats.instr_count);
     TEST_ASSERT_EQUAL_UINT64(1,      stats.instr_count_aligned);
@@ -146,42 +128,96 @@ void test_Statistics_RecordAccess_should_RecordInstructionAccess(void)
 
 void test_Statistics_RecordAccess_should_RecordMisalignedAccess(void)
 {
-    access_t access;
+    uint8_t type;
     uint32_t cycles;
     uint32_t n_aligned;
 
-    access.type    = TYPE_READ;
-    access.address = 0x0000;
-    access.n_bytes = 8;
-    cycles         = 38;
-    n_aligned   = 2;
-    Statistics_RecordAccess(&stats, &access, cycles, n_aligned);
+    type      = TYPE_READ;
+    cycles    = 38;
+    n_aligned = 2;
+    Statistics_RecordAccess(&stats, type, cycles, n_aligned);
 
-    TEST_ASSERT_EQUAL_UINT64(1,            stats.read_count);
+    TEST_ASSERT_EQUAL_UINT64(1,         stats.read_count);
     TEST_ASSERT_EQUAL_UINT64(n_aligned, stats.read_count_aligned);
-    TEST_ASSERT_EQUAL_UINT64(cycles,       stats.read_cycles);
+    TEST_ASSERT_EQUAL_UINT64(cycles,    stats.read_cycles);
 
-    access.type    = TYPE_WRITE;
-    access.address = 0xfcfdabf;
-    access.n_bytes = 8;
-    cycles         = 118;
-    n_aligned   = 3;
-    Statistics_RecordAccess(&stats, &access, cycles, n_aligned);
+    type       = TYPE_WRITE;
+    cycles     = 118;
+    n_aligned  = 3;
+    Statistics_RecordAccess(&stats, type, cycles, n_aligned);
 
-    TEST_ASSERT_EQUAL_UINT64(1,            stats.write_count);
+    TEST_ASSERT_EQUAL_UINT64(1,         stats.write_count);
     TEST_ASSERT_EQUAL_UINT64(n_aligned, stats.write_count_aligned);
-    TEST_ASSERT_EQUAL_UINT64(cycles,       stats.write_cycles);
+    TEST_ASSERT_EQUAL_UINT64(cycles,    stats.write_cycles);
 
-    access.type    = TYPE_INSTR;
-    access.address = 0xfcfdabf;
-    access.n_bytes = 4;
-    cycles         = 21;
-    n_aligned   = 2;
-    Statistics_RecordAccess(&stats, &access, cycles, n_aligned);
+    type       = TYPE_INSTR;
+    cycles     = 21;
+    n_aligned  = 2;
+    Statistics_RecordAccess(&stats, type, cycles, n_aligned);
 
-    TEST_ASSERT_EQUAL_UINT64(1,            stats.instr_count);
+    TEST_ASSERT_EQUAL_UINT64(1,         stats.instr_count);
     TEST_ASSERT_EQUAL_UINT64(n_aligned, stats.instr_count_aligned);
-    TEST_ASSERT_EQUAL_UINT64(cycles,       stats.instr_cycles);
+    TEST_ASSERT_EQUAL_UINT64(cycles,    stats.instr_cycles);
+}
+
+void test_Statistics_RecordCacheAccess_should_RecordCacheHit(void)
+{
+    Statistics_RecordCacheAccess(&(stats.l1d), RESULT_HIT);
+
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.hit_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.miss_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.kickouts);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.dirty_kickouts);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.transfers);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.vc_hit_count);
+}
+
+void test_Statistics_RecordCacheAccess_should_RecordVictimCacheHit(void)
+{
+    Statistics_RecordCacheAccess(&(stats.l1d), RESULT_HIT_VICTIM_CACHE);
+
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.hit_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.miss_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.kickouts);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.dirty_kickouts);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.transfers);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.vc_hit_count);
+}
+
+void test_Statistics_RecordCacheAccess_should_RecordCacheMiss(void)
+{
+    Statistics_RecordCacheAccess(&(stats.l1i), RESULT_MISS);
+
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1i.hit_count);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1i.miss_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1i.kickouts);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1i.dirty_kickouts);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1i.transfers);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1i.vc_hit_count);
+}
+
+void test_Statistics_RecordCacheAccess_should_RecordCacheKickout(void)
+{
+    Statistics_RecordCacheAccess(&(stats.l2), RESULT_MISS_KICKOUT);
+
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l2.hit_count);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l2.miss_count);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l2.kickouts);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l2.dirty_kickouts);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l2.transfers);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l2.vc_hit_count);
+}
+
+void test_Statistics_RecordCacheAccess_should_RecordCacheDirtyyKickout(void)
+{
+    Statistics_RecordCacheAccess(&(stats.l1d), RESULT_MISS_DIRTY_KICKOUT);
+
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.hit_count);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.miss_count);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.kickouts);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.dirty_kickouts);
+    TEST_ASSERT_EQUAL_UINT64(2, stats.l1d.transfers);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.vc_hit_count);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

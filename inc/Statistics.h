@@ -16,6 +16,7 @@
 /* --- PUBLIC DEPENDENCIES -------------------------------------------------- */
 
 #include "Access.h"
+#include "CacheData.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -56,8 +57,8 @@ typedef struct _stats_t {
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 void Statistics_Create(stats_t * stats);
-
-void Statistics_RecordAccess(stats_t * stats, access_t const * access, uint32_t cycles, uint32_t n_aligned);
+void Statistics_RecordAccess(stats_t * stats, uint8_t type, uint32_t cycles, uint32_t n_aligned);
+void Statistics_RecordCacheAccess(cache_stats_t * cache_stats, result_t result);
 
 /** @} defgroup STATISTICS */
 

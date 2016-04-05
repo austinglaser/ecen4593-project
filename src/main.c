@@ -9,7 +9,14 @@
 
 /* --- PRIVATE DEPENDENCIES ------------------------------------------------- */
 
+#include "Access.h"
+#include "CException.h"
+#include "CExceptionConfig.h"
 #include "Config.h"
+#include "ExceptionTypes.h"
+#include "L1Cache.h"
+#include "L2Cache.h"
+#include "MainMem.h"
 #include "Statistics.h"
 
 #include <inttypes.h>
@@ -19,13 +26,19 @@
 
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
+
+static void DestroyAll(void);
+
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
-
-#undef FAKE_STATS
-
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
+
+static main_mem_t main_mem;
+static l2_cache_t l2_cache;
+static l1_cache_t l1i_cache;
+static l1_cache_t l1d_cache;
+
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 /**
@@ -53,41 +66,44 @@ int main(int argc, char const * const * const argv)
     stats_t stats;
     Statistics_Create(&stats);
 
-#ifdef FAKE_STATS
-    stats.read_count          = 940933865;
-    stats.read_count_aligned  = stats.read_count * 2;
-    stats.read_cycles         = 6362234282;
+    main_mem_t main_mem = MainMem_Create(&config);
+    l2_cache_t l2_cache = L2Cache_Create(main_mem, &(stats.l2), &(config.l2));
+    l1_cache_t l1i_cache = L1Cache_Create(l2_cache, &(stats.l1i), &(config.l1));
+    l1_cache_t l1d_cache = L1Cache_Create(l2_cache, &(stats.l1d), &(config.l1));
 
-    stats.write_count         = 374031357;
-    stats.write_count_aligned = stats.write_count * 2;
-    stats.write_cycles        = 5668329310;
+    CEXCEPTION_T e;
+    Try {
+        char line[128];
+        while (fgets(line, sizeof(line), stdin)) {
+            access_t access;
+            Access_ParseLine(line, &access);
 
-    stats.instr_count         = 3685034778;
-    stats.instr_count_aligned = stats.instr_count * 2;
-    stats.instr_cycles        = 18577582319;
+            access_t l1_bus_aligned_access;
+            Access_Align(&l1_bus_aligned_access, &access, 4);
 
-    stats.l1i.hit_count       = 6162531865;
-    stats.l1i.miss_count      = 108939899;
-    stats.l1i.kickouts        = 103082777;
-    stats.l1i.dirty_kickouts  = 0;
-    stats.l1i.transfers       = 103083041;
-    stats.l1i.vc_hit_count    = 5856858;
+            uint32_t n_aligned = l1_bus_aligned_access.n_bytes >> 2;
+            l1_bus_aligned_access.n_bytes = 4;
 
-    stats.l1d.hit_count       = 1622984580;
-    stats.l1d.miss_count      = 66008903;
-    stats.l1d.kickouts        = 57344834;
-    stats.l1d.dirty_kickouts  = 30336644;
-    stats.l1d.transfers       = 57345098;
-    stats.l1d.vc_hit_count    = 8663805;
+            l1_cache_t top_cache = (l1_bus_aligned_access.type == TYPE_INSTR) ?
+                                   l1i_cache :
+                                   l1d_cache;
 
-    stats.l2.hit_count        = 132055819;
-    stats.l2.miss_count       = 58708964;
-    stats.l2.kickouts         = 56097023;
-    stats.l2.dirty_kickouts   = 15342421;
-    stats.l2.transfers        = 56097543;
-    stats.l2.vc_hit_count     = 2611421;
-#else
-#endif
+            uint32_t access_cycles = 0;
+            uint32_t i;
+            for (i = 0; i < n_aligned; i++) {
+                access_cycles += L1Cache_Access(top_cache, &l1_bus_aligned_access);
+                l1_bus_aligned_access.address += 4;
+            }
+
+            Statistics_RecordAccess(&stats, access.type, access_cycles, n_aligned);
+        }
+    }
+    Catch (e) {
+        DestroyAll();
+        UncaughtException(e);
+    }
+
+    DestroyAll();
 
     Statistics_Print(&stats);
     printf("\n");
@@ -96,5 +112,13 @@ int main(int argc, char const * const * const argv)
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
+
+static void DestroyAll(void)
+{
+    L1Cache_Destroy(l1i_cache);
+    L1Cache_Destroy(l1d_cache);
+    L2Cache_Destroy(l2_cache);
+    MainMem_Destroy(main_mem);
+}
 
 /** @} defgroup MAIN */

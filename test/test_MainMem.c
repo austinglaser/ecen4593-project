@@ -41,7 +41,7 @@ void setUp(void)
 {
     SetDefaultConfigValues(&config);
 
-    main_mem = MainMem_Create(&config);
+    main_mem = MainMem_Create(&(config.main_mem));
 }
 
 void tearDown(void)

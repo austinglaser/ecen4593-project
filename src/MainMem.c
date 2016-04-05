@@ -32,14 +32,14 @@ struct _main_mem_t {
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-main_mem_t MainMem_Create(config_t const * config)
+main_mem_t MainMem_Create(memory_param_t const * config)
 {
     main_mem_t mem = (main_mem_t) malloc(sizeof(*mem));
     if (mem == NULL) {
         return NULL;
     }
 
-    mem->config = &config->main_mem;
+    mem->config = config;
 
     return mem;
 }

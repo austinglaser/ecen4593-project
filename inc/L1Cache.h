@@ -15,9 +15,10 @@
 
 /* --- PUBLIC DEPENDENCIES -------------------------------------------------- */
 
-#include "Config.h"
 #include "Access.h"
+#include "Config.h"
 #include "L2Cache.h"
+#include "Statistics.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -31,7 +32,7 @@ typedef struct _l1_cache_t * l1_cache_t;
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-l1_cache_t L1Cache_Create(l2_cache_t l2_cache, cache_param_t const * config);
+l1_cache_t L1Cache_Create(l2_cache_t l2_cache, cache_stats_t * stats, cache_param_t const * config);
 void L1Cache_Destroy(l1_cache_t cache);
 uint32_t L1Cache_Access(l1_cache_t cache, access_t const * access);
 

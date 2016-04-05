@@ -15,6 +15,7 @@
 #include "CacheData.h"
 #include "Config.h"
 #include "MainMem.h"
+#include "Statistics.h"
 #include "Util.h"
 
 #include <stdbool.h>
@@ -27,6 +28,7 @@
 struct _l2_cache_t {
     main_mem_t              mem;
     cache_param_t const *   config;
+    cache_stats_t *         stats;
     uint32_t                bus_width_shift;
     cache_data_t            data;
 };
@@ -37,7 +39,7 @@ struct _l2_cache_t {
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-l2_cache_t L2Cache_Create(main_mem_t mem, cache_param_t const * config)
+l2_cache_t L2Cache_Create(main_mem_t mem, cache_stats_t * stats, cache_param_t const * config)
 {
     l2_cache_t cache = (l2_cache_t) malloc(sizeof(*cache));
     if (cache == NULL) {
@@ -50,6 +52,7 @@ l2_cache_t L2Cache_Create(main_mem_t mem, cache_param_t const * config)
     uint32_t set_len        = config->associativity;
     cache->mem              = mem;
     cache->config           = config;
+    cache->stats            = stats;
     cache->bus_width_shift  = HighestBitSet(config->bus_width_bytes);
     cache->data             = CacheData_Create(n_sets,
                                                set_len,
@@ -110,6 +113,8 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t const * access)
     access_time_cycles += cache->config->hit_time_cycles;
     access_time_cycles += cache->config->transfer_time_cycles *
                           (access->n_bytes >> cache->bus_width_shift);
+
+    Statistics_RecordCacheAccess(cache->stats, result);
 
     return access_time_cycles;
 }

@@ -57,6 +57,7 @@ typedef struct _stats_t {
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 void Statistics_Create(stats_t * stats);
+void Statistics_Print(stats_t const * stats);
 void Statistics_RecordAccess(stats_t * stats, uint8_t type, uint32_t cycles, uint32_t n_aligned);
 void Statistics_RecordCacheAccess(cache_stats_t * cache_stats, result_t result);
 

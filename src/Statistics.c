@@ -57,28 +57,31 @@ void Statistics_RecordAccess(stats_t * stats, uint8_t type, uint32_t cycles, uin
 
 void Statistics_RecordCacheAccess(cache_stats_t * cache_stats, result_t result)
 {
-    if (result == RESULT_HIT) {
-        cache_stats->hit_count += 1;
-    }
-    else if (result == RESULT_HIT_VICTIM_CACHE) {
-        cache_stats->hit_count += 1;
+    switch (result) {
+    case RESULT_HIT_VICTIM_CACHE:
         cache_stats->vc_hit_count += 1;
-    }
-    else if (result == RESULT_MISS) {
-        cache_stats->miss_count += 1;
-        cache_stats->transfers += 1;
-    }
-    else if (result == RESULT_MISS_KICKOUT) {
-        cache_stats->miss_count += 1;
-        cache_stats->kickouts += 1;
-        cache_stats->transfers += 1;
-    }
-    else if (result == RESULT_MISS_DIRTY_KICKOUT) {
-        cache_stats->miss_count += 1;
-        cache_stats->kickouts += 1;
+        // Intentional fallthrough
+
+    case RESULT_HIT:
+        cache_stats->hit_count += 1;
+        break;
+
+    case RESULT_MISS_DIRTY_KICKOUT:
         cache_stats->dirty_kickouts += 1;
-        cache_stats->transfers += 2;
+        // Dirty kickout is two transfers; up and down. Add an extra here
+        cache_stats->transfers += 1;
+        // Intentional fallthrough
+
+    case RESULT_MISS_KICKOUT:
+        cache_stats->kickouts += 1;
+        // Intentional fallthrough
+
+    case RESULT_MISS:
+        cache_stats->miss_count += 1;
+        cache_stats->transfers += 1;
+        break;
     }
+
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */

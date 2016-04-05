@@ -94,7 +94,9 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t const * access)
         access_time_cycles += MainMem_Access(cache->mem, &dirty_write);
     }
 
-    if (result == RESULT_MISS || result == RESULT_MISS_DIRTY_KICKOUT) {
+    if (result == RESULT_MISS ||
+        result == RESULT_MISS_KICKOUT ||
+        result == RESULT_MISS_DIRTY_KICKOUT) {
         access_t miss_read = {
             .type       = TYPE_READ,
             .address    = access->address,

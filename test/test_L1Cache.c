@@ -62,7 +62,7 @@ void tearDown(void)
     L1Cache_Destroy(l1_cache);
 }
 
-void test_AlignedInstructionMiss_should_CauseL2Read(void)
+void test_InstructionMiss_should_CauseL2Read(void)
 {
     access_t access = {
         .type = TYPE_INSTR,
@@ -90,7 +90,7 @@ void test_AlignedInstructionMiss_should_CauseL2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedReadMiss_should_CauseL2Read(void)
+void test_ReadMiss_should_CauseL2Read(void)
 {
     access_t access = {
         .type = TYPE_READ,
@@ -118,7 +118,7 @@ void test_AlignedReadMiss_should_CauseL2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedWriteMiss_should_CauseL2Read(void)
+void test_WriteMiss_should_CauseL2Read(void)
 {
     access_t access = {
         .type = TYPE_WRITE,
@@ -146,7 +146,91 @@ void test_AlignedWriteMiss_should_CauseL2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedInstructionHit_should_not_CauseL2Read(void)
+void test_InstructionMissKickout_should_CauseL2Read(void)
+{
+    access_t access = {
+        .type = TYPE_INSTR,
+        .address = 0x4cd7f0c00,
+        .n_bytes = 4,
+    };
+
+    access_t expected_memory_access = {
+        .type = TYPE_READ,
+        .address = 0x4cd7f0c00,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    result_t result = RESULT_MISS_KICKOUT;
+    CacheData_Read_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
+    CacheData_Read_IgnoreArg_result();
+    CacheData_Read_ReturnThruPtr_result(&result);
+
+    uint32_t l2_access_cycles = 75;
+    L2Cache_Access_ExpectAndReturn(dummy_l2_cache, &expected_memory_access, l2_access_cycles);
+
+    uint32_t expected_access_cycles = config.l1.miss_time_cycles +
+                                      l2_access_cycles +
+                                      config.l1.hit_time_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
+}
+
+void test_ReadMissKickout_should_CauseL2Read(void)
+{
+    access_t access = {
+        .type = TYPE_READ,
+        .address = 0xbbccfa00,
+        .n_bytes = 4,
+    };
+
+    access_t expected_memory_access = {
+        .type = TYPE_READ,
+        .address = 0xbbccfa00,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    result_t result = RESULT_MISS_KICKOUT;
+    CacheData_Read_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
+    CacheData_Read_IgnoreArg_result();
+    CacheData_Read_ReturnThruPtr_result(&result);
+
+    uint32_t l2_access_cycles = 31;
+    L2Cache_Access_ExpectAndReturn(dummy_l2_cache, &expected_memory_access, l2_access_cycles);
+
+    uint32_t expected_access_cycles = config.l1.miss_time_cycles +
+                                      l2_access_cycles +
+                                      config.l1.hit_time_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
+}
+
+void test_WriteMissKickout_should_CauseL2Read(void)
+{
+    access_t access = {
+        .type = TYPE_WRITE,
+        .address = 0xcccc00,
+        .n_bytes = 4,
+    };
+
+    access_t expected_memory_access = {
+        .type = TYPE_READ,
+        .address = 0xcccc00,
+        .n_bytes = config.l1.block_size_bytes,
+    };
+
+    result_t result = RESULT_MISS_KICKOUT;
+    CacheData_Write_ExpectAndReturn(dummy_cache_data, access.address, NULL, 0);
+    CacheData_Write_IgnoreArg_result();
+    CacheData_Write_ReturnThruPtr_result(&result);
+
+    uint32_t l2_access_cycles = 829;
+    L2Cache_Access_ExpectAndReturn(dummy_l2_cache, &expected_memory_access, l2_access_cycles);
+
+    uint32_t expected_access_cycles = config.l1.miss_time_cycles +
+                                      l2_access_cycles +
+                                      config.l1.hit_time_cycles;
+    TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
+}
+
+void test_InstructionHit_should_not_CauseL2Read(void)
 {
     access_t access = {
         .type = TYPE_INSTR,
@@ -163,7 +247,7 @@ void test_AlignedInstructionHit_should_not_CauseL2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedReadHit_should_not_CauseL2Read(void)
+void test_ReadHit_should_not_CauseL2Read(void)
 {
     access_t access = {
         .type = TYPE_READ,
@@ -180,7 +264,7 @@ void test_AlignedReadHit_should_not_CauseL2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedWriteHit_should_not_CauseL2Read(void)
+void test_WriteHit_should_not_CauseL2Read(void)
 {
     access_t access = {
         .type = TYPE_READ,
@@ -197,7 +281,7 @@ void test_AlignedWriteHit_should_not_CauseL2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedInstructionVictimCacheHit_should_not_CauseL2Read(void)
+void test_InstructionVictimCacheHit_should_not_CauseL2Read(void)
 {
     access_t access = {
         .type = TYPE_INSTR,
@@ -214,7 +298,7 @@ void test_AlignedInstructionVictimCacheHit_should_not_CauseL2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedReadVictimCacheHit_should_not_CauseL2Read(void)
+void test_ReadVictimCacheHit_should_not_CauseL2Read(void)
 {
     access_t access = {
         .type = TYPE_READ,
@@ -231,7 +315,7 @@ void test_AlignedReadVictimCacheHit_should_not_CauseL2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedWriteVictimCacheHit_should_not_CauseL2Read(void)
+void test_WriteVictimCacheHit_should_not_CauseL2Read(void)
 {
     access_t access = {
         .type = TYPE_READ,
@@ -248,7 +332,7 @@ void test_AlignedWriteVictimCacheHit_should_not_CauseL2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedReadDirtyKickout_should_CauseL2Write_then_L2Read(void)
+void test_ReadDirtyKickout_should_CauseL2Write_then_L2Read(void)
 {
     access_t access = {
         .type = TYPE_READ,
@@ -287,7 +371,7 @@ void test_AlignedReadDirtyKickout_should_CauseL2Write_then_L2Read(void)
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
-void test_AlignedWriteDirtyKickout_should_CauseL2Write_then_L2Read(void)
+void test_WriteDirtyKickout_should_CauseL2Write_then_L2Read(void)
 {
     access_t access = {
         .type = TYPE_WRITE,

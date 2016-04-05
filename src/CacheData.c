@@ -186,7 +186,7 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
             dirty_kickout_address = CacheData_Set_RemoveBlock(set, block);
             *result = (dirty_kickout_address != 0) ?
                       RESULT_MISS_DIRTY_KICKOUT :
-                      RESULT_MISS;
+                      RESULT_MISS_KICKOUT;
         }
         else {
             set_t * victim_set = &(data->victim_set);
@@ -208,7 +208,7 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
                 dirty_kickout_address = CacheData_Set_RemoveBlock(victim_set, block);
                 *result = (dirty_kickout_address != 0) ?
                           RESULT_MISS_DIRTY_KICKOUT :
-                          RESULT_MISS;
+                          RESULT_MISS_KICKOUT;
             }
 
             block_t * oldest = set->oldest;

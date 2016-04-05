@@ -89,7 +89,9 @@ uint32_t L1Cache_Access(l1_cache_t cache, access_t const * access)
         access_time_cycles += L2Cache_Access(cache->l2_cache, &dirty_write);
     }
 
-    if (result == RESULT_MISS || result == RESULT_MISS_DIRTY_KICKOUT) {
+    if (result == RESULT_MISS ||
+        result == RESULT_MISS_KICKOUT ||
+        result == RESULT_MISS_DIRTY_KICKOUT) {
         access_t miss_read = {
             .type       = TYPE_READ,
             .address    = access->address,

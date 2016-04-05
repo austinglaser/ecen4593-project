@@ -87,7 +87,7 @@ void test_CacheData_Write_should_MoveBlockToFrontOfLRU(void)
 
     CacheData_Write(cache_data, address1, &result);
     TEST_ASSERT_EQUAL_HEX64(0, CacheData_Read(cache_data, address3, &result));
-    TEST_ASSERT_EQUAL(RESULT_MISS, result);
+    TEST_ASSERT_EQUAL(RESULT_MISS_KICKOUT, result);
 }
 
 void test_CacheData_Read_should_BeAbleToFillCache(void)

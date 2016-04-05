@@ -24,6 +24,7 @@ typedef enum {
     RESULT_HIT = 0,
     RESULT_HIT_VICTIM_CACHE,
     RESULT_MISS,
+    RESULT_MISS_KICKOUT,
     RESULT_MISS_DIRTY_KICKOUT,
 } result_t;
 

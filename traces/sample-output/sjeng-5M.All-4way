@@ -9,7 +9,7 @@
     L2-cache size = 32768 : ways = 4 : block size = 64 
     Memory ready time = 50 : chunksize = 8 : chunktime = 15
 
-  Execute time =    201424702;  Total refs = 5000000
+  Execute time =    201424730;  Total refs = 5000000
   Inst refs = 3163087;  Data refs = 1836913
 
   Number of reference types:  [Percentage]
@@ -20,9 +20,9 @@
 
   Total cycles for activities:  [Percentage]
     Reads  =      965679    [ 0.5%]
-    Writes =   191253989    [95.0%]
+    Writes =   191254017    [95.0%]
     Inst.  =     9205034    [ 4.6%]
-    Total  =   201424702
+    Total  =   201424730
 
   CPI = 63.7
   Ideal: Exec. Time = 8163087; CPI =  2.6
@@ -39,12 +39,12 @@
     Hit Count = 5660258  Miss Count = 769682
     Total Requests = 6429940
     Hit Rate = 88.0%   Miss Rate = 12.0%
-    Kickouts = 769398; Dirty kickouts = 765265; Transfers = 769662
+    Kickouts = 769398; Dirty kickouts = 765266; Transfers = 769662
     VC Hit count = 20
 
   Memory Level:  L2
-    Hit Count = 1150109  Miss Count = 386172
-    Total Requests = 1536281
+    Hit Count = 1150110  Miss Count = 386172
+    Total Requests = 1536282
     Hit Rate = 74.9%   Miss Rate = 25.1%
     Kickouts = 385565; Dirty kickouts = 382467; Transfers = 386085
     VC Hit count = 87

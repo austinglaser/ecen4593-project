@@ -335,11 +335,11 @@ static void CacheData_Set_Print(cache_data_t data, set_t * set, uint32_t set_ind
 
     uint32_t n_blocks = data->set_len_blocks;
     if (is_victim_set) {
-        printf("Victim cache:\n           ");
+        printf("Victim cache:\n            |");
         n_blocks = data->victim_set_len_blocks;
     }
     else {
-        printf("Index: %4" PRIx32, set_index);
+        printf("Index: %4" PRIx32 " |", set_index);
     }
 
     uint32_t block_index = 0;
@@ -350,20 +350,20 @@ static void CacheData_Set_Print(cache_data_t data, set_t * set, uint32_t set_ind
         if (!is_victim_set) {
             address >>= HighestBitSet(data->n_sets * data->block_size_bytes);
         }
-        printf(" | V:%" PRIu32 " D:%" PRIu32 " %s %16" PRIx64 " |",
+        printf(" V:%" PRIu32 " D:%" PRIu32 " %s %16" PRIx64 " |",
                1,
                block->dirty ? (uint32_t) 1 : (uint32_t) 0,
                addr_str,
                address);
         if ((block_index % 2) == 1 && block_index != n_blocks - 1) {
-            printf("\n           ");
+            printf("\n            |");
         }
         block_index += 1;
     }
     for (; block_index < n_blocks; block_index++) {
-        printf(" | V:0 D:0 %s                - |", addr_str);
+        printf(" V:0 D:0 %s                - |", addr_str);
         if ((block_index % 2) == 1 && block_index != n_blocks - 1) {
-            printf("\n           ");
+            printf("\n            |");
         }
     }
     printf("\n");

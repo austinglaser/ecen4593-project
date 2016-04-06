@@ -23,6 +23,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
@@ -60,7 +61,22 @@ int main(int argc, char const * const * const argv)
     config_t config;
     Config_FromFile(config_file, &config);
 
-    printf("\nMemory system:\n");
+    char const * config_name;
+    if (config_file == NULL) {
+        config_name = "default";
+    }
+    else {
+        config_name = strrchr(config_file, '/') + 1;
+        if (config_name == NULL) {
+            config_name = config_file;
+        }
+    }
+
+    printf("\n--------------------------------------------------------------------------------\n");
+    printf("      %-25s Simulation Results\n", config_name);
+    printf("--------------------------------------------------------------------------------\n\n");
+
+    printf("Memory system:\n");
     Config_Print(&config);
     printf("\n");
 
@@ -105,6 +121,10 @@ int main(int argc, char const * const * const argv)
 
     Statistics_Print(&stats);
     printf("\n");
+
+    printf("--------------------------------------------------------------------------------\n\n");
+
+    printf("Cache final contents:\n\n");
 
     printf("Memory Level: L1i\n");
     L1Cache_Print(l1i_cache);

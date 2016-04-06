@@ -30,6 +30,7 @@
     - -Wextra
     - -Wall
     - -Wstrict-prototypes
+    - -Wno-duplicate-decl-specifier
     - -Werror
   :optimizations: &opt_flags
     - -Wno-strict-aliasing

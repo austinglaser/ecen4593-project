@@ -344,18 +344,24 @@ static void CacheData_Set_Print(cache_data_t data, set_t * set, uint32_t set_ind
 
     uint32_t block_index = 0;
     block_t * block;
+    const char * addr_str = is_victim_set ? "Addr:" : "Tag: ";
     for_block_in_set(block, set) {
-        printf(" | V:%" PRIu32 " D:%" PRIu32 " Addr: %16" PRIx64 " |",
+        uint64_t address = block->address;
+        if (!is_victim_set) {
+            address >>= HighestBitSet(data->n_sets * data->block_size_bytes);
+        }
+        printf(" | V:%" PRIu32 " D:%" PRIu32 " %s %16" PRIx64 " |",
                1,
                block->dirty ? (uint32_t) 1 : (uint32_t) 0,
-               block->address);
+               addr_str,
+               address);
         if ((block_index % 2) == 1 && block_index != n_blocks - 1) {
             printf("\n           ");
         }
         block_index += 1;
     }
     for (; block_index < n_blocks; block_index++) {
-        printf(" | V:0 D:0 Addr:                - |");
+        printf(" | V:0 D:0 %s                - |", addr_str);
         if ((block_index % 2) == 1 && block_index != n_blocks - 1) {
             printf("\n           ");
         }

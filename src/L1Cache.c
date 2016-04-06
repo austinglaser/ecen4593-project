@@ -66,6 +66,11 @@ uint32_t L1Cache_Access(l1_cache_t cache, access_t const * access)
     return CacheInternals_Access(cache->internals, access);
 }
 
+void L1Cache_Print(l1_cache_t l1_cache)
+{
+    CacheInternals_Print(l1_cache->internals);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 static uint32_t _L1Cache_AccessL2(void * _l2_cache, access_t const * access)

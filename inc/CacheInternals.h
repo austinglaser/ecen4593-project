@@ -37,6 +37,8 @@ cache_t CacheInternals_Create(mem_access_f_t sub_access_f, void * sub_mem, cache
 void CacheInternals_Destroy(cache_t cache);
 uint32_t CacheInternals_Access(cache_t cache, access_t const * access);
 
+void CacheInternals_Print(cache_t cache);
+
 /** @} defgroup CACHEINTERNALS */
 
 #endif /* ifndef CACHEINTERNALS_H */

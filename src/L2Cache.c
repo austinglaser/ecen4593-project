@@ -78,6 +78,11 @@ uint32_t L2Cache_Access(l2_cache_t cache, access_t const * access)
     return access_time_cycles;
 }
 
+void L2Cache_Print(l2_cache_t cache)
+{
+    CacheInternals_Print(cache->internals);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 static uint32_t _L2Cache_AccessMainMem(void * _main_mem, access_t const * access)

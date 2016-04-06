@@ -14,11 +14,16 @@
 #include "Util.h"
 #include "CException.h"
 
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
+
+#define VICTIM_SET          (UINT32_MAX)
+
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
 typedef struct _block_t {
@@ -50,6 +55,9 @@ struct _cache_data_t {
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
+
+#define for_block_in_set(block, set) for (block = set->newest; block != NULL; block = block->older)
+
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
 static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access, result_t * result);
@@ -62,6 +70,8 @@ static block_t * CacheData_AllocateBlock(cache_data_t data);
 static block_t * CacheData_Set_GetMatchingBlock(set_t * set, uint64_t address);
 static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block);
 static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block);
+
+static void CacheData_Set_Print(cache_data_t data, set_t * set, uint32_t set_index);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -161,6 +171,15 @@ uint64_t CacheData_Read(cache_data_t data, uint64_t address, result_t * result)
     return CacheData_AccessBlock(data, aligned_address, false, result);
 }
 
+void CacheData_Print(cache_data_t data)
+{
+    uint32_t i;
+    for (i = 0; i < data->n_sets; i++) {
+        CacheData_Set_Print(data, &(data->sets[i]), i);
+    }
+    CacheData_Set_Print(data, &(data->victim_set), 0);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access, result_t * result)
@@ -245,7 +264,7 @@ static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address)
 static block_t * CacheData_Set_GetMatchingBlock(set_t * set, uint64_t address)
 {
     block_t * block;
-    for (block = set->newest; block != NULL; block = block->older) {
+    for_block_in_set(block, set) {
         if (block->address == address) {
             return block;
         }
@@ -305,6 +324,43 @@ static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block)
     set->newest = block;
 
     set->n_valid_blocks += 1;
+}
+
+static void CacheData_Set_Print(cache_data_t data, set_t * set, uint32_t set_index)
+{
+    bool is_victim_set = set == &(data->victim_set);
+    if (!is_victim_set && set->newest == NULL) {
+        return;
+    }
+
+    uint32_t n_blocks = data->set_len_blocks;
+    if (is_victim_set) {
+        printf("Victim cache:\n           ");
+        n_blocks = data->victim_set_len_blocks;
+    }
+    else {
+        printf("Index: %4" PRIx32, set_index);
+    }
+
+    uint32_t block_index = 0;
+    block_t * block;
+    for_block_in_set(block, set) {
+        printf(" | V:%" PRIu32 " D:%" PRIu32 " Addr: %16" PRIx64 " |",
+               1,
+               block->dirty ? (uint32_t) 1 : (uint32_t) 0,
+               block->address);
+        if ((block_index % 2) == 1 && block_index != n_blocks - 1) {
+            printf("\n           ");
+        }
+        block_index += 1;
+    }
+    for (; block_index < n_blocks; block_index++) {
+        printf(" | V:0 D:0 Addr:                - |");
+        if ((block_index % 2) == 1 && block_index != n_blocks - 1) {
+            printf("\n           ");
+        }
+    }
+    printf("\n");
 }
 
 /** @} addtogroup CACHEDATA */

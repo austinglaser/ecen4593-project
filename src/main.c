@@ -103,10 +103,22 @@ int main(int argc, char const * const * const argv)
         UncaughtException(e);
     }
 
-    Memory_Destroy();
-
     Statistics_Print(&stats);
     printf("\n");
+
+    printf("Memory Level: L1i\n");
+    L1Cache_Print(l1i_cache);
+    printf("\n");
+
+    printf("Memory Level: L1d\n");
+    L1Cache_Print(l1d_cache);
+    printf("\n");
+
+    printf("Memory Level: L2\n");
+    L2Cache_Print(l2_cache);
+    printf("\n");
+
+    Memory_Destroy();
 
     return 0;
 }

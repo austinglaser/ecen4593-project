@@ -36,6 +36,8 @@ l1_cache_t L1Cache_Create(l2_cache_t l2_cache, cache_stats_t * stats, cache_para
 void L1Cache_Destroy(l1_cache_t cache);
 uint32_t L1Cache_Access(l1_cache_t cache, access_t const * access);
 
+void L1Cache_Print(l1_cache_t l1_cache);
+
 /** @} defgroup L1CACHE */
 
 #endif /* ifndef L1CACHE_H */

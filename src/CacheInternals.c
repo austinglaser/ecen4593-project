@@ -117,6 +117,11 @@ uint32_t CacheInternals_Access(cache_t cache, access_t const * access)
     return access_time_cycles;
 }
 
+void CacheInternals_Print(cache_t cache)
+{
+    CacheData_Print(cache->data);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 /** @} addtogroup CACHEINTERNALS */

@@ -36,6 +36,8 @@ l2_cache_t L2Cache_Create(main_mem_t mem, cache_stats_t * stats, cache_param_t c
 void L2Cache_Destroy(l2_cache_t cache);
 uint32_t L2Cache_Access(l2_cache_t cache, access_t const * access);
 
+void L2Cache_Print(l2_cache_t cache);
+
 /** @} defgroup L2CACHE */
 
 #endif /* ifndef L2CACHE_H */

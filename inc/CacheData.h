@@ -45,6 +45,7 @@ void CacheData_Destroy(cache_data_t data);
 bool CacheData_Contains(cache_data_t data, uint64_t address);
 uint64_t CacheData_Write(cache_data_t data, uint64_t address, result_t * result);
 uint64_t CacheData_Read(cache_data_t data, uint64_t address, result_t * result);
+void CacheData_Print(cache_data_t data);
 
 /** @} defgroup CACHEDATA */
 

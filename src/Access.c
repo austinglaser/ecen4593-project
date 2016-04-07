@@ -69,7 +69,7 @@ void Access_Align(access_t * aligned_access, access_t const * unaligned_access, 
     aligned_access->n_bytes = end_block - start_block;
 }
 
-void Access_Print(access_t * access)
+void Access_Print(access_t const * access)
 {
     printf("%c %16" PRIx64 " %" PRIu32 "\n",
            access->type,

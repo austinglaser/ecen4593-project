@@ -177,17 +177,13 @@ void Config_PrintCost(config_t const * config)
 {
     uint32_t l1_size_factor  = (config->l1.cache_size_bytes / 4096);
     uint32_t l1_assoc_factor = HighestBitSet(config->l1.associativity) * l1_size_factor;
-    uint32_t l1_cost         = 100 * l1_size_factor;
-    if (l1_assoc_factor != 0) {
-        l1_cost += 100 * l1_assoc_factor;
-    }
+    uint32_t l1_cost         = 100 * l1_size_factor +
+                               100 * l1_assoc_factor;
 
     uint32_t l2_size_factor  = (config->l2.cache_size_bytes / 16384);
     uint32_t l2_assoc_factor = HighestBitSet(config->l2.associativity) * l2_size_factor;
-    uint32_t l2_cost         = 50 * l2_size_factor;
-    if (l2_assoc_factor != 0) {
-        l2_cost += 50 * l2_assoc_factor;
-    }
+    uint32_t l2_cost         = 50 * l2_size_factor +
+                               50 * l2_assoc_factor;
 
     uint32_t mem_latency_factor   = HighestBitSet(CEIL_DIVIDE(50, config->main_mem.ready_cycles));
     uint32_t mem_bandwidth_factor = HighestBitSet(config->main_mem.chunk_size_bytes / 8);

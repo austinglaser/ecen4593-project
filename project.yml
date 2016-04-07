@@ -42,19 +42,19 @@
       :*:
         - *warning_flags
         - -std=c11
-        #- *opt_flags
-    #:link:
-    #  :*:
-    #    - *opt_flags
+        - *opt_flags
+    :link:
+      :*:
+        - *opt_flags
   :release:
     :compile:
       :*:
         - *warning_flags
         - -std=c11
-        #- *opt_flags
-    #:link:
-    #  :*:
-    #    - *opt_flags
+        - *opt_flags
+    :link:
+      :*:
+        - *opt_flags
 
 :paths:
   :test:

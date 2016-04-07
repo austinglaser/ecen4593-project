@@ -48,33 +48,33 @@ static l1_cache_t l1d_cache;
  */
 int main(int argc, char const * const * const argv)
 {
-    if (argc > 2) {
-        printf("Usage: %s [config_file]\n", argv[0]);
+    if (argc < 2 || argc > 3) {
+        printf("Usage: %s <config_file> [case name]\n", argv[0]);
         return -1;
     }
 
-    char const * config_file = NULL;
-    if (argc == 2) {
-        config_file = argv[1];
+    char const * config_file = argv[1];
+    char const * trace_name = "unknown";
+    if (argc == 3) {
+        trace_name = argv[2];
     }
 
     config_t config;
     Config_FromFile(config_file, &config);
 
-    char const * config_name;
-    if (config_file == NULL) {
-        config_name = "default";
-    }
-    else {
-        config_name = strrchr(config_file, '/') + 1;
-        if (config_name == NULL) {
-            config_name = config_file;
-        }
+    char const * config_name = strrchr(config_file, '/') + 1;
+    if (config_name == NULL) {
+        config_name = config_file;
     }
 
-    printf("\n--------------------------------------------------------------------------------\n");
-    printf("      %-25s Simulation Results\n", config_name);
-    printf("--------------------------------------------------------------------------------\n\n");
+    char case_name[128];
+    strncpy(case_name, trace_name,  sizeof(case_name));
+    strncat(case_name, ".",         sizeof(case_name));
+    strncat(case_name, config_name, sizeof(case_name));
+
+    printf("\n-------------------------------------------------------------------------\n");
+    printf("      %-25s Simulation Results\n", case_name);
+    printf("-------------------------------------------------------------------------\n\n");
 
     printf("  Memory system:\n");
     Config_Print(&config);
@@ -122,9 +122,9 @@ int main(int argc, char const * const * const argv)
     Statistics_Print(&stats);
     printf("\n");
 
-    printf("--------------------------------------------------------------------------------\n\n");
+    printf("-------------------------------------------------------------------------\n\n");
 
-    printf("Cache final contents:\n\n");
+    printf("Cache final contents - Index and Tag values are in HEX\n\n");
 
     printf("Memory Level: L1i\n");
     L1Cache_Print(l1i_cache);

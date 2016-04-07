@@ -76,7 +76,7 @@ int main(int argc, char const * const * const argv)
     printf("      %-25s Simulation Results\n", config_name);
     printf("--------------------------------------------------------------------------------\n\n");
 
-    printf("Memory system:\n");
+    printf("  Memory system:\n");
     Config_Print(&config);
     printf("\n");
 

@@ -154,20 +154,20 @@ void Config_FromFile(const char * filename, config_t * config)
 
 void Config_Print(config_t const * config)
 {
-    printf("  Dcache size   = %6" PRIu32 " : ways = %3" PRIu32 " : block size = %3" PRIu32 "\n",
+    printf("    Dcache size   = %6" PRIu32 " : ways = %3" PRIu32 " : block size = %3" PRIu32 "\n",
            config->l1.cache_size_bytes,
            config->l1.associativity,
            config->l1.block_size_bytes);
-    printf("  Icache size   = %6" PRIu32 " : ways = %3" PRIu32 " : block size = %3" PRIu32 "\n",
+    printf("    Icache size   = %6" PRIu32 " : ways = %3" PRIu32 " : block size = %3" PRIu32 "\n",
            config->l1.cache_size_bytes,
            config->l1.associativity,
            config->l1.block_size_bytes);
-    printf("  L2-cache size = %6" PRIu32 " : ways = %3" PRIu32 " : block size = %3" PRIu32 "\n",
+    printf("    L2-cache size = %6" PRIu32 " : ways = %3" PRIu32 " : block size = %3" PRIu32 "\n",
            config->l2.cache_size_bytes,
            config->l2.associativity,
            config->l2.block_size_bytes);
 
-    printf("  Memory ready time = %" PRIu32 " : chunksize = %" PRIu32 " : chunktime = %" PRIu32 "\n",
+    printf("    Memory ready time = %" PRIu32 " : chunksize = %" PRIu32 " : chunktime = %" PRIu32 "\n",
            config->main_mem.ready_cycles,
            config->main_mem.chunk_size_bytes,
            config->main_mem.send_chunk_cycles);

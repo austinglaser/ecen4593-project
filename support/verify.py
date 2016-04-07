@@ -17,7 +17,7 @@ import subprocess
 if __name__ == "__main__":
     config_dir = 'config'
     traces_dir = 'traces'
-    results_dir = 'results'
+    results_dir = 'validation-results'
     traces_short_dir = os.path.join(traces_dir, 'traces-short')
     traces_5M_dir = os.path.join(traces_dir, 'traces-5M')
     sample_output_dir = os.path.join(traces_dir, 'sample-output')
@@ -39,8 +39,9 @@ if __name__ == "__main__":
             trace_basename = os.path.splitext(os.path.basename(trace))[0]
             config_basename = os.path.basename(config)
 
-            result = os.path.join(results_dir, trace_basename + '.' + config_basename)
-            good_result = os.path.join(sample_output_dir, trace_basename + tracesep + config_basename)
+            result_filename = trace_basename + tracesep + config_basename
+            result = os.path.join(results_dir, result_filename)
+            good_result = os.path.join(sample_output_dir, result_filename)
 
             command_line = ' '.join([cat, trace, '|', program, config, '-t', trace_basename, '>', result])
 

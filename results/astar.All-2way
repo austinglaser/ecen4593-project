@@ -1,0 +1,591 @@
+
+-------------------------------------------------------------------------
+      astar.All-2way            Simulation Results
+-------------------------------------------------------------------------
+
+  Memory system:
+    Dcache size   =   8192 : ways =   2 : block size =  32
+    Icache size   =   8192 : ways =   2 : block size =  32
+    L2-cache size =  32768 : ways =   2 : block size =  64
+    Memory ready time = 50 : chunksize = 8 : chunktime = 15
+
+  Execute time = 69678890572; Total refs = 10000000882
+  Inst refs = 6792328181; Data refs = 3207672701
+
+  Number of reference types:   [Percentage]
+    Reads  =   2570967807      [25.7%]
+    Writes =    636704894      [ 6.4%]
+    Inst.  =   6792328181      [67.9%]
+    Total  =  10000000882
+
+  Total cycles for activities: [Percentage]
+    Reads  =  33906948328      [48.7%]
+    Writes =  17659870255      [25.3%]
+    Inst.  =  18112071989      [26.0%]
+    Total  =  69678890572
+
+  CPI =  10.3
+  Ideal:             Exec. Time =  16792329063; CPI =   2.5
+  Ideal mis-aligned: Exec. Time =  22633347554; CPI =   3.3
+
+  Memory Level: L1i
+    Hit Count = 11304267758  Miss Count = 239347
+    Total Requests = 11304507105
+    Hit Rate = 100.0%  Miss Rate =  0.0%
+    Kickouts = 83648; Dirty kickouts = 0; Transfers = 83912
+    VC Hit count = 155435
+
+  Memory Level: L1d
+    Hit Count = 4323107977  Miss Count = 213404291
+    Total Requests = 4536512268
+    Hit Rate = 95.3%  Miss Rate =  4.7%
+    Kickouts = 199310538; Dirty kickouts = 84243336; Transfers = 199310802
+    VC Hit count = 14093489
+
+  Memory Level: L2
+    Hit Count = 139108988  Miss Count = 144529062
+    Total Requests = 283638050
+    Hit Rate = 49.0%  Miss Rate = 51.0%
+    Kickouts = 139172090; Dirty kickouts = 68853742; Transfers = 139172610
+    VC Hit count = 5356452
+
+  L1 cache cost (Icache $400) + (Dcache $400) = $800
+  L2 cache cost = $200;  Memory cost = $75  Total cost = $1075
+
+-------------------------------------------------------------------------
+
+Cache final contents - Index and Tag values are in HEX
+
+Memory Level: L1i
+Index:    0 | V:1 D:0 Tag:         7f7e0558a | V:1 D:0 Tag:               407 |
+Index:    1 | V:1 D:0 Tag:         7f7e0558a | V:1 D:0 Tag:               407 |
+Index:    2 | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               405 |
+Index:    3 | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               404 |
+Index:    4 | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               405 |
+Index:    5 | V:1 D:0 Tag:               404 | V:1 D:0 Tag:               407 |
+Index:    6 | V:1 D:0 Tag:               404 | V:1 D:0 Tag:               407 |
+Index:    7 | V:1 D:0 Tag:               404 | V:1 D:0 Tag:               405 |
+Index:    8 | V:1 D:0 Tag:         7f7e05656 | V:1 D:0 Tag:               405 |
+Index:    9 | V:1 D:0 Tag:         7f7e05656 | V:1 D:0 Tag:               405 |
+Index:    a | V:1 D:0 Tag:         7f7e05656 | V:1 D:0 Tag:               404 |
+Index:    b | V:1 D:0 Tag:         7f7e05656 | V:1 D:0 Tag:               404 |
+Index:    c | V:1 D:0 Tag:         7f7e05656 | V:1 D:0 Tag:               407 |
+Index:    d | V:1 D:0 Tag:         7f7e05656 | V:1 D:0 Tag:               407 |
+Index:    e | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               404 |
+Index:    f | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               404 |
+Index:   10 | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               404 |
+Index:   11 | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               404 |
+Index:   12 | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               404 |
+Index:   13 | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               404 |
+Index:   14 | V:1 D:0 Tag:               407 | V:1 D:0 Tag:               404 |
+Index:   15 | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               407 |
+Index:   16 | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               407 |
+Index:   17 | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   18 | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   19 | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   1a | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   1b | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   1c | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   1d | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   1e | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               403 |
+Index:   1f | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               403 |
+Index:   20 | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   21 | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   22 | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               404 |
+Index:   23 | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               405 |
+Index:   24 | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               405 |
+Index:   25 | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               405 |
+Index:   26 | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               405 |
+Index:   27 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   28 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   29 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   2a | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   2b | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e0558a |
+Index:   2c | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e0558a |
+Index:   2d | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e0558a |
+Index:   2e | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   2f | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   30 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   31 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   32 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05654 |
+Index:   33 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05654 |
+Index:   34 | V:1 D:0 Tag:         7f7e05654 | V:1 D:0 Tag:         7f7e05587 |
+Index:   35 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   36 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05654 |
+Index:   37 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05654 |
+Index:   38 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   39 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   3a | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:               403 |
+Index:   3b | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:         7f7e05587 |
+Index:   3c | V:1 D:0 Tag:               406 | V:1 D:0 Tag:         7f7e05586 |
+Index:   3d | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               403 |
+Index:   3e | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               403 |
+Index:   3f | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               403 |
+Index:   40 | V:1 D:0 Tag:               403 | V:1 D:0 Tag:         7f7e05587 |
+Index:   41 | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               403 |
+Index:   42 | V:1 D:0 Tag:         7f7e05587 | V:1 D:0 Tag:               403 |
+Index:   43 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               406 |
+Index:   44 | V:1 D:0 Tag:               406 | V:1 D:0 Tag:               403 |
+Index:   45 | V:1 D:0 Tag:               406 | V:1 D:0 Tag:               403 |
+Index:   46 | V:1 D:0 Tag:               406 | V:1 D:0 Tag:               404 |
+Index:   47 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               406 |
+Index:   48 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               406 |
+Index:   49 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               406 |
+Index:   4a | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   4b | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05586 |
+Index:   4c | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05586 |
+Index:   4d | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05586 |
+Index:   4e | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               406 |
+Index:   4f | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               406 |
+Index:   50 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               406 |
+Index:   51 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               406 |
+Index:   52 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05586 |
+Index:   53 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05586 |
+Index:   54 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               400 |
+Index:   55 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               406 |
+Index:   56 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               400 |
+Index:   57 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   58 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   59 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   5a | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   5b | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   5c | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   5d | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   5e | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   5f | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   60 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:         7f7e05587 |
+Index:   61 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               402 |
+Index:   62 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               402 |
+Index:   63 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               402 |
+Index:   64 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               402 |
+Index:   65 | V:1 D:0 Tag:               405 | V:1 D:0 Tag:               402 |
+Index:   66 | V:1 D:0 Tag:               402 | V:1 D:0 Tag:               401 |
+Index:   67 | V:1 D:0 Tag:               401 | V:1 D:0 Tag:               406 |
+Index:   68 | V:1 D:0 Tag:               402 | V:1 D:0 Tag:               401 |
+Index:   69 | V:1 D:0 Tag:               402 | V:1 D:0 Tag:         7f7e05656 |
+Index:   6a | V:1 D:0 Tag:               402 | V:1 D:0 Tag:               401 |
+Index:   6b | V:1 D:0 Tag:               402 | V:1 D:0 Tag:               401 |
+Index:   6c | V:1 D:0 Tag:               402 | V:1 D:0 Tag:               401 |
+Index:   6d | V:1 D:0 Tag:               401 | V:1 D:0 Tag:               406 |
+Index:   6e | V:1 D:0 Tag:               401 | V:1 D:0 Tag:               406 |
+Index:   6f | V:1 D:0 Tag:               401 | V:1 D:0 Tag:               406 |
+Index:   70 | V:1 D:0 Tag:               401 | V:1 D:0 Tag:               406 |
+Index:   71 | V:1 D:0 Tag:               401 | V:1 D:0 Tag:               406 |
+Index:   72 | V:1 D:0 Tag:               401 | V:1 D:0 Tag:               406 |
+Index:   73 | V:1 D:0 Tag:               401 | V:1 D:0 Tag:         7f7e05585 |
+Index:   74 | V:1 D:0 Tag:               401 | V:1 D:0 Tag:         7f7e05585 |
+Index:   75 | V:1 D:0 Tag:               406 | V:1 D:0 Tag:               401 |
+Index:   76 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:               401 |
+Index:   77 | V:1 D:0 Tag:         7f7e05586 | V:1 D:0 Tag:               401 |
+Index:   78 | V:1 D:0 Tag:               401 | V:1 D:0 Tag:               406 |
+Index:   79 | V:1 D:0 Tag:               406 | V:1 D:0 Tag:               401 |
+Index:   7a | V:1 D:0 Tag:         7f7e05589 | V:1 D:0 Tag:               406 |
+Index:   7b | V:1 D:0 Tag:         7f7e05589 | V:1 D:0 Tag:               406 |
+Index:   7c | V:1 D:0 Tag:         7f7e05589 | V:1 D:0 Tag:               401 |
+Index:   7d | V:1 D:0 Tag:         7f7e05589 | V:1 D:0 Tag:         7f7e05592 |
+Index:   7e | V:1 D:0 Tag:         7f7e05589 | V:1 D:0 Tag:               406 |
+Index:   7f | V:1 D:0 Tag:         7f7e05589 | V:1 D:0 Tag:               406 |
+Victim cache:
+            | V:1 D:0 Addr:     7f7e05587560 | V:1 D:0 Addr:     7f7e05586a80 |
+            | V:1 D:0 Addr:     7f7e05587ac0 | V:1 D:0 Addr:     7f7e05587960 |
+            | V:1 D:0 Addr:           402c00 | V:1 D:0 Addr:     7f7e056545a0 |
+            | V:1 D:0 Addr:     7f7e05654580 | V:1 D:0 Addr:     7f7e05654540 |
+
+Memory Level: L1d
+Index:    0 | V:1 D:0 Tag:              22db | V:1 D:0 Tag:              2400 |
+Index:    1 | V:1 D:1 Tag:              2726 | V:1 D:0 Tag:              2400 |
+Index:    2 | V:1 D:1 Tag:              237d | V:1 D:0 Tag:              25ba |
+Index:    3 | V:1 D:0 Tag:              235b | V:1 D:1 Tag:              2742 |
+Index:    4 | V:1 D:0 Tag:              2759 | V:1 D:1 Tag:              2726 |
+Index:    5 | V:1 D:0 Tag:              2759 | V:1 D:0 Tag:              26a0 |
+Index:    6 | V:1 D:0 Tag:               408 | V:1 D:0 Tag:              27d3 |
+Index:    7 | V:1 D:0 Tag:              27d3 | V:1 D:0 Tag:              25ab |
+Index:    8 | V:1 D:1 Tag:              227b | V:1 D:1 Tag:              26b2 |
+Index:    9 | V:1 D:0 Tag:              22ea | V:1 D:0 Tag:              2464 |
+Index:    a | V:1 D:0 Tag:              2464 | V:1 D:0 Tag:              2206 |
+Index:    b | V:1 D:1 Tag:              23af | V:1 D:1 Tag:              26e0 |
+Index:    c | V:1 D:1 Tag:              2743 | V:1 D:0 Tag:              2301 |
+Index:    d | V:1 D:1 Tag:              275a | V:1 D:1 Tag:              230e |
+Index:    e | V:1 D:1 Tag:              21c4 | V:1 D:0 Tag:              230e |
+Index:    f | V:1 D:1 Tag:              2771 | V:1 D:0 Tag:              21c4 |
+Index:   10 | V:1 D:0 Tag:              26e0 | V:1 D:0 Tag:              23af |
+Index:   11 | V:1 D:0 Tag:              26e0 | V:1 D:0 Tag:              2560 |
+Index:   12 | V:1 D:0 Tag:              235b | V:1 D:1 Tag:              22b4 |
+Index:   13 | V:1 D:0 Tag:              266e | V:1 D:0 Tag:              22b4 |
+Index:   14 | V:1 D:0 Tag:              22b4 | V:1 D:1 Tag:              266e |
+Index:   15 | V:1 D:1 Tag:              2396 | V:1 D:1 Tag:              2744 |
+Index:   16 | V:1 D:1 Tag:              2327 | V:1 D:1 Tag:              266e |
+Index:   17 | V:1 D:1 Tag:              266e | V:1 D:0 Tag:              242c |
+Index:   18 | V:1 D:1 Tag:              266e | V:1 D:0 Tag:              2461 |
+Index:   19 | V:1 D:1 Tag:              266e | V:1 D:1 Tag:              2561 |
+Index:   1a | V:1 D:1 Tag:              266e | V:1 D:1 Tag:              24b2 |
+Index:   1b | V:1 D:1 Tag:              266e | V:1 D:1 Tag:              25db |
+Index:   1c | V:1 D:0 Tag:              241a | V:1 D:1 Tag:              266e |
+Index:   1d | V:1 D:0 Tag:              26e2 | V:1 D:0 Tag:              241a |
+Index:   1e | V:1 D:1 Tag:              222e | V:1 D:0 Tag:              26e2 |
+Index:   1f | V:1 D:0 Tag:              2356 | V:1 D:1 Tag:              24a9 |
+Index:   20 | V:1 D:1 Tag:              27ff | V:1 D:0 Tag:              27ea |
+Index:   21 | V:1 D:1 Tag:              2773 | V:1 D:0 Tag:              27ea |
+Index:   22 | V:1 D:0 Tag:              22b3 | V:1 D:0 Tag:              2773 |
+Index:   23 | V:1 D:0 Tag:              22b3 | V:1 D:0 Tag:              2300 |
+Index:   24 | V:1 D:0 Tag:              2300 | V:1 D:0 Tag:              2467 |
+Index:   25 | V:1 D:1 Tag:              2249 | V:1 D:0 Tag:              2467 |
+Index:   26 | V:1 D:0 Tag:              2432 | V:1 D:0 Tag:              2249 |
+Index:   27 | V:1 D:0 Tag:              2432 | V:1 D:1 Tag:              26e0 |
+Index:   28 | V:1 D:1 Tag:              26fa | V:1 D:0 Tag:              26e0 |
+Index:   29 | V:1 D:1 Tag:               60b | V:1 D:1 Tag:         7fffa710c |
+Index:   2a | V:1 D:1 Tag:         7fffa710c | V:1 D:1 Tag:               60b |
+Index:   2b | V:1 D:0 Tag:               60b | V:1 D:1 Tag:         7fffa710c |
+Index:   2c | V:1 D:1 Tag:         7fffa710c | V:1 D:0 Tag:              230a |
+Index:   2d | V:1 D:0 Tag:              22ce | V:1 D:1 Tag:              27a2 |
+Index:   2e | V:1 D:0 Tag:              27b9 | V:1 D:1 Tag:              2345 |
+Index:   2f | V:1 D:0 Tag:              2301 | V:1 D:1 Tag:              2433 |
+Index:   30 | V:1 D:0 Tag:              2433 | V:1 D:1 Tag:              23e2 |
+Index:   31 | V:1 D:1 Tag:              2358 | V:1 D:1 Tag:              25bf |
+Index:   32 | V:1 D:0 Tag:              25bf | V:1 D:1 Tag:              230f |
+Index:   33 | V:1 D:1 Tag:              23ca | V:1 D:0 Tag:              22ea |
+Index:   34 | V:1 D:1 Tag:              2358 | V:1 D:0 Tag:              22ea |
+Index:   35 | V:1 D:0 Tag:              23ca | V:1 D:1 Tag:              225a |
+Index:   36 | V:1 D:0 Tag:              225a | V:1 D:0 Tag:              26f4 |
+Index:   37 | V:1 D:0 Tag:              27ba | V:1 D:0 Tag:              233e |
+Index:   38 | V:1 D:1 Tag:              2358 | V:1 D:0 Tag:              233e |
+Index:   39 | V:1 D:1 Tag:              2699 | V:1 D:1 Tag:              230f |
+Index:   3a | V:1 D:0 Tag:              230f | V:1 D:0 Tag:              25c0 |
+Index:   3b | V:1 D:1 Tag:              2713 | V:1 D:1 Tag:              26b0 |
+Index:   3c | V:1 D:0 Tag:              2713 | V:1 D:1 Tag:              23cb |
+Index:   3d | V:1 D:1 Tag:              278d | V:1 D:0 Tag:              22db |
+Index:   3e | V:1 D:0 Tag:              278d | V:1 D:1 Tag:              27e0 |
+Index:   3f | V:1 D:0 Tag:              278d | V:1 D:0 Tag:              27e0 |
+Index:   40 | V:1 D:1 Tag:              228d | V:1 D:1 Tag:              27bb |
+Index:   41 | V:1 D:0 Tag:              25ab | V:1 D:0 Tag:              2547 |
+Index:   42 | V:1 D:0 Tag:              2312 | V:1 D:0 Tag:              25ab |
+Index:   43 | V:1 D:0 Tag:              2312 | V:1 D:0 Tag:              2375 |
+Index:   44 | V:1 D:1 Tag:              2226 | V:1 D:0 Tag:              21e0 |
+Index:   45 | V:1 D:1 Tag:              23af | V:1 D:1 Tag:              23e2 |
+Index:   46 | V:1 D:1 Tag:              272b | V:1 D:0 Tag:              23e2 |
+Index:   47 | V:1 D:0 Tag:              272b | V:1 D:1 Tag:              26df |
+Index:   48 | V:1 D:0 Tag:              26df | V:1 D:1 Tag:              2565 |
+Index:   49 | V:1 D:0 Tag:              22cc | V:1 D:0 Tag:              22db |
+Index:   4a | V:1 D:0 Tag:              2300 | V:1 D:1 Tag:              2770 |
+Index:   4b | V:1 D:1 Tag:              21e0 | V:1 D:1 Tag:              24b4 |
+Index:   4c | V:1 D:1 Tag:              233e | V:1 D:0 Tag:              22f5 |
+Index:   4d | V:1 D:0 Tag:              233e | V:1 D:0 Tag:              232a |
+Index:   4e | V:1 D:0 Tag:              22db | V:1 D:1 Tag:              2249 |
+Index:   4f | V:1 D:0 Tag:              21c4 | V:1 D:1 Tag:              246b |
+Index:   50 | V:1 D:0 Tag:              21c4 | V:1 D:1 Tag:              225a |
+Index:   51 | V:1 D:1 Tag:              2395 | V:1 D:0 Tag:              21c4 |
+Index:   52 | V:1 D:1 Tag:              275a | V:1 D:0 Tag:              225a |
+Index:   53 | V:1 D:1 Tag:              233e | V:1 D:0 Tag:              275a |
+Index:   54 | V:1 D:1 Tag:              2725 | V:1 D:1 Tag:              26c2 |
+Index:   55 | V:1 D:1 Tag:              2560 | V:1 D:0 Tag:              2303 |
+Index:   56 | V:1 D:1 Tag:              26d6 | V:1 D:1 Tag:              2465 |
+Index:   57 | V:1 D:0 Tag:              22cf | V:1 D:1 Tag:              2720 |
+Index:   58 | V:1 D:0 Tag:              242c | V:1 D:0 Tag:              22cf |
+Index:   59 | V:1 D:0 Tag:              26e1 | V:1 D:0 Tag:              22ea |
+Index:   5a | V:1 D:0 Tag:              26e1 | V:1 D:1 Tag:              23e4 |
+Index:   5b | V:1 D:0 Tag:              22db | V:1 D:1 Tag:              22e1 |
+Index:   5c | V:1 D:0 Tag:              22e1 | V:1 D:0 Tag:              22df |
+Index:   5d | V:1 D:0 Tag:              2303 | V:1 D:1 Tag:              26c3 |
+Index:   5e | V:1 D:1 Tag:              27ec | V:1 D:1 Tag:              230f |
+Index:   5f | V:1 D:0 Tag:              21c8 | V:1 D:0 Tag:              225f |
+Index:   60 | V:1 D:1 Tag:              257f | V:1 D:0 Tag:              21c8 |
+Index:   61 | V:1 D:1 Tag:              257f | V:1 D:0 Tag:              21c8 |
+Index:   62 | V:1 D:0 Tag:              235a | V:1 D:0 Tag:              25a6 |
+Index:   63 | V:1 D:0 Tag:              2775 | V:1 D:0 Tag:              235a |
+Index:   64 | V:1 D:0 Tag:              26ad | V:1 D:0 Tag:              23b1 |
+Index:   65 | V:1 D:0 Tag:              26ad | V:1 D:1 Tag:              230f |
+Index:   66 | V:1 D:1 Tag:              257f | V:1 D:1 Tag:              2461 |
+Index:   67 | V:1 D:1 Tag:              257f | V:1 D:0 Tag:              2461 |
+Index:   68 | V:1 D:1 Tag:              257f | V:1 D:0 Tag:              273e |
+Index:   69 | V:1 D:1 Tag:              257f | V:1 D:0 Tag:              2344 |
+Index:   6a | V:1 D:1 Tag:              257f | V:1 D:0 Tag:              2344 |
+Index:   6b | V:1 D:0 Tag:              257f | V:1 D:0 Tag:              2344 |
+Index:   6c | V:1 D:0 Tag:              2303 | V:1 D:1 Tag:              26fa |
+Index:   6d | V:1 D:0 Tag:              26fa | V:1 D:1 Tag:              22b3 |
+Index:   6e | V:1 D:0 Tag:              22cf | V:1 D:1 Tag:              2205 |
+Index:   6f | V:1 D:0 Tag:              22cf | V:1 D:0 Tag:              251c |
+Index:   70 | V:1 D:1 Tag:              21c8 | V:1 D:1 Tag:              235a |
+Index:   71 | V:1 D:0 Tag:              21c8 | V:1 D:0 Tag:              235a |
+Index:   72 | V:1 D:0 Tag:              253a | V:1 D:1 Tag:              2756 |
+Index:   73 | V:1 D:0 Tag:              25ac | V:1 D:0 Tag:              270a |
+Index:   74 | V:1 D:1 Tag:              2433 | V:1 D:0 Tag:              25ac |
+Index:   75 | V:1 D:1 Tag:              23e7 | V:1 D:1 Tag:              2698 |
+Index:   76 | V:1 D:1 Tag:              230d | V:1 D:0 Tag:              225f |
+Index:   77 | V:1 D:1 Tag:              2357 | V:1 D:0 Tag:              242b |
+Index:   78 | V:1 D:0 Tag:              26c6 | V:1 D:0 Tag:              23ca |
+Index:   79 | V:1 D:1 Tag:              278c | V:1 D:0 Tag:              230d |
+Index:   7a | V:1 D:0 Tag:              27a3 | V:1 D:0 Tag:              278c |
+Index:   7b | V:1 D:0 Tag:              27a3 | V:1 D:0 Tag:              22da |
+Index:   7c | V:1 D:0 Tag:              27a3 | V:1 D:1 Tag:              27ba |
+Index:   7d | V:1 D:0 Tag:              27ba | V:1 D:1 Tag:              27d1 |
+Index:   7e | V:1 D:0 Tag:              27d1 | V:1 D:0 Tag:              22ff |
+Index:   7f | V:1 D:0 Tag:              23ff | V:1 D:0 Tag:              22ff |
+Victim cache:
+            | V:1 D:0 Addr:          26b0fe0 | V:1 D:1 Addr:          26804c0 |
+            | V:1 D:1 Addr:          26974e0 | V:1 D:1 Addr:          26c5de0 |
+            | V:1 D:0 Addr:          25da240 | V:1 D:0 Addr:          2516960 |
+            | V:1 D:1 Addr:          242ddc0 | V:1 D:1 Addr:          25ad2a0 |
+
+Memory Level: L2
+Index:    0 | V:1 D:0 Tag:               900 | V:1 D:0 Tag:               91b |
+Index:    1 | V:1 D:1 Tag:               91b | V:1 D:0 Tag:               963 |
+Index:    2 | V:1 D:1 Tag:               9a8 | V:1 D:0 Tag:               8b4 |
+Index:    3 | V:1 D:1 Tag:               91b | V:1 D:1 Tag:               9dc |
+Index:    4 | V:1 D:1 Tag:               919 | V:1 D:0 Tag:               8b4 |
+Index:    5 | V:1 D:0 Tag:               8bb | V:1 D:0 Tag:               919 |
+Index:    6 | V:1 D:0 Tag:               8bb | V:1 D:0 Tag:               9b8 |
+Index:    7 | V:1 D:0 Tag:               871 | V:1 D:0 Tag:               8b8 |
+Index:    8 | V:1 D:1 Tag:               9b8 | V:1 D:1 Tag:               958 |
+Index:    9 | V:1 D:0 Tag:               8ad | V:1 D:0 Tag:               90b |
+Index:    a | V:1 D:0 Tag:               9d1 | V:1 D:0 Tag:               8ad |
+Index:    b | V:1 D:1 Tag:               90b | V:1 D:1 Tag:               9be |
+Index:    c | V:1 D:0 Tag:               872 | V:1 D:0 Tag:               96f |
+Index:    d | V:1 D:1 Tag:               95e | V:1 D:0 Tag:               8bb |
+Index:    e | V:1 D:1 Tag:               9d5 | V:1 D:0 Tag:               95e |
+Index:    f | V:1 D:1 Tag:               9a7 | V:1 D:1 Tag:               9a8 |
+Index:   10 | V:1 D:1 Tag:               877 | V:1 D:1 Tag:               8ff |
+Index:   11 | V:1 D:1 Tag:               872 | V:1 D:0 Tag:               8c0 |
+Index:   12 | V:1 D:0 Tag:               8c0 | V:1 D:1 Tag:               9b8 |
+Index:   13 | V:1 D:0 Tag:               9a0 | V:1 D:0 Tag:               9b8 |
+Index:   14 | V:1 D:0 Tag:               9b8 | V:1 D:1 Tag:         1fffe9c43 |
+Index:   15 | V:1 D:1 Tag:         1fffe9c43 | V:1 D:1 Tag:               9dd |
+Index:   16 | V:1 D:1 Tag:         1fffe9c43 | V:1 D:0 Tag:               8c0 |
+Index:   17 | V:1 D:1 Tag:               9a8 | V:1 D:1 Tag:               9dc |
+Index:   18 | V:1 D:0 Tag:               8d6 | V:1 D:0 Tag:               8c0 |
+Index:   19 | V:1 D:0 Tag:               8c0 | V:1 D:0 Tag:               8bb |
+Index:   1a | V:1 D:0 Tag:               8d6 | V:1 D:1 Tag:               90b |
+Index:   1b | V:1 D:1 Tag:               920 | V:1 D:1 Tag:               9bd |
+Index:   1c | V:1 D:0 Tag:               8d6 | V:1 D:0 Tag:               920 |
+Index:   1d | V:1 D:1 Tag:               970 | V:1 D:0 Tag:               9ac |
+Index:   1e | V:1 D:0 Tag:               9ac | V:1 D:1 Tag:               94a |
+Index:   1f | V:1 D:0 Tag:               9f8 | V:1 D:0 Tag:               8bb |
+Index:   20 | V:1 D:1 Tag:               9c3 | V:1 D:0 Tag:               8bb |
+Index:   21 | V:1 D:0 Tag:               8c0 | V:1 D:0 Tag:               9c3 |
+Index:   22 | V:1 D:1 Tag:               878 | V:1 D:1 Tag:               8e3 |
+Index:   23 | V:1 D:0 Tag:               8c0 | V:1 D:1 Tag:               963 |
+Index:   24 | V:1 D:0 Tag:               8b3 | V:1 D:0 Tag:               8c0 |
+Index:   25 | V:1 D:0 Tag:               878 | V:1 D:0 Tag:               8c0 |
+Index:   26 | V:1 D:0 Tag:               92d | V:1 D:0 Tag:               9dc |
+Index:   27 | V:1 D:1 Tag:               871 | V:1 D:1 Tag:               9a7 |
+Index:   28 | V:1 D:1 Tag:               9b8 | V:1 D:0 Tag:               871 |
+Index:   29 | V:1 D:0 Tag:               9a5 | V:1 D:1 Tag:               943 |
+Index:   2a | V:1 D:0 Tag:               958 | V:1 D:1 Tag:               91d |
+Index:   2b | V:1 D:1 Tag:               932 | V:1 D:0 Tag:               9c8 |
+Index:   2c | V:1 D:0 Tag:               90b | V:1 D:0 Tag:               9c8 |
+Index:   2d | V:1 D:0 Tag:               90c | V:1 D:0 Tag:               8f9 |
+Index:   2e | V:1 D:0 Tag:               8c0 | V:1 D:0 Tag:               9c6 |
+Index:   2f | V:1 D:0 Tag:               9fb | V:1 D:1 Tag:               872 |
+Index:   30 | V:1 D:0 Tag:               872 | V:1 D:1 Tag:               947 |
+Index:   31 | V:1 D:1 Tag:               8a8 | V:1 D:1 Tag:               9c6 |
+Index:   32 | V:1 D:0 Tag:               8c0 | V:1 D:1 Tag:               958 |
+Index:   33 | V:1 D:1 Tag:               947 | V:1 D:1 Tag:               9b1 |
+Index:   34 | V:1 D:1 Tag:               977 | V:1 D:1 Tag:               8d1 |
+Index:   35 | V:1 D:0 Tag:               8d1 | V:1 D:1 Tag:               91a |
+Index:   36 | V:1 D:0 Tag:               91a | V:1 D:1 Tag:               932 |
+Index:   37 | V:1 D:1 Tag:               947 | V:1 D:0 Tag:               8b3 |
+Index:   38 | V:1 D:0 Tag:               872 | V:1 D:0 Tag:               947 |
+Index:   39 | V:1 D:1 Tag:               96b | V:1 D:0 Tag:               8c0 |
+Index:   3a | V:1 D:0 Tag:               9a6 | V:1 D:0 Tag:               96b |
+Index:   3b | V:1 D:1 Tag:               932 | V:1 D:1 Tag:               96b |
+Index:   3c | V:1 D:0 Tag:               9e3 | V:1 D:1 Tag:               91e |
+Index:   3d | V:1 D:0 Tag:               9e3 | V:1 D:0 Tag:               91e |
+Index:   3e | V:1 D:1 Tag:               87b | V:1 D:1 Tag:               920 |
+Index:   3f | V:1 D:1 Tag:               9ac | V:1 D:1 Tag:               8dd |
+Index:   40 | V:1 D:0 Tag:               9ac | V:1 D:1 Tag:               95d |
+Index:   41 | V:1 D:0 Tag:               8df | V:1 D:0 Tag:               8c0 |
+Index:   42 | V:1 D:1 Tag:               9d6 | V:1 D:1 Tag:               911 |
+Index:   43 | V:1 D:1 Tag:               926 | V:1 D:1 Tag:               96b |
+Index:   44 | V:1 D:0 Tag:               96b | V:1 D:1 Tag:               8e3 |
+Index:   45 | V:1 D:1 Tag:               99f | V:1 D:1 Tag:               963 |
+Index:   46 | V:1 D:0 Tag:               8c0 | V:1 D:1 Tag:               92a |
+Index:   47 | V:1 D:0 Tag:               9dc | V:1 D:0 Tag:               92a |
+Index:   48 | V:1 D:0 Tag:               9dc | V:1 D:1 Tag:               92c |
+Index:   49 | V:1 D:0 Tag:               92c | V:1 D:0 Tag:               9b6 |
+Index:   4a | V:1 D:0 Tag:               96b | V:1 D:1 Tag:               9b8 |
+Index:   4b | V:1 D:0 Tag:               9b8 | V:1 D:1 Tag:               918 |
+Index:   4c | V:1 D:0 Tag:               958 | V:1 D:0 Tag:               918 |
+Index:   4d | V:1 D:1 Tag:               932 | V:1 D:1 Tag:               9bc |
+Index:   4e | V:1 D:1 Tag:               90c | V:1 D:0 Tag:               8c0 |
+Index:   4f | V:1 D:0 Tag:               92a | V:1 D:0 Tag:               90c |
+Index:   50 | V:1 D:0 Tag:               92a | V:1 D:0 Tag:               8b3 |
+Index:   51 | V:1 D:1 Tag:               a05 | V:1 D:1 Tag:               936 |
+Index:   52 | V:1 D:0 Tag:               892 | V:1 D:1 Tag:               9e8 |
+Index:   53 | V:1 D:0 Tag:               892 | V:1 D:0 Tag:               94b |
+Index:   54 | V:1 D:1 Tag:               9c4 | V:1 D:1 Tag:               8ff |
+Index:   55 | V:1 D:0 Tag:               9c4 | V:1 D:1 Tag:               8a8 |
+Index:   56 | V:1 D:0 Tag:               8a8 | V:1 D:1 Tag:               8a1 |
+Index:   57 | V:1 D:0 Tag:               8c0 | V:1 D:1 Tag:               9ee |
+Index:   58 | V:1 D:0 Tag:               951 | V:1 D:0 Tag:               92a |
+Index:   59 | V:1 D:1 Tag:               918 | V:1 D:1 Tag:               905 |
+Index:   5a | V:1 D:0 Tag:               905 | V:1 D:0 Tag:               8bd |
+Index:   5b | V:1 D:0 Tag:               8bd | V:1 D:1 Tag:               9a4 |
+Index:   5c | V:1 D:0 Tag:               9a6 | V:1 D:0 Tag:               8bd |
+Index:   5d | V:1 D:0 Tag:               8bd | V:1 D:1 Tag:               957 |
+Index:   5e | V:1 D:0 Tag:               9e3 | V:1 D:1 Tag:               92f |
+Index:   5f | V:1 D:0 Tag:               9e3 | V:1 D:1 Tag:               9d0 |
+Index:   60 | V:1 D:0 Tag:               8a3 | V:1 D:1 Tag:               8eb |
+Index:   61 | V:1 D:1 Tag:               8dd | V:1 D:1 Tag:               8b3 |
+Index:   62 | V:1 D:0 Tag:               8dd | V:1 D:1 Tag:               95d |
+Index:   63 | V:1 D:1 Tag:               8cd | V:1 D:0 Tag:               937 |
+Index:   64 | V:1 D:0 Tag:               959 | V:1 D:1 Tag:               8fe |
+Index:   65 | V:1 D:1 Tag:               8f1 | V:1 D:1 Tag:               8b8 |
+Index:   66 | V:1 D:0 Tag:               8bd | V:1 D:1 Tag:               99d |
+Index:   67 | V:1 D:0 Tag:               892 | V:1 D:1 Tag:               99f |
+Index:   68 | V:1 D:0 Tag:               8e5 | V:1 D:0 Tag:               99f |
+Index:   69 | V:1 D:1 Tag:               92a | V:1 D:0 Tag:               85c |
+Index:   6a | V:1 D:1 Tag:               8f7 | V:1 D:0 Tag:               9c9 |
+Index:   6b | V:1 D:0 Tag:               919 | V:1 D:0 Tag:               9c9 |
+Index:   6c | V:1 D:1 Tag:               9b8 | V:1 D:1 Tag:               8cc |
+Index:   6d | V:1 D:0 Tag:               9b8 | V:1 D:0 Tag:               8b8 |
+Index:   6e | V:1 D:0 Tag:               8b8 | V:1 D:0 Tag:               8cd |
+Index:   6f | V:1 D:1 Tag:               9c9 | V:1 D:1 Tag:               918 |
+Index:   70 | V:1 D:0 Tag:               9c9 | V:1 D:1 Tag:               8cc |
+Index:   71 | V:1 D:1 Tag:               9dd | V:1 D:0 Tag:               9a9 |
+Index:   72 | V:1 D:1 Tag:               9ab | V:1 D:1 Tag:               8ec |
+Index:   73 | V:1 D:0 Tag:               918 | V:1 D:1 Tag:               949 |
+Index:   74 | V:1 D:1 Tag:               8c3 | V:1 D:1 Tag:               8b3 |
+Index:   75 | V:1 D:1 Tag:               9c2 | V:1 D:1 Tag:               8c3 |
+Index:   76 | V:1 D:0 Tag:               9c2 | V:1 D:1 Tag:               912 |
+Index:   77 | V:1 D:0 Tag:               881 | V:1 D:0 Tag:               90b |
+Index:   78 | V:1 D:0 Tag:               9b1 | V:1 D:0 Tag:               92f |
+Index:   79 | V:1 D:1 Tag:               916 | V:1 D:0 Tag:               894 |
+Index:   7a | V:1 D:1 Tag:               918 | V:1 D:0 Tag:               916 |
+Index:   7b | V:1 D:1 Tag:               918 | V:1 D:0 Tag:               8c3 |
+Index:   7c | V:1 D:1 Tag:               8c3 | V:1 D:1 Tag:               8f8 |
+Index:   7d | V:1 D:0 Tag:               8c3 | V:1 D:0 Tag:               8f8 |
+Index:   7e | V:1 D:0 Tag:               9f4 | V:1 D:0 Tag:               8c3 |
+Index:   7f | V:1 D:0 Tag:               9f4 | V:1 D:0 Tag:               8ba |
+Index:   80 | V:1 D:1 Tag:               96e | V:1 D:0 Tag:               9c9 |
+Index:   81 | V:1 D:0 Tag:               96e | V:1 D:0 Tag:               9d0 |
+Index:   82 | V:1 D:0 Tag:               9c9 | V:1 D:0 Tag:               8c3 |
+Index:   83 | V:1 D:0 Tag:               8ba | V:1 D:1 Tag:               8c3 |
+Index:   84 | V:1 D:0 Tag:               9ac | V:1 D:1 Tag:               8ca |
+Index:   85 | V:1 D:0 Tag:               881 | V:1 D:0 Tag:               95d |
+Index:   86 | V:1 D:0 Tag:               9d6 | V:1 D:0 Tag:               8c3 |
+Index:   87 | V:1 D:0 Tag:               8c3 | V:1 D:1 Tag:               9b0 |
+Index:   88 | V:1 D:0 Tag:               9b0 | V:1 D:0 Tag:               8c2 |
+Index:   89 | V:1 D:1 Tag:               99b | V:1 D:1 Tag:               976 |
+Index:   8a | V:1 D:0 Tag:               8e5 | V:1 D:1 Tag:               99b |
+Index:   8b | V:1 D:1 Tag:               99b | V:1 D:0 Tag:               950 |
+Index:   8c | V:1 D:1 Tag:               99b | V:1 D:1 Tag:               9c9 |
+Index:   8d | V:1 D:1 Tag:               99b | V:1 D:0 Tag:               92c |
+Index:   8e | V:1 D:0 Tag:               9b8 | V:1 D:1 Tag:               906 |
+Index:   8f | V:1 D:0 Tag:               8d5 | V:1 D:0 Tag:               88b |
+Index:   90 | V:1 D:1 Tag:               896 | V:1 D:1 Tag:               9fa |
+Index:   91 | V:1 D:1 Tag:               8b9 | V:1 D:0 Tag:               8d5 |
+Index:   92 | V:1 D:0 Tag:               8d5 | V:1 D:1 Tag:               96d |
+Index:   93 | V:1 D:1 Tag:               90c | V:1 D:1 Tag:               896 |
+Index:   94 | V:1 D:1 Tag:               96f | V:1 D:0 Tag:               9be |
+Index:   95 | V:1 D:0 Tag:               8c2 | V:1 D:1 Tag:               896 |
+Index:   96 | V:1 D:0 Tag:               8b3 | V:1 D:0 Tag:               8c2 |
+Index:   97 | V:1 D:1 Tag:               94b | V:1 D:0 Tag:               8ba |
+Index:   98 | V:1 D:0 Tag:               8f8 | V:1 D:0 Tag:               938 |
+Index:   99 | V:1 D:0 Tag:               8ba | V:1 D:1 Tag:               8ff |
+Index:   9a | V:1 D:0 Tag:               8ba | V:1 D:1 Tag:               9b0 |
+Index:   9b | V:1 D:1 Tag:               964 | V:1 D:0 Tag:               9ee |
+Index:   9c | V:1 D:0 Tag:               8cf | V:1 D:1 Tag:               951 |
+Index:   9d | V:1 D:0 Tag:               951 | V:1 D:1 Tag:               92b |
+Index:   9e | V:1 D:0 Tag:               92b | V:1 D:0 Tag:               918 |
+Index:   9f | V:1 D:1 Tag:               8f8 | V:1 D:1 Tag:               9b7 |
+Index:   a0 | V:1 D:1 Tag:               889 | V:1 D:0 Tag:               99c |
+Index:   a1 | V:1 D:1 Tag:               8c4 | V:1 D:1 Tag:               96a |
+Index:   a2 | V:1 D:0 Tag:               889 | V:1 D:0 Tag:               8f8 |
+Index:   a3 | V:1 D:0 Tag:               8f8 | V:1 D:1 Tag:               9fa |
+Index:   a4 | V:1 D:1 Tag:               8eb | V:1 D:1 Tag:               9aa |
+Index:   a5 | V:1 D:0 Tag:               945 | V:1 D:0 Tag:               8ba |
+Index:   a6 | V:1 D:0 Tag:               8cf | V:1 D:1 Tag:               8ca |
+Index:   a7 | V:1 D:1 Tag:               8b9 | V:1 D:1 Tag:               94a |
+Index:   a8 | V:1 D:0 Tag:               896 | V:1 D:1 Tag:               93f |
+Index:   a9 | V:1 D:0 Tag:               8cf | V:1 D:0 Tag:               9d6 |
+Index:   aa | V:1 D:0 Tag:               9b0 | V:1 D:1 Tag:               8a4 |
+Index:   ab | V:1 D:0 Tag:               9b5 | V:1 D:1 Tag:               8e3 |
+Index:   ac | V:1 D:0 Tag:               8ba | V:1 D:1 Tag:               87c |
+Index:   ad | V:1 D:1 Tag:               87c | V:1 D:1 Tag:               896 |
+Index:   ae | V:1 D:0 Tag:               896 | V:1 D:0 Tag:               87c |
+Index:   af | V:1 D:1 Tag:               9a3 | V:1 D:1 Tag:               896 |
+Index:   b0 | V:1 D:0 Tag:               9a3 | V:1 D:0 Tag:               8ba |
+Index:   b1 | V:1 D:1 Tag:               8d6 | V:1 D:1 Tag:               969 |
+Index:   b2 | V:1 D:1 Tag:               930 | V:1 D:1 Tag:               889 |
+Index:   b3 | V:1 D:1 Tag:               90a | V:1 D:0 Tag:               930 |
+Index:   b4 | V:1 D:1 Tag:               9cf | V:1 D:0 Tag:               90a |
+Index:   b5 | V:1 D:1 Tag:               90c | V:1 D:1 Tag:               91f |
+Index:   b6 | V:1 D:0 Tag:               9be | V:1 D:1 Tag:               8f9 |
+Index:   b7 | V:1 D:0 Tag:               8d6 | V:1 D:0 Tag:               96f |
+Index:   b8 | V:1 D:1 Tag:               94e | V:1 D:0 Tag:               8d6 |
+Index:   b9 | V:1 D:0 Tag:               94e | V:1 D:1 Tag:               9c2 |
+Index:   ba | V:1 D:0 Tag:               9c2 | V:1 D:1 Tag:               9af |
+Index:   bb | V:1 D:0 Tag:               9af | V:1 D:1 Tag:               8ee |
+Index:   bc | V:1 D:1 Tag:               9b1 | V:1 D:1 Tag:               8f2 |
+Index:   bd | V:1 D:0 Tag:               8b6 | V:1 D:0 Tag:               94e |
+Index:   be | V:1 D:0 Tag:               9ee | V:1 D:0 Tag:               8ee |
+Index:   bf | V:1 D:0 Tag:               8b6 | V:1 D:1 Tag:               93e |
+Index:   c0 | V:1 D:0 Tag:               8b6 | V:1 D:1 Tag:               918 |
+Index:   c1 | V:1 D:0 Tag:               8d6 | V:1 D:0 Tag:               905 |
+Index:   c2 | V:1 D:0 Tag:               8d6 | V:1 D:0 Tag:               99c |
+Index:   c3 | V:1 D:1 Tag:               9f4 | V:1 D:1 Tag:               96a |
+Index:   c4 | V:1 D:0 Tag:               89e | V:1 D:0 Tag:               96a |
+Index:   c5 | V:1 D:0 Tag:               8eb | V:1 D:0 Tag:               91e |
+Index:   c6 | V:1 D:1 Tag:               96a | V:1 D:0 Tag:               9d0 |
+Index:   c7 | V:1 D:1 Tag:               8eb | V:1 D:0 Tag:               96a |
+Index:   c8 | V:1 D:0 Tag:               8eb | V:1 D:1 Tag:               8dd |
+Index:   c9 | V:1 D:1 Tag:               8d6 | V:1 D:0 Tag:               89e |
+Index:   ca | V:1 D:1 Tag:               89e | V:1 D:1 Tag:               924 |
+Index:   cb | V:1 D:0 Tag:               8c9 | V:1 D:1 Tag:               9d6 |
+Index:   cc | V:1 D:0 Tag:               8bf | V:1 D:1 Tag:               8f1 |
+Index:   cd | V:1 D:0 Tag:               976 | V:1 D:1 Tag:               8bf |
+Index:   ce | V:1 D:1 Tag:               963 | V:1 D:1 Tag:               950 |
+Index:   cf | V:1 D:0 Tag:               963 | V:1 D:0 Tag:               92e |
+Index:   d0 | V:1 D:0 Tag:               9ff | V:1 D:0 Tag:               9dc |
+Index:   d1 | V:1 D:0 Tag:               8ac | V:1 D:0 Tag:               9dc |
+Index:   d2 | V:1 D:1 Tag:               919 | V:1 D:1 Tag:               8bf |
+Index:   d3 | V:1 D:0 Tag:               9a5 | V:1 D:0 Tag:               8bf |
+Index:   d4 | V:1 D:0 Tag:               9a5 | V:1 D:1 Tag:               943 |
+Index:   d5 | V:1 D:1 Tag:               8ab | V:1 D:0 Tag:               943 |
+Index:   d6 | V:1 D:1 Tag:               9bc | V:1 D:0 Tag:               8b6 |
+Index:   d7 | V:1 D:0 Tag:               90c | V:1 D:1 Tag:               8c3 |
+Index:   d8 | V:1 D:0 Tag:               90c | V:1 D:0 Tag:               96f |
+Index:   d9 | V:1 D:0 Tag:               96f | V:1 D:0 Tag:               8c3 |
+Index:   da | V:1 D:0 Tag:               8ac | V:1 D:1 Tag:               923 |
+Index:   db | V:1 D:1 Tag:               8e7 | V:1 D:1 Tag:               910 |
+Index:   dc | V:1 D:1 Tag:               925 | V:1 D:0 Tag:               8c3 |
+Index:   dd | V:1 D:0 Tag:               8c3 | V:1 D:0 Tag:               9c4 |
+Index:   de | V:1 D:1 Tag:               8c3 | V:1 D:0 Tag:               9c4 |
+Index:   df | V:1 D:1 Tag:               8eb | V:1 D:0 Tag:               8ab |
+Index:   e0 | V:1 D:0 Tag:               9ee | V:1 D:1 Tag:               96a |
+Index:   e1 | V:1 D:0 Tag:               96a | V:1 D:0 Tag:               951 |
+Index:   e2 | V:1 D:0 Tag:               8eb | V:1 D:0 Tag:               92b |
+Index:   e3 | V:1 D:0 Tag:               9ca | V:1 D:0 Tag:               9b7 |
+Index:   e4 | V:1 D:0 Tag:               9b7 | V:1 D:0 Tag:               8b6 |
+Index:   e5 | V:1 D:1 Tag:               92f | V:1 D:0 Tag:               955 |
+Index:   e6 | V:1 D:1 Tag:               9e1 | V:1 D:1 Tag:               9ce |
+Index:   e7 | V:1 D:0 Tag:               91a | V:1 D:0 Tag:               8b6 |
+Index:   e8 | V:1 D:0 Tag:               90b | V:1 D:1 Tag:               8ac |
+Index:   e9 | V:1 D:1 Tag:               8eb | V:1 D:1 Tag:               9aa |
+Index:   ea | V:1 D:0 Tag:               8c0 | V:1 D:0 Tag:               8b3 |
+Index:   eb | V:1 D:0 Tag:               8b3 | V:1 D:0 Tag:               8c0 |
+Index:   ec | V:1 D:0 Tag:               8b3 | V:1 D:1 Tag:               8ef |
+Index:   ed | V:1 D:0 Tag:               8b6 | V:1 D:0 Tag:               8b3 |
+Index:   ee | V:1 D:0 Tag:               8c0 | V:1 D:0 Tag:               8b7 |
+Index:   ef | V:1 D:1 Tag:               897 | V:1 D:0 Tag:               8c0 |
+Index:   f0 | V:1 D:1 Tag:               95f | V:1 D:0 Tag:               897 |
+Index:   f1 | V:1 D:1 Tag:               95f | V:1 D:0 Tag:               8b3 |
+Index:   f2 | V:1 D:1 Tag:               95f | V:1 D:0 Tag:               8c3 |
+Index:   f3 | V:1 D:0 Tag:               8b7 | V:1 D:1 Tag:               95f |
+Index:   f4 | V:1 D:0 Tag:               8c3 | V:1 D:1 Tag:               95f |
+Index:   f5 | V:1 D:1 Tag:               95f | V:1 D:0 Tag:               8b3 |
+Index:   f6 | V:1 D:0 Tag:               8c0 | V:1 D:1 Tag:               9a5 |
+Index:   f7 | V:1 D:0 Tag:               8b3 | V:1 D:0 Tag:               8ac |
+Index:   f8 | V:1 D:0 Tag:               8bf | V:1 D:1 Tag:               90a |
+Index:   f9 | V:1 D:1 Tag:               9bc | V:1 D:1 Tag:               9a9 |
+Index:   fa | V:1 D:0 Tag:               90c | V:1 D:0 Tag:               8f9 |
+Index:   fb | V:1 D:0 Tag:               8d5 | V:1 D:1 Tag:               90a |
+Index:   fc | V:1 D:0 Tag:               8d5 | V:1 D:1 Tag:               91a |
+Index:   fd | V:1 D:1 Tag:               9d5 | V:1 D:1 Tag:               9e8 |
+Index:   fe | V:1 D:0 Tag:               9e8 | V:1 D:0 Tag:               9d5 |
+Index:   ff | V:1 D:0 Tag:               8ff | V:1 D:1 Tag:               9e4 |
+Victim cache:
+            | V:1 D:0 Addr:          22fffc0 | V:1 D:1 Addr:          2724940 |
+            | V:1 D:0 Addr:          255bdc0 | V:1 D:1 Addr:          2542280 |
+            | V:1 D:0 Addr:          2501040 | V:1 D:0 Addr:          2413440 |
+            | V:1 D:1 Addr:          22af100 | V:1 D:1 Addr:          24bddc0 |
+

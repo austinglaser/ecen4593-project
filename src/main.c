@@ -31,6 +31,8 @@
 static void Memory_Create(stats_t * stats, config_t * config);
 static void Memory_Destroy(void);
 
+static void usage(char const * call);
+
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
@@ -48,28 +50,51 @@ static l1_cache_t l1d_cache;
  */
 int main(int argc, char const * const * const argv)
 {
-    if (argc < 2 || argc > 3) {
-        printf("Usage: %s <config_file> [case name]\n", argv[0]);
+    if (argc > 4) {
+        printf("Too many arguments\n\n");
+        usage(argv[0]);
         return -1;
     }
 
-    char const * config_file = argv[1];
-    char const * trace_name = "unknown";
-    if (argc == 3) {
-        trace_name = argv[2];
+    char const * config_file = NULL;
+    char const * trace_name = NULL;
+    int i;
+    for (i = 1; i < argc; i++) {
+        if (strcmp("-t", argv[i]) == 0) {
+            if (i == argc - 1) {
+                printf("'-t' takes an argument\n\n");
+                usage(argv[0]);
+                return -1;
+            }
+            trace_name = argv[i + 1];
+            i++;
+        }
+        else {
+            if (config_file != NULL) {
+                printf("extra argument '%s'\n\n", argv[i]);
+                usage(argv[0]);
+                return -1;
+            }
+            config_file = argv[i];
+        }
     }
 
     config_t config;
     Config_FromFile(config_file, &config);
 
-    char const * config_name = strrchr(config_file, '/') + 1;
-    if (config_name == NULL) {
-        config_name = config_file;
+    char const * config_name = "default";
+    if (config_file != NULL) {
+        config_name = strrchr(config_file, '/') + 1;
+        if (config_name == NULL) {
+            config_name = config_file;
+        }
     }
 
-    char case_name[128];
-    strncpy(case_name, trace_name,  sizeof(case_name));
-    strncat(case_name, ".",         sizeof(case_name));
+    char case_name[128] = { '\0' };
+    if (trace_name != NULL) {
+        strncat(case_name, trace_name,  sizeof(case_name));
+        strncat(case_name, ".",         sizeof(case_name));
+    }
     strncat(case_name, config_name, sizeof(case_name));
 
     printf("\n-------------------------------------------------------------------------\n");
@@ -159,6 +184,12 @@ static void Memory_Destroy(void)
     L1Cache_Destroy(l1d_cache);
     L2Cache_Destroy(l2_cache);
     MainMem_Destroy(main_mem);
+}
+
+static void usage(char const * call)
+{
+    printf("Usage: %s [config_file] [-t <trace_name>]\n"
+            "    If only one argument is given, it is assumed to be config_file.\n", call);
 }
 
 /** @} defgroup MAIN */

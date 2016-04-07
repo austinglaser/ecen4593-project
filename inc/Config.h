@@ -65,6 +65,8 @@ void Config_FromFile(const char * filename, config_t * config);
 
 void Config_Print(config_t const * config);
 
+void Config_PrintCost(config_t const * config);
+
 /** @} defgroup CONFIG */
 
 #endif /* ifndef CONFIG_H */

@@ -147,6 +147,9 @@ int main(int argc, char const * const * const argv)
     Statistics_Print(&stats);
     printf("\n");
 
+    Config_PrintCost(&config);
+    printf("\n");
+
     printf("-------------------------------------------------------------------------\n\n");
 
     printf("Cache final contents - Index and Tag values are in HEX\n\n");

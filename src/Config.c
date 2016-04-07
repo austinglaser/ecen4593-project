@@ -173,6 +173,34 @@ void Config_Print(config_t const * config)
            config->main_mem.send_chunk_cycles);
 }
 
+void Config_PrintCost(config_t const * config)
+{
+    uint32_t l1_size_factor  = (config->l1.cache_size_bytes / 4096);
+    uint32_t l1_assoc_factor = HighestBitSet(config->l1.associativity) * l1_size_factor;
+    uint32_t l1_cost         = 100 * l1_size_factor;
+    if (l1_assoc_factor != 0) {
+        l1_cost += 100 * l1_assoc_factor;
+    }
+
+    uint32_t l2_size_factor  = (config->l2.cache_size_bytes / 16384);
+    uint32_t l2_assoc_factor = HighestBitSet(config->l2.associativity) * l2_size_factor;
+    uint32_t l2_cost         = 50 * l2_size_factor;
+    if (l2_assoc_factor != 0) {
+        l2_cost += 50 * l2_assoc_factor;
+    }
+
+    uint32_t mem_latency_factor   = HighestBitSet(CEIL_DIVIDE(50, config->main_mem.ready_cycles));
+    uint32_t mem_bandwidth_factor = HighestBitSet(config->main_mem.chunk_size_bytes / 8);
+    uint32_t memory_cost          = 50 + 200 * mem_latency_factor +
+                                    25 + 100 * mem_bandwidth_factor;
+
+    uint32_t total_cost = l1_cost*2 + l2_cost + memory_cost;
+
+    printf("  L1 cache cost (Icache $%"PRIu32") + (Dcache $%"PRIu32") = $%"PRIu32"\n", l1_cost, l1_cost, l1_cost*2);
+    printf("  L2 cache cost = $%"PRIu32";  Memory cost = $%"PRIu32"  Total cost = $%"PRIu32"\n",
+           l2_cost, memory_cost, total_cost);
+}
+
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
 static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * config)

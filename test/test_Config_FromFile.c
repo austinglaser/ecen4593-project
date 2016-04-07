@@ -57,7 +57,7 @@ void test_SetsDefaultsWithoutEmptyConfigFile(void)
     SetDefaultConfigValues(&expected_config);
 
     config_t actual_config;
-    Config_FromFile("config/empty", &actual_config);
+    Config_FromFile("test/support/empty", &actual_config);
 
     TEST_ASSERT_EQUAL_config_t(expected_config, actual_config);
 }

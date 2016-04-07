@@ -92,10 +92,10 @@ int main(int argc, char const * const * const argv)
 
     char case_name[128] = { '\0' };
     if (trace_name != NULL) {
-        strncat(case_name, trace_name,  sizeof(case_name));
-        strncat(case_name, ".",         sizeof(case_name));
+        strncat(case_name, trace_name,  sizeof(case_name) - 1);
+        strncat(case_name, ".",         sizeof(case_name) - strlen(case_name));
     }
-    strncat(case_name, config_name, sizeof(case_name));
+    strncat(case_name, config_name, sizeof(case_name) - strlen(case_name));
 
     printf("\n-------------------------------------------------------------------------\n");
     printf("      %-25s Simulation Results\n", case_name);

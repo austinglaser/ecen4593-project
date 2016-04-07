@@ -1,0 +1,591 @@
+
+-------------------------------------------------------------------------
+      sjeng.All-FA              Simulation Results
+-------------------------------------------------------------------------
+
+  Memory system:
+    Dcache size   =   8192 : ways = 256 : block size =  32
+    Icache size   =   8192 : ways = 256 : block size =  32
+    L2-cache size =  32768 : ways = 512 : block size =  64
+    Memory ready time = 50 : chunksize = 8 : chunktime = 15
+
+  Execute time = 77103508917; Total refs = 17300001933
+  Inst refs = 12741056222; Data refs = 4558945711
+
+  Number of reference types:   [Percentage]
+    Reads  =   3299993836      [19.1%]
+    Writes =   1258951875      [ 7.3%]
+    Inst.  =  12741056222      [73.6%]
+    Total  =  17300001933
+
+  Total cycles for activities: [Percentage]
+    Reads  =  13790677927      [17.9%]
+    Writes =  10508262236      [13.6%]
+    Inst.  =  52804568754      [68.5%]
+    Total  =  77103508917
+
+  CPI =   6.1
+  Ideal:             Exec. Time =  30041058155; CPI =   2.4
+  Ideal mis-aligned: Exec. Time =  40161444400; CPI =   3.2
+
+  Memory Level: L1i
+    Hit Count = 21292857690  Miss Count = 422699414
+    Total Requests = 21715557104
+    Hit Rate = 98.1%  Miss Rate =  1.9%
+    Kickouts = 409046754; Dirty kickouts = 0; Transfers = 409047018
+    VC Hit count = 13652396
+
+  Memory Level: L1d
+    Hit Count = 5588462471  Miss Count = 116368603
+    Total Requests = 5704831074
+    Hit Rate = 98.0%  Miss Rate =  2.0%
+    Kickouts = 111721718; Dirty kickouts = 62636980; Transfers = 111721982
+    VC Hit count = 4646621
+
+  Memory Level: L2
+    Hit Count = 500077372  Miss Count = 83328608
+    Total Requests = 583405980
+    Hit Rate = 85.7%  Miss Rate = 14.3%
+    Kickouts = 80455641; Dirty kickouts = 26401300; Transfers = 80456161
+    VC Hit count = 2872447
+
+  L1 cache cost (Icache $1800) + (Dcache $1800) = $3600
+  L2 cache cost = $1000;  Memory cost = $75  Total cost = $4675
+
+-------------------------------------------------------------------------
+
+Cache final contents - Index and Tag values are in HEX
+
+Memory Level: L1i
+Index:    0 | V:1 D:0 Tag:             2075c | V:1 D:0 Tag:             2075b |
+            | V:1 D:0 Tag:             20754 | V:1 D:0 Tag:             20753 |
+            | V:1 D:0 Tag:             20752 | V:1 D:0 Tag:             20780 |
+            | V:1 D:0 Tag:             2077f | V:1 D:0 Tag:             2077d |
+            | V:1 D:0 Tag:             2077c | V:1 D:0 Tag:             2077b |
+            | V:1 D:0 Tag:             2077a | V:1 D:0 Tag:             20779 |
+            | V:1 D:0 Tag:             20778 | V:1 D:0 Tag:             20771 |
+            | V:1 D:0 Tag:             20770 | V:1 D:0 Tag:             2076f |
+            | V:1 D:0 Tag:             2076e | V:1 D:0 Tag:             2076d |
+            | V:1 D:0 Tag:             2076c | V:1 D:0 Tag:             2076b |
+            | V:1 D:0 Tag:             20a8b | V:1 D:0 Tag:             20a84 |
+            | V:1 D:0 Tag:             20a83 | V:1 D:0 Tag:             20a7c |
+            | V:1 D:0 Tag:             20a7b | V:1 D:0 Tag:             20a7a |
+            | V:1 D:0 Tag:             2076a | V:1 D:0 Tag:             20765 |
+            | V:1 D:0 Tag:             20764 | V:1 D:0 Tag:             20761 |
+            | V:1 D:0 Tag:             20760 | V:1 D:0 Tag:             2075f |
+            | V:1 D:0 Tag:             2075e | V:1 D:0 Tag:             2075d |
+            | V:1 D:0 Tag:             20112 | V:1 D:0 Tag:             2010f |
+            | V:1 D:0 Tag:             2010e | V:1 D:0 Tag:             2010c |
+            | V:1 D:0 Tag:             207b4 | V:1 D:0 Tag:             207b3 |
+            | V:1 D:0 Tag:             207b1 | V:1 D:0 Tag:             207ae |
+            | V:1 D:0 Tag:             207ad | V:1 D:0 Tag:             207a7 |
+            | V:1 D:0 Tag:             207a5 | V:1 D:0 Tag:             207a4 |
+            | V:1 D:0 Tag:             207a3 | V:1 D:0 Tag:             207a2 |
+            | V:1 D:0 Tag:             207a1 | V:1 D:0 Tag:             203c8 |
+            | V:1 D:0 Tag:             203c4 | V:1 D:0 Tag:             203c0 |
+            | V:1 D:0 Tag:             203bf | V:1 D:0 Tag:             203bb |
+            | V:1 D:0 Tag:             203b7 | V:1 D:0 Tag:             203b6 |
+            | V:1 D:0 Tag:             20395 | V:1 D:0 Tag:             20394 |
+            | V:1 D:0 Tag:             20393 | V:1 D:0 Tag:             2035d |
+            | V:1 D:0 Tag:             2035c | V:1 D:0 Tag:             2035b |
+            | V:1 D:0 Tag:             207a0 | V:1 D:0 Tag:             2043c |
+            | V:1 D:0 Tag:             20411 | V:1 D:0 Tag:             20410 |
+            | V:1 D:0 Tag:             2040f | V:1 D:0 Tag:             2040b |
+            | V:1 D:0 Tag:             2040a | V:1 D:0 Tag:             20409 |
+            | V:1 D:0 Tag:             203d7 | V:1 D:0 Tag:             203d6 |
+            | V:1 D:0 Tag:             203cc | V:1 D:0 Tag:             203cb |
+            | V:1 D:0 Tag:             2079f | V:1 D:0 Tag:             2079e |
+            | V:1 D:0 Tag:             2079d | V:1 D:0 Tag:             2079c |
+            | V:1 D:0 Tag:             20344 | V:1 D:0 Tag:             2031e |
+            | V:1 D:0 Tag:             2031d | V:1 D:0 Tag:             2031c |
+            | V:1 D:0 Tag:             2031b | V:1 D:0 Tag:             2031a |
+            | V:1 D:0 Tag:             20314 | V:1 D:0 Tag:             20310 |
+            | V:1 D:0 Tag:             2030f | V:1 D:0 Tag:             2030a |
+            | V:1 D:0 Tag:             20309 | V:1 D:0 Tag:             20308 |
+            | V:1 D:0 Tag:             20307 | V:1 D:0 Tag:             202ff |
+            | V:1 D:0 Tag:             202fe | V:1 D:0 Tag:             202fd |
+            | V:1 D:0 Tag:             202fc | V:1 D:0 Tag:             202fb |
+            | V:1 D:0 Tag:             202fa | V:1 D:0 Tag:             207db |
+            | V:1 D:0 Tag:             206e5 | V:1 D:0 Tag:             206e4 |
+            | V:1 D:0 Tag:             206e3 | V:1 D:0 Tag:             207da |
+            | V:1 D:0 Tag:             207bb | V:1 D:0 Tag:             207ba |
+            | V:1 D:0 Tag:             202f9 | V:1 D:0 Tag:             202d3 |
+            | V:1 D:0 Tag:             202d2 | V:1 D:0 Tag:             202d1 |
+            | V:1 D:0 Tag:             202cb | V:1 D:0 Tag:             202ca |
+            | V:1 D:0 Tag:             202c5 | V:1 D:0 Tag:             202c4 |
+            | V:1 D:0 Tag:             202c3 | V:1 D:0 Tag:             202bd |
+            | V:1 D:0 Tag:             202bc | V:1 D:0 Tag:             202bb |
+            | V:1 D:0 Tag:             202ba | V:1 D:0 Tag:             207b9 |
+            | V:1 D:0 Tag:             207b8 | V:1 D:0 Tag:             207b5 |
+            | V:1 D:0 Tag:             207e9 | V:1 D:0 Tag:             20784 |
+            | V:1 D:0 Tag:             20783 | V:1 D:0 Tag:             20a6e |
+            | V:1 D:0 Tag:             20a6d | V:1 D:0 Tag:             20a6c |
+            | V:1 D:0 Tag:             20a6b | V:1 D:0 Tag:             20a6a |
+            | V:1 D:0 Tag:             20a69 | V:1 D:0 Tag:             20a68 |
+            | V:1 D:0 Tag:             20a67 | V:1 D:0 Tag:             20a66 |
+            | V:1 D:0 Tag:             20a65 | V:1 D:0 Tag:             20782 |
+            | V:1 D:0 Tag:             20781 | V:1 D:0 Tag:             20767 |
+            | V:1 D:0 Tag:             20766 | V:1 D:0 Tag:             20751 |
+            | V:1 D:0 Tag:             20a64 | V:1 D:0 Tag:             20a63 |
+            | V:1 D:0 Tag:             20a61 | V:1 D:0 Tag:             20a60 |
+            | V:1 D:0 Tag:             20750 | V:1 D:0 Tag:             20746 |
+            | V:1 D:0 Tag:             20745 | V:1 D:0 Tag:             20744 |
+            | V:1 D:0 Tag:             20731 | V:1 D:0 Tag:             20730 |
+            | V:1 D:0 Tag:             2072f | V:1 D:0 Tag:             2072e |
+            | V:1 D:0 Tag:             2072c | V:1 D:0 Tag:             2072a |
+            | V:1 D:0 Tag:             20729 | V:1 D:0 Tag:             20728 |
+            | V:1 D:0 Tag:             20726 | V:1 D:0 Tag:             20725 |
+            | V:1 D:0 Tag:             20724 | V:1 D:0 Tag:             2071e |
+            | V:1 D:0 Tag:             2071d | V:1 D:0 Tag:             20719 |
+            | V:1 D:0 Tag:             20718 | V:1 D:0 Tag:             20727 |
+            | V:1 D:0 Tag:             20914 | V:1 D:0 Tag:             20913 |
+            | V:1 D:0 Tag:             20912 | V:1 D:0 Tag:             20911 |
+            | V:1 D:0 Tag:             20910 | V:1 D:0 Tag:             2090f |
+            | V:1 D:0 Tag:             2090d | V:1 D:0 Tag:             20905 |
+            | V:1 D:0 Tag:             20904 | V:1 D:0 Tag:             20903 |
+            | V:1 D:0 Tag:             20902 | V:1 D:0 Tag:             20901 |
+            | V:1 D:0 Tag:             20900 | V:1 D:0 Tag:             208ff |
+            | V:1 D:0 Tag:             2090c | V:1 D:0 Tag:             2090b |
+            | V:1 D:0 Tag:             2090a | V:1 D:0 Tag:             20909 |
+            | V:1 D:0 Tag:             20908 | V:1 D:0 Tag:             208fe |
+            | V:1 D:0 Tag:             208fd | V:1 D:0 Tag:             208fc |
+            | V:1 D:0 Tag:             208f5 | V:1 D:0 Tag:             208f4 |
+            | V:1 D:0 Tag:             208f6 | V:1 D:0 Tag:             208f3 |
+            | V:1 D:0 Tag:             208f2 | V:1 D:0 Tag:             208fb |
+            | V:1 D:0 Tag:             208fa | V:1 D:0 Tag:             208f9 |
+            | V:1 D:0 Tag:             208f8 | V:1 D:0 Tag:             208f7 |
+            | V:1 D:0 Tag:             208ed | V:1 D:0 Tag:             208ec |
+            | V:1 D:0 Tag:             208f1 | V:1 D:0 Tag:             208f0 |
+            | V:1 D:0 Tag:             208ef | V:1 D:0 Tag:             208ee |
+            | V:1 D:0 Tag:             208eb | V:1 D:0 Tag:             208ea |
+            | V:1 D:0 Tag:             208e9 | V:1 D:0 Tag:             20907 |
+            | V:1 D:0 Tag:             20906 | V:1 D:0 Tag:             206f5 |
+            | V:1 D:0 Tag:             206f4 | V:1 D:0 Tag:             20743 |
+            | V:1 D:0 Tag:             20742 | V:1 D:0 Tag:             20741 |
+            | V:1 D:0 Tag:             202b9 | V:1 D:0 Tag:             202b7 |
+            | V:1 D:0 Tag:             202a8 | V:1 D:0 Tag:             202a7 |
+            | V:1 D:0 Tag:             20285 | V:1 D:0 Tag:             20267 |
+            | V:1 D:0 Tag:             20266 | V:1 D:0 Tag:             20286 |
+            | V:1 D:0 Tag:             2026e | V:1 D:0 Tag:             2026d |
+            | V:1 D:0 Tag:             2025d | V:1 D:0 Tag:             20244 |
+            | V:1 D:0 Tag:             20243 | V:1 D:0 Tag:             20242 |
+            | V:1 D:0 Tag:             20241 | V:1 D:0 Tag:             20240 |
+            | V:1 D:0 Tag:             2023f | V:1 D:0 Tag:             2025c |
+            | V:1 D:0 Tag:             20255 | V:1 D:0 Tag:             20254 |
+            | V:1 D:0 Tag:             20251 | V:1 D:0 Tag:             2026c |
+            | V:1 D:0 Tag:             2026b | V:1 D:0 Tag:             2026a |
+            | V:1 D:0 Tag:             20269 | V:1 D:0 Tag:             20268 |
+            | V:1 D:0 Tag:             20273 | V:1 D:0 Tag:             20250 |
+            | V:1 D:0 Tag:             2024f | V:1 D:0 Tag:             20272 |
+            | V:1 D:0 Tag:             20271 | V:1 D:0 Tag:             20270 |
+            | V:1 D:0 Tag:             2026f | V:1 D:0 Tag:             20278 |
+            | V:1 D:0 Tag:             20261 | V:1 D:0 Tag:             20260 |
+            | V:1 D:0 Tag:             2025f | V:1 D:0 Tag:             2025e |
+            | V:1 D:0 Tag:             20277 | V:1 D:0 Tag:             20276 |
+            | V:1 D:0 Tag:             20280 | V:1 D:0 Tag:             2027f |
+            | V:1 D:0 Tag:             2024d | V:1 D:0 Tag:             2024c |
+            | V:1 D:0 Tag:             2024e | V:1 D:0 Tag:             2027e |
+Victim cache:
+            | V:1 D:0 Addr:           404fa0 | V:1 D:0 Addr:           404ca0 |
+            | V:1 D:0 Addr:           404c80 | V:1 D:0 Addr:           404c60 |
+            | V:1 D:0 Addr:           404c40 | V:1 D:0 Addr:           40e800 |
+            | V:1 D:0 Addr:           403cc0 | V:1 D:0 Addr:           403ca0 |
+
+Memory Level: L1d
+Index:    0 | V:1 D:1 Tag:             44800 | V:1 D:1 Tag:       3fffad40d66 |
+            | V:1 D:1 Tag:             447ff | V:1 D:1 Tag:       3fffad40b64 |
+            | V:1 D:1 Tag:       3fffad40d67 | V:1 D:1 Tag:       3fffad40d68 |
+            | V:1 D:1 Tag:       3fffad40d69 | V:1 D:0 Tag:             44827 |
+            | V:1 D:1 Tag:             44b3d | V:1 D:1 Tag:             446ac |
+            | V:1 D:1 Tag:             446f8 | V:1 D:1 Tag:       3fffad40f6b |
+            | V:1 D:0 Tag:             44953 | V:1 D:0 Tag:       3fc0dcde787 |
+            | V:1 D:1 Tag:             44a40 | V:1 D:0 Tag:       3fc0db14b07 |
+            | V:1 D:0 Tag:             33242 | V:1 D:0 Tag:             3322b |
+            | V:1 D:0 Tag:             3328c | V:1 D:1 Tag:             4483a |
+            | V:1 D:1 Tag:             3328d | V:1 D:1 Tag:             332b3 |
+            | V:1 D:1 Tag:             332da | V:1 D:1 Tag:             44802 |
+            | V:1 D:1 Tag:       3fffad40f6c | V:1 D:1 Tag:       3fffad40f6d |
+            | V:1 D:0 Tag:       3fffad40f6e | V:1 D:1 Tag:       3fffad40f6f |
+            | V:1 D:0 Tag:       3fffad40f7b | V:1 D:1 Tag:       3fffad41170 |
+            | V:1 D:0 Tag:             20c4c | V:1 D:1 Tag:             43bd7 |
+            | V:1 D:0 Tag:             20c75 | V:1 D:0 Tag:             20c6d |
+            | V:1 D:0 Tag:             20c63 | V:1 D:0 Tag:             20c5b |
+            | V:1 D:0 Tag:             20c3f | V:1 D:0 Tag:             20c37 |
+            | V:1 D:0 Tag:             20c51 | V:1 D:0 Tag:             20c49 |
+            | V:1 D:1 Tag:             44a3e | V:1 D:1 Tag:             43bd9 |
+            | V:1 D:1 Tag:             43bd8 | V:1 D:0 Tag:             20d7d |
+            | V:1 D:0 Tag:             20c6b | V:1 D:0 Tag:             20c59 |
+            | V:1 D:0 Tag:             20c47 | V:1 D:1 Tag:             4491c |
+            | V:1 D:0 Tag:             20d84 | V:1 D:1 Tag:             4495b |
+            | V:1 D:1 Tag:             446ae | V:1 D:1 Tag:             43be1 |
+            | V:1 D:1 Tag:             4482d | V:1 D:1 Tag:             44830 |
+            | V:1 D:1 Tag:             43bd4 | V:1 D:0 Tag:             44a5b |
+            | V:1 D:0 Tag:             44a58 | V:1 D:1 Tag:             4469f |
+            | V:1 D:1 Tag:             446a2 | V:1 D:1 Tag:             4494c |
+            | V:1 D:1 Tag:             43be6 | V:1 D:1 Tag:             43ae6 |
+            | V:1 D:1 Tag:       3fffad41131 | V:1 D:1 Tag:       3fffad41132 |
+            | V:1 D:1 Tag:       3fffad41130 | V:1 D:1 Tag:             44831 |
+            | V:1 D:0 Tag:             44a5c | V:1 D:1 Tag:             4494d |
+            | V:1 D:1 Tag:             446a3 | V:1 D:0 Tag:       3fffad40f81 |
+            | V:1 D:1 Tag:       3fc0db36987 | V:1 D:1 Tag:       3fc0db36988 |
+            | V:1 D:0 Tag:             31107 | V:1 D:1 Tag:       3fffad40b63 |
+            | V:1 D:1 Tag:       3fffad40b62 | V:1 D:1 Tag:       3fffad40960 |
+            | V:1 D:1 Tag:       3fc0d8df348 | V:1 D:1 Tag:       3fffad40b61 |
+            | V:1 D:1 Tag:       3fffad40b21 | V:1 D:1 Tag:       3fffad40961 |
+            | V:1 D:1 Tag:       3fffad40ae1 | V:1 D:1 Tag:       3fffad40962 |
+            | V:1 D:1 Tag:       3fffad4095f | V:1 D:1 Tag:       3fffad4095e |
+            | V:1 D:0 Tag:             44842 | V:1 D:0 Tag:             44700 |
+            | V:1 D:0 Tag:             43af5 | V:1 D:0 Tag:             44212 |
+            | V:1 D:0 Tag:             310b4 | V:1 D:0 Tag:             4402a |
+            | V:1 D:1 Tag:       3fffad4095d | V:1 D:1 Tag:       3fffad4095c |
+            | V:1 D:1 Tag:       3fffad4095a | V:1 D:1 Tag:             43bd5 |
+            | V:1 D:1 Tag:       3fffad4095b | V:1 D:1 Tag:             33311 |
+            | V:1 D:1 Tag:             33309 | V:1 D:1 Tag:       3fffad40959 |
+            | V:1 D:1 Tag:             3330d | V:1 D:0 Tag:             20e82 |
+            | V:1 D:1 Tag:             43bdb | V:1 D:1 Tag:             43bd6 |
+            | V:1 D:1 Tag:             43bda | V:1 D:0 Tag:             20e83 |
+            | V:1 D:1 Tag:             31dbf | V:1 D:0 Tag:             20d76 |
+            | V:1 D:1 Tag:             43bdd | V:1 D:1 Tag:             4494f |
+            | V:1 D:0 Tag:             20d75 | V:1 D:1 Tag:             43bdc |
+            | V:1 D:0 Tag:             20d74 | V:1 D:1 Tag:             4494e |
+            | V:1 D:1 Tag:             310b5 | V:1 D:0 Tag:             20c4d |
+            | V:1 D:0 Tag:             20c4a | V:1 D:1 Tag:             43bd3 |
+            | V:1 D:1 Tag:             43bd2 | V:1 D:0 Tag:             20c4b |
+            | V:1 D:0 Tag:             20c48 | V:1 D:0 Tag:             43bd1 |
+            | V:1 D:0 Tag:             43bd0 | V:1 D:1 Tag:             33200 |
+            | V:1 D:1 Tag:             31626 | V:1 D:1 Tag:       3fffad40952 |
+            | V:1 D:1 Tag:       3fc0d866356 | V:1 D:1 Tag:             31115 |
+            | V:1 D:1 Tag:       3fffad40953 | V:1 D:1 Tag:       3fffad40954 |
+            | V:1 D:0 Tag:             20c35 | V:1 D:1 Tag:       3fffad40956 |
+            | V:1 D:1 Tag:       3fffad40955 | V:1 D:0 Tag:             20d91 |
+            | V:1 D:0 Tag:             20c52 | V:1 D:0 Tag:             20c40 |
+            | V:1 D:1 Tag:       3fffad40951 | V:1 D:0 Tag:             20e1c |
+            | V:1 D:0 Tag:             20e1d | V:1 D:0 Tag:             43bdf |
+            | V:1 D:0 Tag:             20d96 | V:1 D:0 Tag:             3301d |
+            | V:1 D:0 Tag:             20d9b | V:1 D:0 Tag:             43bde |
+            | V:1 D:0 Tag:             32fd5 | V:1 D:0 Tag:             20df6 |
+            | V:1 D:1 Tag:       3fffad40958 | V:1 D:0 Tag:             44836 |
+            | V:1 D:0 Tag:             20df1 | V:1 D:0 Tag:             20d90 |
+            | V:1 D:0 Tag:             20d9a | V:1 D:1 Tag:       3fffad40957 |
+            | V:1 D:0 Tag:             20dbb | V:1 D:0 Tag:             20d8f |
+            | V:1 D:0 Tag:             20d93 | V:1 D:0 Tag:             32513 |
+            | V:1 D:0 Tag:             20d94 | V:1 D:0 Tag:             3251d |
+            | V:1 D:0 Tag:             20db9 | V:1 D:0 Tag:             20c4f |
+            | V:1 D:0 Tag:             20c3d | V:1 D:0 Tag:             32417 |
+            | V:1 D:0 Tag:             32421 | V:1 D:0 Tag:             20dba |
+            | V:1 D:0 Tag:             20c50 | V:1 D:0 Tag:             20c3e |
+            | V:1 D:0 Tag:             324b9 | V:1 D:0 Tag:             324c3 |
+            | V:1 D:0 Tag:             324a7 | V:1 D:0 Tag:             324b1 |
+            | V:1 D:0 Tag:             3244d | V:1 D:0 Tag:             32457 |
+            | V:1 D:0 Tag:             20d97 | V:1 D:0 Tag:             324dd |
+            | V:1 D:0 Tag:             20e04 | V:1 D:0 Tag:             20d92 |
+            | V:1 D:0 Tag:             20d99 | V:1 D:0 Tag:             32405 |
+            | V:1 D:0 Tag:             20e15 | V:1 D:0 Tag:             20db7 |
+            | V:1 D:0 Tag:             20c3b | V:1 D:0 Tag:             3232d |
+            | V:1 D:0 Tag:             32337 | V:1 D:0 Tag:             20da5 |
+            | V:1 D:0 Tag:             3235b | V:1 D:0 Tag:             32351 |
+            | V:1 D:0 Tag:             20da4 | V:1 D:0 Tag:             20c3a |
+            | V:1 D:0 Tag:             3225f | V:1 D:0 Tag:             32255 |
+            | V:1 D:0 Tag:             20db6 | V:1 D:0 Tag:             32243 |
+            | V:1 D:0 Tag:             3224d | V:1 D:0 Tag:             20da2 |
+            | V:1 D:0 Tag:             20c38 | V:1 D:0 Tag:             32199 |
+            | V:1 D:0 Tag:             3218f | V:1 D:0 Tag:             32175 |
+            | V:1 D:0 Tag:             20dfe | V:1 D:0 Tag:             20da3 |
+            | V:1 D:0 Tag:             20c39 | V:1 D:0 Tag:             321cf |
+            | V:1 D:0 Tag:             321c5 | V:1 D:0 Tag:             20da1 |
+            | V:1 D:0 Tag:             320e5 | V:1 D:0 Tag:             320db |
+            | V:1 D:0 Tag:             20da0 | V:1 D:0 Tag:             20c36 |
+            | V:1 D:0 Tag:             3208b | V:1 D:0 Tag:             32081 |
+            | V:1 D:0 Tag:             32079 | V:1 D:0 Tag:             3206f |
+            | V:1 D:0 Tag:             32a09 | V:1 D:0 Tag:             329f7 |
+            | V:1 D:1 Tag:             4482b | V:1 D:0 Tag:             20dc3 |
+            | V:1 D:0 Tag:       3fc0dd00608 | V:1 D:0 Tag:             20c70 |
+            | V:1 D:0 Tag:             20c5e | V:1 D:1 Tag:             4482f |
+            | V:1 D:0 Tag:             44a5a | V:1 D:1 Tag:             446a1 |
+            | V:1 D:0 Tag:       3fffad40f7a | V:1 D:1 Tag:       3fc0d9f385a |
+            | V:1 D:1 Tag:       3fc0d9f385b | V:1 D:1 Tag:       3fc0d9c89e0 |
+            | V:1 D:1 Tag:       3fc0d85e298 | V:1 D:0 Tag:             32283 |
+            | V:1 D:0 Tag:             32279 | V:1 D:0 Tag:             321bd |
+            | V:1 D:0 Tag:             321b3 | V:1 D:0 Tag:       3fc0dbbd4da |
+            | V:1 D:0 Tag:             44ac2 | V:1 D:0 Tag:             44ac4 |
+            | V:1 D:1 Tag:             4469d | V:1 D:0 Tag:       3fffad40f77 |
+            | V:1 D:0 Tag:       3fffad40f76 | V:1 D:1 Tag:       3fc0da71e74 |
+            | V:1 D:1 Tag:       3fc0da71e75 | V:1 D:1 Tag:       3fc0d9a7301 |
+            | V:1 D:1 Tag:       3fc0d845171 | V:1 D:0 Tag:             32ae1 |
+            | V:1 D:0 Tag:       3fc0dc3baf4 | V:1 D:0 Tag:             20d7f |
+            | V:1 D:0 Tag:             20d85 | V:1 D:0 Tag:             44aa0 |
+            | V:1 D:0 Tag:             44a9e | V:1 D:0 Tag:       3fffad40f72 |
+            | V:1 D:0 Tag:       3fffad40f71 | V:1 D:1 Tag:       3fc0db8af9c |
+            | V:1 D:1 Tag:       3fc0db8af9d | V:1 D:1 Tag:       3fc0d882968 |
+            | V:1 D:1 Tag:       3fc0d820bee | V:1 D:0 Tag:             3301f |
+            | V:1 D:0 Tag:             20d95 | V:1 D:0 Tag:             32fd7 |
+            | V:1 D:0 Tag:             32515 | V:1 D:0 Tag:             32419 |
+Victim cache:
+            | V:1 D:0 Addr:           649760 | V:1 D:0 Addr:           649520 |
+            | V:1 D:0 Addr:           6489e0 | V:1 D:0 Addr:           649be0 |
+            | V:1 D:0 Addr:           6480e0 | V:1 D:0 Addr:           6465e0 |
+            | V:1 D:0 Addr:           644f60 | V:1 D:0 Addr:           644ae0 |
+
+Memory Level: L2
+Index:    0 | V:1 D:0 Tag:             103bf | V:1 D:0 Tag:             103be |
+            | V:1 D:0 Tag:             103bd | V:1 D:0 Tag:             103bc |
+            | V:1 D:0 Tag:             103b8 | V:1 D:0 Tag:             103b7 |
+            | V:1 D:0 Tag:             103b6 | V:1 D:0 Tag:             10545 |
+            | V:1 D:0 Tag:             10542 | V:1 D:0 Tag:       1fe06e6f3c3 |
+            | V:1 D:0 Tag:             10541 | V:1 D:0 Tag:       1fe06d8a583 |
+            | V:1 D:0 Tag:             1053e | V:1 D:0 Tag:             1053d |
+            | V:1 D:0 Tag:             103b5 | V:1 D:0 Tag:             103b2 |
+            | V:1 D:0 Tag:             103b0 | V:1 D:0 Tag:             103af |
+            | V:1 D:0 Tag:             103ae | V:1 D:0 Tag:             10087 |
+            | V:1 D:0 Tag:             10086 | V:1 D:0 Tag:             103ad |
+            | V:1 D:0 Tag:             103aa | V:1 D:0 Tag:             103a9 |
+            | V:1 D:0 Tag:             103d9 | V:1 D:0 Tag:             103d8 |
+            | V:1 D:0 Tag:             103d7 | V:1 D:0 Tag:             103d6 |
+            | V:1 D:0 Tag:             103d3 | V:1 D:0 Tag:             103d2 |
+            | V:1 D:0 Tag:             103d1 | V:1 D:0 Tag:             101e4 |
+            | V:1 D:0 Tag:             101e2 | V:1 D:0 Tag:             101e0 |
+            | V:1 D:0 Tag:             101df | V:1 D:0 Tag:             101dd |
+            | V:1 D:0 Tag:             101db | V:1 D:0 Tag:             101ca |
+            | V:1 D:0 Tag:             101c9 | V:1 D:0 Tag:             101ae |
+            | V:1 D:0 Tag:             101ad | V:1 D:0 Tag:             103d0 |
+            | V:1 D:0 Tag:             1021e | V:1 D:0 Tag:             10208 |
+            | V:1 D:0 Tag:             10207 | V:1 D:0 Tag:             10205 |
+            | V:1 D:0 Tag:             10204 | V:1 D:0 Tag:             101eb |
+            | V:1 D:0 Tag:             101e6 | V:1 D:0 Tag:             101e5 |
+            | V:1 D:0 Tag:             103cf | V:1 D:0 Tag:             103ce |
+            | V:1 D:0 Tag:             101a2 | V:1 D:0 Tag:             1018f |
+            | V:1 D:0 Tag:             1018e | V:1 D:0 Tag:             1018d |
+            | V:1 D:0 Tag:             1018a | V:1 D:0 Tag:             10188 |
+            | V:1 D:0 Tag:             10187 | V:1 D:0 Tag:             10185 |
+            | V:1 D:0 Tag:             10184 | V:1 D:0 Tag:             10183 |
+            | V:1 D:0 Tag:             1017f | V:1 D:0 Tag:             1017e |
+            | V:1 D:0 Tag:             1017d | V:1 D:0 Tag:             103ed |
+            | V:1 D:0 Tag:             103dd | V:1 D:0 Tag:             1017c |
+            | V:1 D:0 Tag:             10169 | V:1 D:0 Tag:             10168 |
+            | V:1 D:0 Tag:             10165 | V:1 D:0 Tag:             10162 |
+            | V:1 D:0 Tag:             10161 | V:1 D:0 Tag:             1015e |
+            | V:1 D:0 Tag:             1015d | V:1 D:0 Tag:             103dc |
+            | V:1 D:0 Tag:             103da | V:1 D:0 Tag:             103c2 |
+            | V:1 D:0 Tag:             10537 | V:1 D:0 Tag:             10536 |
+            | V:1 D:0 Tag:             10535 | V:1 D:0 Tag:             10534 |
+            | V:1 D:0 Tag:       1fe06d9b4c3 | V:1 D:0 Tag:             10533 |
+            | V:1 D:0 Tag:             103c1 | V:1 D:0 Tag:             103c0 |
+            | V:1 D:0 Tag:             103f4 | V:1 D:0 Tag:             103b3 |
+            | V:1 D:0 Tag:             10532 | V:1 D:0 Tag:             10531 |
+            | V:1 D:0 Tag:             10530 | V:1 D:0 Tag:             103a3 |
+            | V:1 D:0 Tag:             103a8 | V:1 D:0 Tag:             10372 |
+            | V:1 D:0 Tag:             10371 | V:1 D:0 Tag:             103a2 |
+            | V:1 D:0 Tag:             10398 | V:1 D:0 Tag:             22109 |
+            | V:1 D:0 Tag:             10397 | V:1 D:0 Tag:             10396 |
+            | V:1 D:0 Tag:             10395 | V:1 D:0 Tag:             10394 |
+            | V:1 D:0 Tag:             1048a | V:1 D:0 Tag:             10489 |
+            | V:1 D:0 Tag:             10488 | V:1 D:0 Tag:             10487 |
+            | V:1 D:0 Tag:             10482 | V:1 D:0 Tag:             10481 |
+            | V:1 D:0 Tag:             10480 | V:1 D:0 Tag:             10486 |
+            | V:1 D:0 Tag:             10485 | V:1 D:0 Tag:             10484 |
+            | V:1 D:0 Tag:             1047f | V:1 D:0 Tag:             1047e |
+            | V:1 D:0 Tag:             1047a | V:1 D:0 Tag:             1047d |
+            | V:1 D:0 Tag:             1047c | V:1 D:0 Tag:             1047b |
+            | V:1 D:0 Tag:             10479 | V:1 D:0 Tag:             10478 |
+            | V:1 D:0 Tag:             10476 | V:1 D:0 Tag:             10477 |
+            | V:1 D:0 Tag:             10475 | V:1 D:0 Tag:             10474 |
+            | V:1 D:0 Tag:             10483 | V:1 D:0 Tag:             10393 |
+            | V:1 D:0 Tag:             10392 | V:1 D:0 Tag:             1038f |
+            | V:1 D:0 Tag:             1038e | V:1 D:0 Tag:             1038c |
+            | V:1 D:0 Tag:             1037a | V:1 D:0 Tag:             103a1 |
+            | V:1 D:0 Tag:             1015c | V:1 D:0 Tag:             1015b |
+            | V:1 D:0 Tag:             10154 | V:1 D:0 Tag:             10153 |
+            | V:1 D:0 Tag:             1012e | V:1 D:0 Tag:             1012a |
+            | V:1 D:0 Tag:             10122 | V:1 D:0 Tag:             10121 |
+            | V:1 D:0 Tag:             10120 | V:1 D:0 Tag:             1011f |
+            | V:1 D:0 Tag:             10139 | V:1 D:0 Tag:             10138 |
+            | V:1 D:0 Tag:             10128 | V:1 D:0 Tag:             10137 |
+            | V:1 D:0 Tag:             10136 | V:1 D:0 Tag:             10135 |
+            | V:1 D:0 Tag:             10134 | V:1 D:0 Tag:             1013c |
+            | V:1 D:0 Tag:             10130 | V:1 D:0 Tag:             1012f |
+            | V:1 D:0 Tag:             1013b | V:1 D:0 Tag:             10140 |
+            | V:1 D:0 Tag:             10127 | V:1 D:0 Tag:             1013f |
+            | V:1 D:0 Tag:             10126 | V:1 D:0 Tag:             1013e |
+            | V:1 D:0 Tag:             10133 | V:1 D:0 Tag:             10143 |
+            | V:1 D:0 Tag:             10142 | V:1 D:0 Tag:             10132 |
+            | V:1 D:0 Tag:             10131 | V:1 D:0 Tag:             103a0 |
+            | V:1 D:0 Tag:             100f3 | V:1 D:0 Tag:             100f2 |
+            | V:1 D:0 Tag:             10280 | V:1 D:0 Tag:             1027f |
+            | V:1 D:0 Tag:             10089 | V:1 D:0 Tag:             1027e |
+            | V:1 D:0 Tag:             1027c | V:1 D:0 Tag:             1027b |
+            | V:1 D:0 Tag:             10273 | V:1 D:0 Tag:             10272 |
+            | V:1 D:0 Tag:             10271 | V:1 D:0 Tag:             1026e |
+            | V:1 D:0 Tag:             1026d | V:1 D:0 Tag:             1026c |
+            | V:1 D:0 Tag:             1026b | V:1 D:0 Tag:             1026a |
+            | V:1 D:0 Tag:             1025c | V:1 D:0 Tag:             1025b |
+            | V:1 D:0 Tag:             1025a | V:1 D:0 Tag:             10268 |
+            | V:1 D:0 Tag:             10267 | V:1 D:0 Tag:             10266 |
+            | V:1 D:0 Tag:             10265 | V:1 D:0 Tag:             10264 |
+            | V:1 D:0 Tag:             10263 | V:1 D:0 Tag:             1024d |
+            | V:1 D:0 Tag:             1025d | V:1 D:0 Tag:             1022c |
+            | V:1 D:0 Tag:             10221 | V:1 D:0 Tag:             10220 |
+            | V:1 D:0 Tag:             1022b | V:1 D:0 Tag:             106d2 |
+            | V:1 D:0 Tag:             191ad | V:1 D:0 Tag:             191a8 |
+            | V:1 D:0 Tag:             10257 | V:1 D:0 Tag:             1024f |
+            | V:1 D:0 Tag:             1024e | V:1 D:0 Tag:             1024c |
+            | V:1 D:0 Tag:             1022d | V:1 D:0 Tag:             10241 |
+            | V:1 D:0 Tag:             1024b | V:1 D:0 Tag:             10243 |
+            | V:1 D:0 Tag:             10242 | V:1 D:0 Tag:             10240 |
+            | V:1 D:0 Tag:             10231 | V:1 D:0 Tag:             10230 |
+            | V:1 D:0 Tag:             1022f | V:1 D:0 Tag:             1022e |
+            | V:1 D:0 Tag:             10259 | V:1 D:0 Tag:             10258 |
+            | V:1 D:0 Tag:             1022a | V:1 D:0 Tag:             10229 |
+            | V:1 D:0 Tag:             10228 | V:1 D:0 Tag:             10222 |
+            | V:1 D:0 Tag:             10227 | V:1 D:0 Tag:             10269 |
+            | V:1 D:0 Tag:             10262 | V:1 D:0 Tag:             10261 |
+            | V:1 D:0 Tag:             10260 | V:1 D:0 Tag:             1025f |
+            | V:1 D:0 Tag:             1025e | V:1 D:0 Tag:             1023f |
+            | V:1 D:0 Tag:             10224 | V:1 D:0 Tag:             10223 |
+            | V:1 D:0 Tag:             1023e | V:1 D:0 Tag:             1023d |
+            | V:1 D:0 Tag:             1023c | V:1 D:0 Tag:             1023b |
+            | V:1 D:0 Tag:             1023a | V:1 D:0 Tag:             10239 |
+            | V:1 D:0 Tag:             10238 | V:1 D:0 Tag:             10237 |
+            | V:1 D:0 Tag:             10236 | V:1 D:0 Tag:             10235 |
+            | V:1 D:0 Tag:             1008b | V:1 D:0 Tag:       1fe06c331ab |
+            | V:1 D:0 Tag:             1008a | V:1 D:0 Tag:             10234 |
+            | V:1 D:0 Tag:             10233 | V:1 D:0 Tag:             10232 |
+            | V:1 D:0 Tag:             100c0 | V:1 D:0 Tag:             1039f |
+            | V:1 D:0 Tag:             1039e | V:1 D:0 Tag:             10547 |
+            | V:1 D:0 Tag:       1fe06c6f9a4 | V:1 D:0 Tag:             10546 |
+            | V:1 D:0 Tag:             1039d | V:1 D:0 Tag:             10399 |
+            | V:1 D:0 Tag:       1fe06e80304 | V:1 D:0 Tag:       1fe06d9b4c4 |
+            | V:1 D:0 Tag:             101e3 | V:1 D:0 Tag:             10638 |
+            | V:1 D:1 Tag:             22417 | V:1 D:0 Tag:             1062f |
+            | V:1 D:1 Tag:             22418 | V:1 D:1 Tag:             22350 |
+            | V:1 D:0 Tag:             2252e | V:1 D:1 Tag:             22351 |
+            | V:1 D:1 Tag:       1fe06d54a9c | V:1 D:0 Tag:       1fe06cf9c2d |
+            | V:1 D:1 Tag:       1fe06d54a9d | V:1 D:0 Tag:             190de |
+            | V:1 D:1 Tag:       1fe06cbd74b | V:1 D:0 Tag:             190d9 |
+            | V:1 D:0 Tag:       1fe06c2f14c | V:1 D:1 Tag:       1fe06c11f10 |
+            | V:1 D:0 Tag:       1fe06ce44f0 | V:1 D:0 Tag:       1fe06ddea6d |
+            | V:1 D:0 Tag:             106be | V:1 D:0 Tag:             10636 |
+            | V:1 D:0 Tag:             1062d | V:1 D:0 Tag:             2252d |
+            | V:1 D:0 Tag:             2252c | V:1 D:0 Tag:       1fffd6a07bd |
+            | V:1 D:1 Tag:             21d73 | V:1 D:0 Tag:             1016f |
+            | V:1 D:0 Tag:             1016e | V:1 D:0 Tag:       1fe06d38f3a |
+            | V:1 D:0 Tag:             190c7 | V:1 D:0 Tag:             19570 |
+            | V:1 D:0 Tag:       1fe06c228b8 | V:1 D:0 Tag:       1fe06cd3980 |
+            | V:1 D:0 Tag:       1fe06e1dd7a | V:1 D:0 Tag:             101d1 |
+            | V:1 D:0 Tag:             101d0 | V:1 D:0 Tag:             101cf |
+            | V:1 D:0 Tag:             101ce | V:1 D:0 Tag:             10218 |
+            | V:1 D:0 Tag:             10217 | V:1 D:0 Tag:             10216 |
+            | V:1 D:0 Tag:             10214 | V:1 D:0 Tag:             1020e |
+            | V:1 D:0 Tag:             1020d | V:1 D:0 Tag:             1020c |
+            | V:1 D:0 Tag:             10198 | V:1 D:0 Tag:             10197 |
+            | V:1 D:0 Tag:             10196 | V:1 D:0 Tag:       1fffd6a07bb |
+            | V:1 D:0 Tag:             10176 | V:1 D:0 Tag:             10175 |
+            | V:1 D:0 Tag:             10174 | V:1 D:0 Tag:             10173 |
+            | V:1 D:0 Tag:       1fe06dc57ce | V:1 D:1 Tag:             19986 |
+            | V:1 D:0 Tag:             1980f | V:1 D:0 Tag:             106ca |
+            | V:1 D:1 Tag:             21d72 | V:1 D:0 Tag:             197eb |
+            | V:1 D:1 Tag:       1fe06d4be37 | V:1 D:0 Tag:             1928a |
+            | V:1 D:1 Tag:             1996c | V:1 D:0 Tag:             1920c |
+            | V:1 D:1 Tag:             19980 | V:1 D:0 Tag:             1925d |
+            | V:1 D:1 Tag:       1fffd6a06b5 | V:1 D:0 Tag:             19254 |
+            | V:1 D:1 Tag:       1fffd6a06b6 | V:1 D:0 Tag:             19227 |
+            | V:1 D:1 Tag:             220f5 | V:1 D:0 Tag:             1926f |
+            | V:1 D:0 Tag:             19203 | V:1 D:0 Tag:             19197 |
+            | V:1 D:0 Tag:             1913d | V:1 D:0 Tag:             1912b |
+            | V:1 D:0 Tag:             19122 | V:1 D:0 Tag:             106d1 |
+            | V:1 D:0 Tag:             190cc | V:1 D:1 Tag:             224ae |
+            | V:1 D:0 Tag:             190c8 | V:1 D:1 Tag:       1fffd6a0795 |
+            | V:1 D:0 Tag:             190e3 | V:1 D:1 Tag:       1fffd6a0797 |
+            | V:1 D:0 Tag:             1906e | V:1 D:0 Tag:             19041 |
+            | V:1 D:1 Tag:       1fffd6a0796 | V:1 D:0 Tag:             19038 |
+            | V:1 D:0 Tag:             106e2 | V:1 D:0 Tag:       1fe06c105f7 |
+            | V:1 D:0 Tag:       1fe06c414b4 | V:1 D:0 Tag:       1fe06eaa60e |
+            | V:1 D:1 Tag:       1fffd6a06c2 | V:1 D:0 Tag:             101de |
+            | V:1 D:0 Tag:             101da | V:1 D:0 Tag:             10056 |
+            | V:1 D:0 Tag:             10055 | V:1 D:0 Tag:             10054 |
+            | V:1 D:0 Tag:             10053 | V:1 D:0 Tag:             10052 |
+            | V:1 D:0 Tag:             10051 | V:1 D:0 Tag:             10050 |
+            | V:1 D:0 Tag:             1004a | V:1 D:0 Tag:             1021d |
+            | V:1 D:0 Tag:             10213 | V:1 D:0 Tag:             1019d |
+            | V:1 D:0 Tag:             1019b | V:1 D:0 Tag:             22550 |
+            | V:1 D:1 Tag:       1fffd6a06c1 | V:1 D:0 Tag:             10199 |
+            | V:1 D:1 Tag:       1fffd6a07b8 | V:1 D:1 Tag:       1fffd6a07b9 |
+            | V:1 D:1 Tag:       1fffd6a06c0 | V:1 D:0 Tag:             22093 |
+            | V:1 D:0 Tag:             22421 | V:1 D:0 Tag:             22380 |
+            | V:1 D:1 Tag:       1fffd6a06bf | V:1 D:0 Tag:             21d7a |
+            | V:1 D:0 Tag:             22015 | V:1 D:1 Tag:       1fffd6a0570 |
+            | V:1 D:1 Tag:       1fffd6a0590 | V:1 D:1 Tag:       1fffd6a06be |
+            | V:1 D:0 Tag:             10741 | V:1 D:1 Tag:             19984 |
+            | V:1 D:1 Tag:             19988 | V:1 D:0 Tag:             106bb |
+            | V:1 D:1 Tag:       1fffd6a06bd | V:1 D:1 Tag:       1fffd6a04b1 |
+            | V:1 D:1 Tag:       1fffd6a04b0 | V:1 D:0 Tag:             106ba |
+            | V:1 D:1 Tag:             18edf | V:1 D:1 Tag:       1fffd6a06bc |
+            | V:1 D:0 Tag:             1980e | V:1 D:0 Tag:             106c8 |
+            | V:1 D:0 Tag:             10629 | V:1 D:0 Tag:             10620 |
+            | V:1 D:1 Tag:       1fffd6a06bb | V:1 D:0 Tag:             21def |
+            | V:1 D:0 Tag:             197ea | V:1 D:0 Tag:             106fb |
+            | V:1 D:0 Tag:             2241b | V:1 D:0 Tag:             106f8 |
+            | V:1 D:1 Tag:       1fffd6a06ba | V:1 D:0 Tag:             106dd |
+            | V:1 D:0 Tag:             19289 | V:1 D:0 Tag:             1928e |
+            | V:1 D:0 Tag:             1920b | V:1 D:0 Tag:             19210 |
+            | V:1 D:0 Tag:             1925c | V:1 D:1 Tag:       1fffd6a06b9 |
+            | V:1 D:0 Tag:             19261 | V:1 D:0 Tag:             19253 |
+            | V:1 D:1 Tag:       1fffd6a06b8 | V:1 D:0 Tag:             19258 |
+            | V:1 D:0 Tag:             106dc | V:1 D:0 Tag:             19226 |
+            | V:1 D:0 Tag:             1922b | V:1 D:1 Tag:       1fffd6a0775 |
+            | V:1 D:0 Tag:             1926e | V:1 D:1 Tag:       1fffd6a06b2 |
+            | V:1 D:0 Tag:             10702 | V:1 D:0 Tag:             106c9 |
+            | V:1 D:1 Tag:       1fffd6a06b1 | V:1 D:0 Tag:             106cc |
+            | V:1 D:0 Tag:             19202 | V:1 D:0 Tag:             1070a |
+            | V:1 D:1 Tag:       1fffd6a06b0 | V:1 D:0 Tag:             106db |
+            | V:1 D:0 Tag:             19196 | V:1 D:0 Tag:             1919b |
+            | V:1 D:0 Tag:             19141 | V:1 D:0 Tag:             1913c |
+            | V:1 D:1 Tag:       1fffd6a06b7 | V:1 D:0 Tag:             1912f |
+            | V:1 D:0 Tag:             1912a | V:1 D:0 Tag:             19121 |
+            | V:1 D:0 Tag:             19126 | V:1 D:0 Tag:             19138 |
+            | V:1 D:0 Tag:             19133 | V:1 D:0 Tag:             106cb |
+            | V:1 D:0 Tag:             190ba | V:1 D:0 Tag:             106ff |
+            | V:1 D:0 Tag:             190e7 | V:1 D:1 Tag:       1fe06c546a4 |
+            | V:1 D:0 Tag:             190e2 | V:1 D:0 Tag:             106d0 |
+            | V:1 D:1 Tag:             22419 | V:1 D:0 Tag:             19072 |
+            | V:1 D:0 Tag:             1906d | V:1 D:1 Tag:             21d74 |
+            | V:1 D:0 Tag:             19045 | V:1 D:1 Tag:             21df3 |
+            | V:1 D:0 Tag:             19040 | V:1 D:1 Tag:             22352 |
+            | V:1 D:0 Tag:             106c7 | V:1 D:1 Tag:       1fffd6a03ae |
+            | V:1 D:0 Tag:             1903c | V:1 D:1 Tag:       1fe06c67168 |
+            | V:1 D:1 Tag:       1fffd6a03af | V:1 D:0 Tag:             19037 |
+            | V:1 D:0 Tag:             19504 | V:1 D:1 Tag:       1fffd6a03ad |
+            | V:1 D:0 Tag:             1070e | V:1 D:1 Tag:       1fffd6a03ac |
+            | V:1 D:0 Tag:             194fb | V:1 D:1 Tag:       1fffd6a03a7 |
+            | V:1 D:1 Tag:       1fffd6a04a8 | V:1 D:1 Tag:       1fe06c2cb7e |
+            | V:1 D:0 Tag:             106cd | V:1 D:1 Tag:       1fffd6a03a8 |
+            | V:1 D:0 Tag:             106e1 | V:1 D:1 Tag:       1fffd6a03a9 |
+            | V:1 D:1 Tag:       1fffd6a04a9 | V:1 D:1 Tag:       1fffd6a04aa |
+            | V:1 D:0 Tag:             1061f | V:1 D:0 Tag:             1061e |
+            | V:1 D:0 Tag:             1061d | V:1 D:0 Tag:             10625 |
+            | V:1 D:0 Tag:             1061c | V:1 D:0 Tag:             10624 |
+            | V:1 D:0 Tag:             1061b | V:1 D:1 Tag:       1fffd6a04ac |
+            | V:1 D:1 Tag:       1fffd6a04ad | V:1 D:1 Tag:       1fffd6a03aa |
+            | V:1 D:1 Tag:       1fffd6a04ab | V:1 D:1 Tag:       1fffd6a03ab |
+            | V:1 D:1 Tag:       1fffd6a04ae | V:1 D:0 Tag:       1fe06e398dd |
+            | V:1 D:1 Tag:       1fffd6a07c0 | V:1 D:0 Tag:       1fe06d31ae7 |
+            | V:1 D:0 Tag:             101d3 | V:1 D:0 Tag:             106c4 |
+            | V:1 D:0 Tag:             101d2 | V:1 D:0 Tag:             10637 |
+            | V:1 D:0 Tag:             1020a | V:1 D:0 Tag:             1062e |
+            | V:1 D:0 Tag:             10209 | V:1 D:0 Tag:             106c2 |
+            | V:1 D:0 Tag:             22540 | V:1 D:1 Tag:       1fffd6a07bf |
+            | V:1 D:0 Tag:       1fe06d3c88e | V:1 D:0 Tag:       1fe06d3c88f |
+            | V:1 D:0 Tag:             106bf | V:1 D:1 Tag:             22416 |
+            | V:1 D:0 Tag:             22562 | V:1 D:0 Tag:             22561 |
+            | V:1 D:1 Tag:             2234f | V:1 D:0 Tag:             10540 |
+            | V:1 D:0 Tag:             1053f | V:1 D:0 Tag:       1fe06db58ae |
+            | V:1 D:1 Tag:             19946 | V:1 D:0 Tag:             21de7 |
+            | V:1 D:0 Tag:             105f5 | V:1 D:0 Tag:             21de8 |
+            | V:1 D:0 Tag:             2254f | V:1 D:1 Tag:             22415 |
+            | V:1 D:0 Tag:             2234e | V:1 D:1 Tag:       1fffd6a0899 |
+            | V:1 D:1 Tag:       1fffd6a0898 | V:1 D:1 Tag:       1fffd6a07b7 |
+Victim cache:
+            | V:1 D:0 Addr:           894f80 | V:1 D:1 Addr:     7fff5a822e00 |
+            | V:1 D:1 Addr:     7fff5a81ed80 | V:1 D:0 Addr:           40fa80 |
+            | V:1 D:0 Addr:           40fa40 | V:1 D:0 Addr:           40f780 |
+            | V:1 D:0 Addr:           405b40 | V:1 D:0 Addr:           405a80 |
+

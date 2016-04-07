@@ -228,6 +228,7 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
                 *result = (dirty_kickout_address != 0) ?
                           RESULT_MISS_DIRTY_KICKOUT :
                           RESULT_MISS_KICKOUT;
+                block->dirty = false;
             }
 
             block_t * oldest = set->oldest;

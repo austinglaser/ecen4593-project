@@ -129,8 +129,9 @@ void Statistics_RecordCacheAccess(cache_stats_t * cache_stats, result_t result)
 {
     switch (result) {
     case RESULT_HIT_VICTIM_CACHE:
+        cache_stats->miss_count += 1;
         cache_stats->vc_hit_count += 1;
-        // Intentional fallthrough
+        break;
 
     case RESULT_HIT:
         cache_stats->hit_count += 1;

@@ -327,7 +327,8 @@ void test_InstructionVictimCacheHit_should_not_CauseL2Read(void)
 
     Statistics_RecordCacheAccess_Expect(dummy_cache_stats, result);
 
-    uint32_t expected_access_cycles = config.l1.hit_time_cycles;
+    uint32_t expected_access_cycles = config.l1.miss_time_cycles +
+                                      config.l1.hit_time_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
@@ -346,7 +347,8 @@ void test_ReadVictimCacheHit_should_not_CauseL2Read(void)
 
     Statistics_RecordCacheAccess_Expect(dummy_cache_stats, result);
 
-    uint32_t expected_access_cycles = config.l1.hit_time_cycles;
+    uint32_t expected_access_cycles = config.l1.miss_time_cycles +
+                                      config.l1.hit_time_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 
@@ -365,7 +367,8 @@ void test_WriteVictimCacheHit_should_not_CauseL2Read(void)
 
     Statistics_RecordCacheAccess_Expect(dummy_cache_stats, result);
 
-    uint32_t expected_access_cycles = config.l1.hit_time_cycles;
+    uint32_t expected_access_cycles = config.l1.miss_time_cycles +
+                                      config.l1.hit_time_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L1Cache_Access(l1_cache, &access));
 }
 

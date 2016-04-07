@@ -106,6 +106,10 @@ uint32_t CacheInternals_Access(cache_t cache, access_t const * access)
         access_time_cycles += cache->sub_access_f(cache->sub_mem, &miss_read);
         break;
 
+    case RESULT_HIT_VICTIM_CACHE:
+        access_time_cycles += cache->config->miss_time_cycles;
+        break;
+
     default:
         break;
     }

@@ -250,7 +250,8 @@ void test_InstructionVictimCacheHit_should_not_CauseMainMemAccess(void)
 
     Statistics_RecordCacheAccess_Expect(dummy_cache_stats, result);
 
-    uint32_t expected_access_cycles = config.l2.hit_time_cycles +
+    uint32_t expected_access_cycles = config.l2.miss_time_cycles +
+                                      config.l2.hit_time_cycles +
                                       l1_block_transfer_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
@@ -270,7 +271,8 @@ void test_ReadVictimCacheHit_should_not_CauseMainMemAccess(void)
 
     Statistics_RecordCacheAccess_Expect(dummy_cache_stats, result);
 
-    uint32_t expected_access_cycles = config.l2.hit_time_cycles +
+    uint32_t expected_access_cycles = config.l2.miss_time_cycles +
+                                      config.l2.hit_time_cycles +
                                       l1_block_transfer_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }
@@ -290,7 +292,8 @@ void test_WriteVictimCacheHit_should_not_CauseMainMemAccess(void)
 
     Statistics_RecordCacheAccess_Expect(dummy_cache_stats, result);
 
-    uint32_t expected_access_cycles = config.l2.hit_time_cycles +
+    uint32_t expected_access_cycles = config.l2.miss_time_cycles +
+                                      config.l2.hit_time_cycles +
                                       l1_block_transfer_cycles;
     TEST_ASSERT_EQUAL_UINT32(expected_access_cycles, L2Cache_Access(l2_cache, &access));
 }

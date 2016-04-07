@@ -188,8 +188,8 @@ void test_Statistics_RecordCacheAccess_should_RecordVictimCacheHit(void)
 {
     Statistics_RecordCacheAccess(&(stats.l1d), RESULT_HIT_VICTIM_CACHE);
 
-    TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.hit_count);
-    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.miss_count);
+    TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.hit_count);
+    TEST_ASSERT_EQUAL_UINT64(1, stats.l1d.miss_count);
     TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.kickouts);
     TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.dirty_kickouts);
     TEST_ASSERT_EQUAL_UINT64(0, stats.l1d.transfers);

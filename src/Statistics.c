@@ -174,13 +174,13 @@ static double Statistics_CPI(uint64_t cycles, uint64_t instructions)
 static void Statistics_PrintCache(cache_stats_t const * cache_stats)
 {
     uint64_t total_requests = cache_stats->hit_count + cache_stats->miss_count;
-    printf("  Memory level: %s\n", cache_stats->name);
+    printf("  Memory Level: %s\n", cache_stats->name);
     printf("    Hit Count = %" PRIu64 "  Miss Count = %" PRIu64 "\n",
            cache_stats->hit_count,
            cache_stats->miss_count);
     printf("    Total Requests = %" PRIu64 "\n",
            total_requests);
-    printf("    Hit rate = %4.1f%%  Miss Rate = %4.1f%%\n",
+    printf("    Hit Rate = %4.1f%%  Miss Rate = %4.1f%%\n",
            Statistics_Percentage(cache_stats->hit_count,  total_requests),
            Statistics_Percentage(cache_stats->miss_count, total_requests));
     printf("    Kickouts = %" PRIu64 "; Dirty kickouts = %" PRIu64 "; Transfers = %" PRIu64 "\n",

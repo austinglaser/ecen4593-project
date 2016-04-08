@@ -21,7 +21,7 @@ if __name__ == "__main__":
     traces_short_dir = os.path.join(traces_dir, 'traces-short')
     traces_5M_dir = os.path.join(traces_dir, 'traces-5M')
     sample_output_dir = os.path.join(traces_dir, 'sample-output')
-    program = './build/release/project.out'
+    program = './build-make/simulator'
 
     configs = [os.path.join(config_dir, c) for c in os.listdir(config_dir)]
     traces = [os.path.join(traces_short_dir, t) for t in os.listdir(traces_short_dir)]

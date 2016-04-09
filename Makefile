@@ -1,7 +1,7 @@
 
 CC		:= gcc
-CFLAGS		:= -Wall -Wextra -O3 -flto
-LDFLAGS		:= -flto
+CFLAGS		:= -Wall -Wextra -O3
+LDFLAGS		:=
 
 SRCDIR		:= src
 INCDIR		:= inc

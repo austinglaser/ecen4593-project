@@ -89,18 +89,18 @@ uint32_t CacheInternals_Access(cache_t cache, access_t const * access)
     access_t miss_read;
     switch (result) {
     case RESULT_MISS_DIRTY_KICKOUT:
-        dirty_write.type    = TYPE_WRITE,
-        dirty_write.address = dirty_kickout_address,
-        dirty_write.n_bytes = cache->config->block_size_bytes,
+        dirty_write.type    = TYPE_WRITE;
+        dirty_write.address = dirty_kickout_address;
+        dirty_write.n_bytes = cache->config->block_size_bytes;
 
         access_time_cycles += cache->sub_access_f(cache->sub_mem, &dirty_write);
         // Intentional fallthrough
 
     case RESULT_MISS:
     case RESULT_MISS_KICKOUT:
-        miss_read.type       = TYPE_READ,
-        miss_read.address    = access->address,
-        miss_read.n_bytes    = cache->config->block_size_bytes,
+        miss_read.type       = TYPE_READ;
+        miss_read.address    = access->address;
+        miss_read.n_bytes    = cache->config->block_size_bytes;
 
         access_time_cycles += cache->config->miss_time_cycles;
         access_time_cycles += cache->sub_access_f(cache->sub_mem, &miss_read);

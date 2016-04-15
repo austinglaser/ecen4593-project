@@ -7,74 +7,79 @@
 # Distributed under terms of the MIT license.
 
 """
-Statistics manipulation and calculation
+Statistics manipulation
 """
 
-def prepend_to_each_line(in_str, prefix="    "):
-    in_str_lines = in_str.split('\n')
-    out_str_lines = [prefix + line for line in in_str_lines]
-    return "\n".join(out_str_lines)
+class Cache:
 
-class TypeCounter:
+    def __init__(self, size, ways, block_size,
+                 hit_count, victim_cache_hit_count, miss_count, hit_rate, miss_rate, 
+                 kickouts, dirty_kickouts, transfers,
+                 cost):
+        self.size                   = size
+        self.ways                   = ways
+        self.block_size             = block_size
 
-    def __init__(self, read, write, instr):
-        self.read = read
-        self.write = write
-        self.instr = instr
-        self.total = read + write + instr
+        self.hit_count              = hit_count
+        self.victim_cache_hit_count = victim_cache_hit_count
+        self.miss_count             = miss_count
+        self.hit_rate               = hit_rate
+        self.miss_rate              = miss_rate
 
-    def percentage(self, stat):
-        return float(stat) / float(self.total) * 100
+        self.kickouts               = kickouts
+        self.dirty_kickouts         = dirty_kickouts
+        self.transfers              = transfers
 
-    def __repr__(self):
-        repr_str = "TypeCounter(read={read}, write={write}, instr={instr}, total={total})"
-        return repr_str.format(read  = self.read,
-                               write = self.write,
-                               instr = self.instr,
-                               total = self.total)
+        self.cost                   = cost
 
-    def __str__(self):
-        str_str = ( "Reads  = {read:12}    [{rp:2.1f}%]\n" +
-                    "Writes = {write:12}    [{wp:2.1f}%]\n" +
-                    "Inst.  = {instr:12}    [{ip:2.1f}%]\n" +
-                    "Total  = {total:12}" )
-        return str_str.format(read  = self.read, rp = self.percentage(self.read),
-                              write = self.write, wp = self.percentage(self.write),
-                              instr = self.instr, ip = self.percentage(self.instr),
-                              total = self.total)
+class MainMem:
 
-class Statistics:
+    def __init__(self, memory_ready_time, chunksize, chunktime, cost):
+        self.memory_ready_time = memory_ready_time
+        slef.chunksize         = chunksize
+        self.chunktime         = chunktime
 
-    def __init__(self, counts, cycles):
-        self.counts    = counts
-        self.cycles    = cycles
-        self.cpi       = float(self.cycles.total) / float(self.counts.instr)
+        self.cost              = cost
 
-    def __repr__(self):
-        repr_str = "Statistics(counts={counts}, cycles={cycles})"
-        return repr_str.format(counts = repr(self.counts),
-                               cycles = repr(self.cycles))
+class MemorySystem:
 
-    def __str__(self):
-        counts_str = prepend_to_each_line(str(self.counts))
-        cycles_str = prepend_to_each_line(str(self.cycles))
-        str_str = ( "Number of reference types:\n"      +
-                    "{counts}\n"                        +
-                    "\n"                                +
-                    "Total cycles for activities:\n"    +
-                    "{cycles}\n"                        +
-                    "\n"                                +
-                    "CPI = {cpi:2.1f}" )
-        return str_str.format(counts = counts_str,
-                              cycles = cycles_str,
-                              cpi    = self.cpi)
+    def __init__(self, l1d_cache, l1i_cache, l2_cache, main_mem):
+        self.l1d_cache = l1d_cache
+        self.l1i_cache = l1i_cache
+        self.l2_cache  = l2_cache
+        self.main_mem  = main_mem
 
+class References:
+
+    def __init__(self, reads, writes, instrs):
+        self.reads  = reads
+        self.writes = reads
+        self.instrs = instrs 
+
+class Cycles:
+
+    def __init__(self, reads, writes, instrs, ideal, ideal_misaligned,
+                 cpi, cpi_ideal, cpi_ideal_misaligned):
+        self.reads                = reads
+        self.writes               = writes
+        self.instrs               = instrs
+
+        self.ideal                = ideal
+        self.ideal_misaligned     = ideal_misaligned
+
+        self.cpi                  = cpi
+        self.cpi_ideal            = cpi_ideal
+        self.cpi_ideal_misaligned = cpi_ideal_misaligned
+
+class Result:
+
+    def __init__(self, memory_system, references, cycles):
+        self.memory_system = memory_system
+        self.references    = references
+        self.cycles        = cycles
+
+    def from_file(filename):
+        pass
 
 if __name__ == "__main__":
-    ref_counter   = TypeCounter(940933865,  374031357,  3685034778)
-    cycle_counter = TypeCounter(6362234282, 5668329310, 18577582319)
-    s = Statistics(ref_counter, cycle_counter)
-
-    print
-    print s
-    print
+    pass

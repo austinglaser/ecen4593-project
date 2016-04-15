@@ -1,0 +1,6 @@
+# Latex products
+*.log
+*.aux
+*.toc
+*.pdf
+*.cpt

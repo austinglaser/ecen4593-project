@@ -25,15 +25,20 @@
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
+/**@brief   L2 does a little more work, because it needs to compute transfer
+ *          time to L1 for the requested data
+ */
 struct _l2_cache_t {
-    cache_t               internals;
-    cache_param_t const * config;
-    uint32_t              bus_width_shift;
+    cache_t               internals;        /**< This does most of the work */
+    cache_param_t const * config;           /**< The cache's config */
+    uint32_t              bus_width_shift;  /**< A divide-shift to get the
+                                                 busloads for a request */
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
+/**@brief   Wrapper function to allow abstraction through CacheInternals */
 static uint32_t _L2Cache_AccessMainMem(void * _main_mem, access_t const * access);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */

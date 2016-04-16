@@ -24,13 +24,17 @@
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
+/**@brief   The L1Cache is really just a thin wrapper around the internals
+ *          module
+ */
 struct _l1_cache_t {
-    cache_t internals;
+    cache_t internals;      /**< This does all the work */
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
+/**@brief   Wrapper function that allows abstraction through CacheInternals */
 static uint32_t _L1Cache_AccessL2(void * _l2_cache, access_t const * access);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */

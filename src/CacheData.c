@@ -296,8 +296,8 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
             // victim cache. In the final implementation, the victim cache is
             // always 8 entries long, and so one could in theory enable a
             // switch to turn this off. However, I'm writing this comment after
-            // all simulations have been run... so there's not really a point
-            // anymore
+            // all simulations have been run. Something about barn doors and
+            // horses?
             block = set->oldest;
             dirty_kickout_address = CacheData_Set_RemoveBlock(set, block);
             *result = (dirty_kickout_address != 0) ?

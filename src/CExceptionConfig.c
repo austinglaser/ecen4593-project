@@ -27,6 +27,8 @@ unsigned int exception_line = 0;
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 void UncaughtException(CEXCEPTION_T id) {
+    // This is a (too?) cute way to allow us to throw exceptions willy-nilly
+    // and get nice error messages with line numbers and sitch
     if (id >= MAX_EXCEPTION_N) {
         printf("%s:%u: Unknown Exception %u!\n", exception_file,
                                                  exception_line,

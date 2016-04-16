@@ -41,6 +41,9 @@ static void parse_args(int argc, char const * const * const argv,
 /**@brief   Prints an ultra-useful usage message */
 static void usage(char const * call);
 
+/**@brief   Handle the topmost-level logic for an access */
+static uint32_t do_access(access_t const * access, uint32_t * n_aligned);
+
 /**@brief   Prints the results of a completed simulation */
 static void print_results(char const * config_file, char const * trace_name,
                           config_t * config, stats_t * stats);
@@ -79,24 +82,8 @@ int main(int argc, char const * const * const argv)
             access_t access;
             Access_ParseLine(line, &access);
 
-            access_t l1_bus_aligned_access;
-            Access_Align(&l1_bus_aligned_access, &access, 4);
-
-            uint32_t n_aligned = l1_bus_aligned_access.n_bytes >> 2;
-            l1_bus_aligned_access.n_bytes = 4;
-
-            l1_cache_t top_cache = l1d_cache;
-            uint32_t access_cycles = 0;
-            if (l1_bus_aligned_access.type == TYPE_INSTR) {
-                top_cache = l1i_cache;
-                access_cycles = 1;
-            }
-
-            uint32_t i;
-            for (i = 0; i < n_aligned; i++) {
-                access_cycles += L1Cache_Access(top_cache, &l1_bus_aligned_access);
-                l1_bus_aligned_access.address += 4;
-            }
+            uint32_t n_aligned;
+            uint32_t access_cycles = do_access(&access, &n_aligned);
 
             Statistics_RecordAccess(&stats, access.type, access_cycles, n_aligned);
         }
@@ -167,6 +154,30 @@ static void usage(char const * call)
 {
     printf("Usage: %s [config_file] [-t <trace_name>]\n"
             "    If only one argument is given, it is assumed to be config_file.\n", call);
+}
+
+static uint32_t do_access(access_t const * access, uint32_t * n_aligned)
+{
+    access_t l1_bus_aligned_access;
+    Access_Align(&l1_bus_aligned_access, access, 4);
+
+    *n_aligned = l1_bus_aligned_access.n_bytes >> 2;
+    l1_bus_aligned_access.n_bytes = 4;
+
+    l1_cache_t top_cache = l1d_cache;
+    uint32_t access_cycles = 0;
+    if (l1_bus_aligned_access.type == TYPE_INSTR) {
+        top_cache = l1i_cache;
+        access_cycles = 1;
+    }
+
+    uint32_t i;
+    for (i = 0; i < *n_aligned; i++) {
+        access_cycles += L1Cache_Access(top_cache, &l1_bus_aligned_access);
+        l1_bus_aligned_access.address += 4;
+    }
+
+    return access_cycles;
 }
 
 static void print_results(char const * config_file, char const * trace_name,

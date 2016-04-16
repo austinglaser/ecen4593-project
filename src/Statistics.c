@@ -24,10 +24,13 @@
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
+/**@brief   Calculate a floating-point percent from two unsigned integers */
 static double Statistics_Percentage(uint64_t number, uint64_t total);
 
+/**@brief   Calculate a CPI */
 static double Statistics_CPI(uint64_t cycles, uint64_t instructions);
 
+/**@brief   Print statistics for a single cache */
 static void Statistics_PrintCache(cache_stats_t const * cache_stats);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */

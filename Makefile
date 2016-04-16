@@ -1,6 +1,6 @@
 
 CC		:= gcc
-CFLAGS		:= -Wall -Wextra -O3
+CFLAGS		:= -Wall -Wextra -Wno-clobbered -O3
 LDFLAGS		:=
 
 SRCDIR		:= src

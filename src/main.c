@@ -28,26 +28,32 @@
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
+/**@brief   Creates the full memory hierarchy */
 static void Memory_Create(stats_t * stats, config_t * config);
+
+/**@brief   Tears down the memory hierarchy */
 static void Memory_Destroy(void);
 
+/**@brief   Prints an ultra-useful usage message */
 static void usage(char const * call);
+
+/**@brief   Prints the results of a completed simulation */
+static void print_results(char const * config_file, char const * trace_name,
+                          config_t * config, stats_t * stats);
 
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
-static main_mem_t main_mem;
-static l2_cache_t l2_cache;
-static l1_cache_t l1i_cache;
-static l1_cache_t l1d_cache;
+static main_mem_t main_mem;         /**< Main Memory, wherein all data may be found */
+static l2_cache_t l2_cache;         /**< L2  -> Main Memory */
+static l1_cache_t l1i_cache;        /**< L1i -> L2 */
+static l1_cache_t l1d_cache;        /**< L1d -> L2 */
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-/**
- * @brief   Application Entry Point
- */
+/**@brief   Application Entry Point */
 int main(int argc, char const * const * const argv)
 {
     if (argc > 4) {
@@ -81,29 +87,6 @@ int main(int argc, char const * const * const argv)
 
     config_t config;
     Config_FromFile(config_file, &config);
-
-    char const * config_name = "default";
-    if (config_file != NULL) {
-        config_name = strrchr(config_file, '/') + 1;
-        if (config_name == NULL) {
-            config_name = config_file;
-        }
-    }
-
-    char case_name[128] = { '\0' };
-    if (trace_name != NULL) {
-        strncat(case_name, trace_name,  sizeof(case_name) - 1);
-        strncat(case_name, ".",         sizeof(case_name) - strlen(case_name) - 1);
-    }
-    strncat(case_name, config_name, sizeof(case_name) - strlen(case_name) - 1);
-
-    printf("\n-------------------------------------------------------------------------\n");
-    printf("      %-25s Simulation Results\n", case_name);
-    printf("-------------------------------------------------------------------------\n\n");
-
-    printf("  Memory system:\n");
-    Config_Print(&config);
-    printf("\n");
 
     stats_t stats;
     Statistics_Create(&stats);
@@ -144,27 +127,7 @@ int main(int argc, char const * const * const argv)
         UncaughtException(e);
     }
 
-    Statistics_Print(&stats);
-    printf("\n");
-
-    Config_PrintCost(&config);
-    printf("\n");
-
-    printf("-------------------------------------------------------------------------\n\n");
-
-    printf("Cache final contents - Index and Tag values are in HEX\n\n");
-
-    printf("Memory Level: L1i\n");
-    L1Cache_Print(l1i_cache);
-    printf("\n");
-
-    printf("Memory Level: L1d\n");
-    L1Cache_Print(l1d_cache);
-    printf("\n");
-
-    printf("Memory Level: L2\n");
-    L2Cache_Print(l2_cache);
-    printf("\n");
+    print_results(config_file, trace_name, &config, &stats);
 
     Memory_Destroy();
 
@@ -193,6 +156,55 @@ static void usage(char const * call)
 {
     printf("Usage: %s [config_file] [-t <trace_name>]\n"
             "    If only one argument is given, it is assumed to be config_file.\n", call);
+}
+
+static void print_results(char const * config_file, char const * trace_name,
+                          config_t * config, stats_t * stats)
+{
+    char const * config_name = "default";
+    if (config_file != NULL) {
+        config_name = strrchr(config_file, '/') + 1;
+        if (config_name == NULL) {
+            config_name = config_file;
+        }
+    }
+
+    char case_name[128] = { '\0' };
+    if (trace_name != NULL) {
+        strncat(case_name, trace_name,  sizeof(case_name) - 1);
+        strncat(case_name, ".",         sizeof(case_name) - strlen(case_name) - 1);
+    }
+    strncat(case_name, config_name, sizeof(case_name) - strlen(case_name) - 1);
+
+    printf("\n-------------------------------------------------------------------------\n");
+    printf("      %-25s Simulation Results\n", case_name);
+    printf("-------------------------------------------------------------------------\n\n");
+
+    printf("  Memory system:\n");
+    Config_Print(config);
+    printf("\n");
+
+    Statistics_Print(stats);
+    printf("\n");
+
+    Config_PrintCost(config);
+    printf("\n");
+
+    printf("-------------------------------------------------------------------------\n\n");
+
+    printf("Cache final contents - Index and Tag values are in HEX\n\n");
+
+    printf("Memory Level: L1i\n");
+    L1Cache_Print(l1i_cache);
+    printf("\n");
+
+    printf("Memory Level: L1d\n");
+    L1Cache_Print(l1d_cache);
+    printf("\n");
+
+    printf("Memory Level: L2\n");
+    L2Cache_Print(l2_cache);
+    printf("\n");
 }
 
 /** @} defgroup MAIN */

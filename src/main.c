@@ -18,11 +18,13 @@
 #include "L2Cache.h"
 #include "MainMem.h"
 #include "Statistics.h"
+#include "Util.h"
 
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
@@ -57,15 +59,26 @@ static uint32_t do_access(memory_t * mem, access_t const * access, uint32_t * n_
 static void print_results(memory_t * mem, char const * config_file, char const * trace_name,
                           config_t * config, stats_t * stats);
 
+/**@brief   Used to do cleanup at exit, no matter what */
+static void exit_cleanup(void);
+
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
+
+static memory_t mem;
+
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 /**@brief   Application Entry Point */
 int main(int argc, char const * const * const argv)
 {
+    if (atexit(exit_cleanup) != 0) {
+        printf("Failed to register cleanup function\n");
+        return 1;
+    }
+
     char const * config_file = NULL;
     char const * trace_name = NULL;
     parse_args(argc, argv, &config_file, &trace_name);
@@ -76,30 +89,20 @@ int main(int argc, char const * const * const argv)
     stats_t stats;
     Statistics_Create(&stats);
 
-    memory_t mem;
     Memory_Create(&mem, &stats, &config);
 
-    CEXCEPTION_T e;
-    Try {
-        char line[128];
-        while (fgets(line, sizeof(line), stdin)) {
-            access_t access;
-            Access_ParseLine(line, &access);
+    char line[128];
+    while (fgets(line, sizeof(line), stdin)) {
+        access_t access;
+        Access_ParseLine(line, &access);
 
-            uint32_t n_aligned;
-            uint32_t access_cycles = do_access(&mem, &access, &n_aligned);
+        uint32_t n_aligned;
+        uint32_t access_cycles = do_access(&mem, &access, &n_aligned);
 
-            Statistics_RecordAccess(&stats, access.type, access_cycles, n_aligned);
-        }
-    }
-    Catch (e) {
-        Memory_Destroy(&mem);
-        UncaughtException(e);
+        Statistics_RecordAccess(&stats, access.type, access_cycles, n_aligned);
     }
 
     print_results(&mem, config_file, trace_name, &config, &stats);
-
-    Memory_Destroy(&mem);
 
     return 0;
 }
@@ -234,6 +237,11 @@ static void print_results(memory_t * mem, char const * config_file, char const *
     printf("Memory Level: L2\n");
     L2Cache_Print(mem->l2_cache);
     printf("\n");
+}
+
+static void exit_cleanup(void)
+{
+    Memory_Destroy(&mem);
 }
 
 /** @} defgroup MAIN */

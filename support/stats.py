@@ -84,11 +84,7 @@ class Cache:
                 else:
                     raise RuntimeError("Bad sim result")
 
-        values = [self.size, self.ways, self.block_size, self.hit_count,
-                  self.miss_count, self.hit_rate, self.miss_rate, self.kickouts,
-                  self.dirty_kickouts, self.transfers, self.victim_cache_hit_count, self.cost]
-
-        if any(v is None for v in values):
+        if any(value is None for key, value in self.__dict__.iteritems()):
             raise RuntimeError("Bad sim result")
 
 
@@ -116,11 +112,7 @@ class Cache:
         return "{name}: {size} bytes, {ways} way, with {block_size} byte blocks".format(**self.__dict__)
 
     def __repr__(self):
-        return ("Cache(name={name},size={size},ways={ways},block_size={block_size}," +
-                "hit_count={hit_count},victim_cache_hit_count={victim_cache_hit_count}," +
-                "miss_count={miss_count},hit_rate={hit_rate},miss_rate={miss_rate}," +
-                "kickouts={kickouts},dirty_kickouts={dirty_kickouts},transfers={transfers}," +
-                "cost={cost})").format(**self.__dict__)
+        return "Cache(name={name},size={size},ways={ways},block_size={block_size},cost={cost})".format(**self.__dict__)
 
 
 class MainMem:
@@ -140,6 +132,9 @@ class MainMem:
             if cost_match:
                 self.cost = cost_match.group(1)
 
+        if any(value is None for key, value in self.__dict__.iteritems()):
+            raise RuntimeError("Bad sim result")
+
     def __make_all_none__(self):
         self.memory_ready_time = None
         self.chunksize         = None
@@ -154,20 +149,44 @@ class MainMem:
         return "MainMem(memory_ready_time={memory_ready_time},chunksize={chunksize},chunktime={chunktime},cost={cost})".format(**self.__dict__)
 
 
-class MemorySystem:
-
-    def __init__(self, l1d_cache, l1i_cache, l2_cache, main_mem):
-        self.l1d_cache = l1d_cache
-        self.l1i_cache = l1i_cache
-        self.l2_cache  = l2_cache
-        self.main_mem  = main_mem
-
 class References:
 
-    def __init__(self, reads, writes, instrs):
-        self.reads  = reads
-        self.writes = reads
-        self.instrs = instrs 
+    def __init__(self, lines):
+        self.__make_all_none__()
+
+        header_pattern = re.compile(r"Number of reference types:")
+
+        header_line = None
+        for i, line in enumerate(lines):
+            if re.match(header_pattern, line):
+                header_line = i
+                break
+
+        reference_pattern = re.compile(r"\w+\.?\s+=\s+(\d+)\s+\[\s?(\d+\.\d)%\]")
+        read_match = re.match(reference_pattern, lines[header_line + 1])
+        if read_match:
+            self.reads        = int(read_match.group(1))
+            self.read_percent = float(read_match.group(2))
+        write_match = re.match(reference_pattern, lines[header_line + 2])
+        if write_match:
+            self.writes        = int(write_match.group(1))
+            self.write_percent = float(write_match.group(2))
+        instr_match = re.match(reference_pattern, lines[header_line + 3])
+        if instr_match:
+            self.instrs        = int(instr_match.group(1))
+            self.instr_percent = float(instr_match.group(2))
+
+        if any(value is None for key, value in self.__dict__.iteritems()):
+            raise RuntimeError("Bad sim result")
+
+    def __make_all_none__(self):
+        self.reads         = None
+        self.writes        = None
+        self.instrs        = None
+
+        self.read_percent  = None
+        self.write_percent = None
+        self.instr_percent = None
 
 class Cycles:
 
@@ -183,6 +202,14 @@ class Cycles:
         self.cpi                  = cpi
         self.cpi_ideal            = cpi_ideal
         self.cpi_ideal_misaligned = cpi_ideal_misaligned
+
+class MemorySystem:
+
+    def __init__(self, l1d_cache, l1i_cache, l2_cache, main_mem):
+        self.l1d_cache = l1d_cache
+        self.l1i_cache = l1i_cache
+        self.l2_cache  = l2_cache
+        self.main_mem  = main_mem
 
 class Result:
 
@@ -220,11 +247,13 @@ if __name__ == "__main__":
             lines = lines[divider_lines[1] + 1:divider_lines[2]]
             lines = [l for l in lines if l]
 
-            # Build cache configs
-            l1i_cache = Cache(lines, 'L1i')
+            # Build memory system
             l1d_cache = Cache(lines, 'L1d')
+            l1i_cache = Cache(lines, 'L1i')
             l2_cache  = Cache(lines, 'L2')
-
-            # Build main mem
             main_mem  = MainMem(lines)
+            memory_system = MemorySystem(l1d_cache, l1i_cache, l2_cache, main_mem)
+
+            # Build reference metrics
+            references = References(lines)
 

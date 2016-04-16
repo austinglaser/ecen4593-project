@@ -23,12 +23,15 @@
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
+/**@brief   The internals of a cache */
 struct _cache_t {
-    cache_param_t const *   config;
-    cache_stats_t *         stats;
-    void *                  sub_mem;
-    mem_access_f_t          sub_access_f;
-    cache_data_t            data;
+    cache_param_t const *   config;         /**< Configuration parameters */
+    cache_stats_t *         stats;          /**< The statistics structure we'll
+                                                 be writing to */
+    void *                  sub_mem;        /**< The next-lowest memory level */
+    mem_access_f_t          sub_access_f;   /**< A function which knows how to
+                                                 access said next-lowest level */
+    cache_data_t            data;           /**< The data, used for book-keeping */
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
@@ -74,6 +77,9 @@ void CacheInternals_Destroy(cache_t cache)
 
 uint32_t CacheInternals_Access(cache_t cache, access_t const * access)
 {
+    // All the work is really done here. This module just looks at the results
+    // from CacheData, computes the cycles required to have made that happen,
+    // and performs any required accesses to lower levels
     result_t result;
     uint64_t dirty_kickout_address;
     if (access->type == TYPE_WRITE) {

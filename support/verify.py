@@ -12,6 +12,7 @@ Verifies all results and configurations
 
 import os
 import subprocess
+import re
 
 
 if __name__ == "__main__":
@@ -23,7 +24,7 @@ if __name__ == "__main__":
     sample_output_dir = os.path.join(traces_dir, 'sample-output')
     program = './build-make/simulator'
 
-    configs = [os.path.join(config_dir, c) for c in os.listdir(config_dir)]
+    configs = [os.path.join(config_dir, c) for c in os.listdir(config_dir) if not re.search(r".*MemBandwidth.*", c)]
     traces = [os.path.join(traces_short_dir, t) for t in os.listdir(traces_short_dir)]
     ztraces = [os.path.join(traces_5M_dir, 'sjeng.gz')]
     traces.extend(ztraces)

@@ -141,10 +141,8 @@ static block_t * CacheData_Set_GetMatchingBlock(set_t * set, uint64_t address);
  *
  * @warming @p block is assumed to be a current member of set. If it's not,
  *          weird things may occur
- *
- * @return  @p block's address, if it was dirty. Otherwise zero
  */
-static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block);
+static void CacheData_Set_RemoveBlock(set_t * set, block_t * block);
 
 /**@brief   Insert @p block as the newest in @pset
  *
@@ -299,10 +297,14 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
             // all simulations have been run. Something about barn doors and
             // horses?
             block = set->oldest;
-            dirty_kickout_address = CacheData_Set_RemoveBlock(set, block);
-            *result = (dirty_kickout_address != 0) ?
-                      RESULT_MISS_DIRTY_KICKOUT :
-                      RESULT_MISS_KICKOUT;
+            CacheData_Set_RemoveBlock(set, block);
+            if (block->dirty) {
+                dirty_kickout_address = block->address;
+                *result = RESULT_MISS_DIRTY_KICKOUT;
+            }
+            else {
+                *result = RESULT_MISS_KICKOUT;
+            }
         }
         else {
             set_t * victim_set = &(data->victim_set);
@@ -321,10 +323,14 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
             else {
                 // Victim cache full
                 block = victim_set->oldest;
-                dirty_kickout_address = CacheData_Set_RemoveBlock(victim_set, block);
-                *result = (dirty_kickout_address != 0) ?
-                          RESULT_MISS_DIRTY_KICKOUT :
-                          RESULT_MISS_KICKOUT;
+                CacheData_Set_RemoveBlock(victim_set, block);
+                if (block->dirty) {
+                    dirty_kickout_address = block->address;
+                    *result = RESULT_MISS_DIRTY_KICKOUT;
+                }
+                else {
+                    *result = RESULT_MISS_KICKOUT;
+                }
 
                 // THIS LINE IS CRITICAL IF YOU'RE RE-USING BLOCKS
                 block->dirty = false;
@@ -388,7 +394,7 @@ static block_t * CacheData_AllocateBlock(cache_data_t data)
     return block;
 }
 
-static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block)
+static void CacheData_Set_RemoveBlock(set_t * set, block_t * block)
 {
     if (block == set->newest) {
         set->newest = block->older;
@@ -405,8 +411,6 @@ static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block)
     }
 
     set->n_valid_blocks -= 1;
-
-    return block->dirty ? block->address : 0;
 }
 
 static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block)

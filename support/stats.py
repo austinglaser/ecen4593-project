@@ -16,7 +16,13 @@ Usage:
 import docopt
 import re
 
-class Cache:
+class MetricContainer:
+
+    def __check_all_not_none__(self):
+        if any(value is None for key, value in self.__dict__.iteritems()):
+            raise RuntimeError("Bad sim result")
+
+class Cache(MetricContainer):
 
     def __init__(self, lines, cache_name):
         self.__make_all_none__()
@@ -84,8 +90,7 @@ class Cache:
                 else:
                     raise RuntimeError("Bad sim result")
 
-        if any(value is None for key, value in self.__dict__.iteritems()):
-            raise RuntimeError("Bad sim result")
+        self.__check_all_not_none__()
 
 
     def __make_all_none__(self):
@@ -115,7 +120,7 @@ class Cache:
         return "Cache(name={name},size={size},ways={ways},block_size={block_size},cost={cost})".format(**self.__dict__)
 
 
-class MainMem:
+class MainMem(MetricContainer):
 
     def __init__(self, lines):
         self.__make_all_none__()
@@ -132,8 +137,7 @@ class MainMem:
             if cost_match:
                 self.cost = cost_match.group(1)
 
-        if any(value is None for key, value in self.__dict__.iteritems()):
-            raise RuntimeError("Bad sim result")
+        self.__check_all_not_none__()
 
     def __make_all_none__(self):
         self.memory_ready_time = None
@@ -149,7 +153,7 @@ class MainMem:
         return "MainMem(memory_ready_time={memory_ready_time},chunksize={chunksize},chunktime={chunktime},cost={cost})".format(**self.__dict__)
 
 
-class References:
+class References(MetricContainer):
 
     def __init__(self, lines):
         self.__make_all_none__()
@@ -176,8 +180,7 @@ class References:
             self.instrs        = int(instr_match.group(1))
             self.instr_percent = float(instr_match.group(2))
 
-        if any(value is None for key, value in self.__dict__.iteritems()):
-            raise RuntimeError("Bad sim result")
+        self.__check_all_not_none__()
 
     def __make_all_none__(self):
         self.reads         = None
@@ -197,20 +200,28 @@ class References:
         return ("References(reads={reads},writes={writes},instrs={instrs}," +
                 "read_percent={read_percent},write_percent={write_percent},instr_percent={instr_percent})").format(**self.__dict__)
 
-class Cycles:
+class Cycles(MetricContainer):
 
-    def __init__(self, reads, writes, instrs, ideal, ideal_misaligned,
-                 cpi, cpi_ideal, cpi_ideal_misaligned):
-        self.reads                = reads
-        self.writes               = writes
-        self.instrs               = instrs
+    def __init__(self, lines):
+        self.__make_all_none__()
 
-        self.ideal                = ideal
-        self.ideal_misaligned     = ideal_misaligned
+        #self.__check_all_not_none__()
 
-        self.cpi                  = cpi
-        self.cpi_ideal            = cpi_ideal
-        self.cpi_ideal_misaligned = cpi_ideal_misaligned
+    def __make_all_none__(self):
+        self.reads                = None
+        self.writes               = None
+        self.instrs               = None
+
+        self.read_percent         = None
+        self.write_percent        = None
+        self.instr_percent        = None
+
+        self.ideal                = None
+        self.ideal_misaligned     = None
+
+        self.cpi                  = None
+        self.cpi_ideal            = None
+        self.cpi_ideal_misaligned = None
 
 class MemorySystem:
 
@@ -266,3 +277,5 @@ if __name__ == "__main__":
             # Build reference metrics
             references = References(lines)
 
+            # Build cycle metrics
+            cycles = Cycles(lines)

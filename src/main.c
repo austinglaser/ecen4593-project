@@ -136,7 +136,11 @@ static void parse_args(int argc, char const * const * const argv,
 
     int i;
     for (i = 1; i < argc; i++) {
-        if (strcmp("-t", argv[i]) == 0) {
+        if ((strcmp("-h", argv[i]) == 0) || (strcmp("--help", argv[i]) == 0)) {
+            usage(argv[0]);
+            exit(0);
+        }
+        else if (strcmp("-t", argv[i]) == 0) {
             if (i == argc - 1) {
                 printf("'-t' takes an argument\n\n");
                 usage(argv[0]);

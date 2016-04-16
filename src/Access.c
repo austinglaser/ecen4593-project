@@ -28,6 +28,7 @@
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
+/**@brief   Determines whether @p type is an acceptable access type*/
 static inline bool isValidType(uint8_t type);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */

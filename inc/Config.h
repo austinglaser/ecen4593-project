@@ -12,6 +12,13 @@
  *
  * @brief   Data structures for storing configuration data, and utilities for
  *          parsing config files
+ *
+ * If you have a look at the source, you'll see we went just a touch crazy. The
+ * goal was to reduce code duplication to an absolute minimum, In this
+ * part of the project, however, it resulted in a bizzare structure with lookup
+ * tables and function pointers and... well you'll see.
+ *
+ * The upshot is that it works very reliably!
  */
 
 /* --- PUBLIC DEPENDENCIES -------------------------------------------------- */

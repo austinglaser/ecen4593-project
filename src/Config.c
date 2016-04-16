@@ -28,40 +28,88 @@
 
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
+/**@brief   A function which knows how to write a particular config value to a
+ *          structure */
 typedef void (* value_writer_t)(uint32_t, void *);
 
+/**@brief   Structure encoding a single config value */
 typedef struct {
-    const char * mem_names[2];
-    const char * param_str;
-    value_writer_t value_writer;
+    const char * mem_names[2];      /**< The memory levels the value is valid for */
+    const char * param_str;         /**< The parameter string to match in the config */
+    value_writer_t value_writer;    /**< A function which knows how to write it
+                                         to the appropriate structure */
 } config_value_t;
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
+/**@brief   Takes a line that's been split into a memory name, parameter, and
+ *          value, and writes it to the config structure if it's valid
+ *
+ * @param[in] mem_name_str:     The memory level's name
+ * @param[in] param_str:        The name of the parameter
+ * @param[in] value:            The raw value
+ * @param[out] config:          The config that will be modified
+ */
 static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * config);
 
+/**@brief   Writes a cache's block size to the cache config */
 static void cache_block_size_writer(uint32_t value, void * _cache);
+
+/**@brief   Writes a cache's total size to the cache config */
 static void cache_cache_size_writer(uint32_t value, void * _cache);
+
+/**@brief   Writes a cache's associativity value to the cache config */
 static void cache_associative_size_writer(uint32_t value, void * _cache);
+
+/**@brief   Writes a caches hit-time value to the cache config */
 static void cache_hit_time_writer(uint32_t value, void * _cache);
+
+/**@brief   Writes a caches miss-time value to the cache config */
 static void cache_miss_time_writer(uint32_t value, void * _cache);
+
+/**@brief   Writes a caches bus transfer time value to the cache config */
 static void l2_cache_transfer_time_writer(uint32_t value, void * _cache);
+
+/**@brief   Writes a caches bus width value to the cache config */
 static void l2_cache_bus_width_writer(uint32_t value, void * _cache);
+
+/**@brief   Writes main memory's send address time to the memory config */
 static void main_mem_send_address_writer(uint32_t value, void * _memp);
+
+/**@brief   Writes main memory's data ready time to the memory config */
 static void main_mem_ready_writer(uint32_t value, void * _memp);
+
+/**@brief   Writes main memory's chunk transmission time to the memory config */
 static void main_mem_send_chunk_writer(uint32_t value, void * _memp);
+
+/**@brief   Writes main memory's chunk size time to the memory config */
 static void main_mem_chunk_size_writer(uint32_t value, void * _memp);
 
+/**@brief   Gets an abstracted pointer to the appropriate sub-structure in @p config
+ *
+ * @return  A pointer to the structure, or NULL if @p mem_name_str is an invalid value
+ */
 static void * get_mem(const char * mem_name_str, config_t * config);
+
+/**@brief   Finds a value matching the memory/parameter pair given
+ *
+ * @see     config_values
+ */
 static const config_value_t * find_matching_config_value(const char * mem_name_str, const char * param_str);
+
+/**@brief   Determines whether a given configuration value matches the provided memory/parameter pair */
 static bool is_matching_config_value(const config_value_t * config_valuep, const char * mem_name_str, const char * param_str);
 
+/**@brief   Throws an exception of @p value is not a power of two */
 static void ensure_value_power_of_two(uint32_t value);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 
+/**@brief   Array of all possible configuration values, the memory they're
+ *          valid for, and their writers
+ */
 static const config_value_t config_values[] = {
     { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "block_size",    .value_writer = cache_block_size_writer },
     { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "cache_size",    .value_writer = cache_cache_size_writer },
@@ -299,6 +347,7 @@ static void * get_mem(const char * mem_name_str, config_t * config)
     }
     else {
         ThrowHere(BAD_CONFIG_CACHE);
+        // Pedantic; this is unreachable
         return NULL;
     }
 }

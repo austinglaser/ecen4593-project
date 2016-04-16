@@ -26,51 +26,138 @@
 
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
+/**@brief   Structure used to store a single block of data
+ *
+ * @note    There is no explicit 'valid' field. If a block is present in set,
+ *          it's valid.
+ *
+ * @note    The block stores a full address (rather than simply a tag) for
+ *          three reasons:
+ *          - This allows direct compatibility between ordinary blocks and
+ *            victim set blocks
+ *          - Computation of the tag is an extra step, and forces an additional
+ *            re-computation of the original address when moving a block to the
+ *            victim cache
+ *          - The code cannot support the all levels of associativity by only
+ *            storing 32 bits, so there's no space savings for stripping an
+ *            address to a tag
+ */
 typedef struct _block_t {
-    bool dirty;
-    uint64_t address;
-    struct _block_t * newer;
-    struct _block_t * older;
+    bool dirty;                     /**< Whether this block has been written */
+    uint64_t address;               /**< The base address of the stored block*/
+    struct _block_t * newer;        /**< The next newest block in this set's
+                                         LRU order*/
+    struct _block_t * older;        /**< The next oldest block in this set's
+                                         LRU order */
 } block_t;
 
+/**@brief   A doubly-linked list used to represent a cache set
+ *
+ * @note    A doubly (as opposed to singly) linked list was chosen so that
+ *          removal of the last ('oldest') element is a constant-time operation
+ *          that does not require traversal of the list.
+ */
 typedef struct _set_t {
-    uint32_t n_valid_blocks;
-    struct _block_t * newest;
-    struct _block_t * oldest;
+    uint32_t n_valid_blocks;        /**< The current number of valid blocks
+                                         currently stored in the set */
+    struct _block_t * newest;       /**< The newest block in this set's LRU
+                                         order */
+    struct _block_t * oldest;       /**< The oldest block in this set's LRU
+                                         order */
 } set_t;
 
+/**@brief The internal data structure used for a cache's data bookkeeping
+ *
+ * @note    The victim cache is referred to throughout as the victim 'set' to
+ *          reflect that it is implemented as, simply, another set
+ */
 struct _cache_data_t {
-    uint32_t n_sets;
-    uint32_t set_len_blocks;
-    uint32_t victim_set_len_blocks;
-    uint32_t block_size_bytes;
-    uint64_t set_mask;
-    uint64_t block_mask;
-    uint32_t set_index_shift;
-    block_t * all_blocks;
-    block_t * next_free_block;
-    block_t * last_block;
-    set_t victim_set;
-    set_t sets[];
+    uint32_t n_sets;                /**< The number of sets present */
+    uint32_t set_len_blocks;        /**< The allowable number of bloccks in a
+                                         set (the cache's associativity) */
+    uint32_t victim_set_len_blocks; /**< The length of the victim set, in blocks */
+    uint32_t block_size_bytes;      /**< The size of a block [bytes] */
+    uint32_t set_index_shift;       /**< Shift used to move an address's set
+                                         bits to the right, so they can be used
+                                         as an array index */
+    uint64_t set_mask;              /**< A mask that can be used to isolate the
+                                         bytes in an a block's address
+                                         determining its set membership */
+    uint64_t block_mask;            /**< A mask used for computing in which block an address falls */
+    block_t * all_blocks;           /**< Reference to the start of the block array */
+    block_t * next_free_block;      /**< Reference to the next block that has
+                                         not been inserted into the cache */
+    block_t * last_block;           /**< Reference to the end of the block array */
+    set_t victim_set;               /**< A set used to store blocks that have
+                                         just been kicked out of their proper
+                                         set */
+    set_t sets[];                   /**< The array of sets in the cache. n_sets
+                                         long */
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 
+/**@brief Helper for iterating over all blocks in a set from newest to oldest */
 #define for_block_in_set(block, set) for (block = set->newest; block != NULL; block = block->older)
 
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
+/**@brief   Perform an  access to a block of cache data
+ *
+ * This is the real workhorse of this implementation
+ *
+ * @param[in,out] data:     The cache
+ * @param[in] address:      The address to access. Assumed to be aligned to a
+ *                          block boundary
+ * @param[in] write_access: Whether this is a write access
+ * @param[out] result:      The final result (hit, miss, etc)
+ *
+ * @return          The address of a block kicked out dirty, if any
+ */
 static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access, result_t * result);
 
+/**@brief   Retrieve the index of the set @p address belongs in */
 static uint32_t CacheData_GetSetIndex(cache_data_t data, uint64_t address);
+
+/**@brief   Retrieve a reference to the set @p address belongs in */
 static set_t * CacheData_GetSet(cache_data_t data, uint64_t address);
+
+/**@brief   Determine the base address of the block @p address belongs in */
 static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address);
 
+/**@brief   Get a new block from the pool allocated when @p data was created */
 static block_t * CacheData_AllocateBlock(cache_data_t data);
+
+/**@brief   Find the block containing @p address in @p set
+ *
+ * @param[in] set:      The set to search
+ * @param[in] address:  The block address (assumed to be aligned)
+ *
+ * @return  A reference to a matching block, or NULL if none exists in @p set
+ */
 static block_t * CacheData_Set_GetMatchingBlock(set_t * set, uint64_t address);
+
+/**@brief   Remove block @p block from @p set
+ *
+ * @warming @p block is assumed to be a current member of set. If it's not,
+ *          weird things may occur
+ *
+ * @return  @p block's address, if it was dirty. Otherwise zero
+ */
 static uint64_t CacheData_Set_RemoveBlock(set_t * set, block_t * block);
+
+/**@brief   Insert @p block as the newest in @pset
+ *
+ * @warning @p block is assumed not to be a current member of set. If it is,
+ *          weird things may occur
+ */
 static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block);
 
+/**@brief   Print the contents of a single set
+ *
+ * @note    Needs access to the containing cache_data_t structure, so that it
+ *          can handle the victim set specially
+ */
 static void CacheData_Set_Print(cache_data_t data, set_t * set, uint32_t set_index);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
@@ -95,6 +182,10 @@ cache_data_t CacheData_Create(uint32_t n_sets,
         return NULL;
     }
 
+    // All blocks are allocated here, since we know from the configuration
+    // parameters exactly how many we will need. This means that NO memory
+    // allocation is done in the body of the functional code -- we're just
+    // grabbing blocks from the all_blocks array as needed
     uint32_t total_cache_blocks = n_sets * set_len_blocks + victim_set_len_blocks;
     data->all_blocks = (block_t *) malloc(sizeof(block_t) * total_cache_blocks);
     if (data->all_blocks == NULL) {
@@ -201,6 +292,12 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
     else {
         // Set full
         if (data->victim_set_len_blocks == 0) {
+            // This case is only present to facilitate tests that don't use a
+            // victim cache. In the final implementation, the victim cache is
+            // always 8 entries long, and so one could in theory enable a
+            // switch to turn this off. However, I'm writing this comment after
+            // all simulations have been run... so there's not really a point
+            // anymore
             block = set->oldest;
             dirty_kickout_address = CacheData_Set_RemoveBlock(set, block);
             *result = (dirty_kickout_address != 0) ?
@@ -228,6 +325,8 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
                 *result = (dirty_kickout_address != 0) ?
                           RESULT_MISS_DIRTY_KICKOUT :
                           RESULT_MISS_KICKOUT;
+
+                // THIS LINE IS CRITICAL IF YOU'RE RE-USING BLOCKS
                 block->dirty = false;
             }
 
@@ -349,6 +448,8 @@ static void CacheData_Set_Print(cache_data_t data, set_t * set, uint32_t set_ind
     for_block_in_set(block, set) {
         uint64_t address = block->address;
         if (!is_victim_set) {
+            // We actually compute the tag value ONLY when printing, so that we
+            // can directly diff against the golden results
             address >>= HighestBitSet(data->n_sets * data->block_size_bytes);
         }
         printf(" V:%" PRIu32 " D:%" PRIu32 " %s %16" PRIx64 " |",

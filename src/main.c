@@ -187,6 +187,10 @@ static uint32_t do_access(memory_t * mem, access_t const * access, uint32_t * n_
 static void print_results(memory_t * mem, char const * config_file, char const * trace_name,
                           config_t * config, stats_t * stats)
 {
+    // This is designed to print EXACTLY like the sample traces. It's close
+    // enough that a direct diff (ignoring whitespace) can be used to compare
+    // our output with the expected values, which is immensly helpful in
+    // automating testing
     char const * config_name = "default";
     if (config_file != NULL) {
         config_name = strrchr(config_file, '/') + 1;

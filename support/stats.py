@@ -188,6 +188,15 @@ class References:
         self.write_percent = None
         self.instr_percent = None
 
+    def __str__(self):
+        return ("Reference counts: {reads} Reads ({read_percent}%), " +
+                "{writes} Writes ({write_percent}%), " +
+                "{instrs} Instructions ({instr_percent}%)").format(**self.__dict__)
+
+    def __repr__(self):
+        return ("References(reads={reads},writes={writes},instrs={instrs}," +
+                "read_percent={read_percent},write_percent={write_percent},instr_percent={instr_percent})").format(**self.__dict__)
+
 class Cycles:
 
     def __init__(self, reads, writes, instrs, ideal, ideal_misaligned,

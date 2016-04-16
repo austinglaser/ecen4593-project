@@ -43,34 +43,75 @@ class Cache:
             self.cost                   = cost
 
     def fromlines(self, lines, cache_name):
-        cache_values_pattern = r"""^ {name} \s+                             # The cache's identifier
-                                   size          \s+ = \s+ (\d+) \s+ : \s+  # The cache's size
-                                   ways          \s+ = \s+ (\d+) \s+ : \s+  # The cache's associativity
-                                   block \s size \s+ = \s+ (\d+) $          # The cache's block size
-                                """
+        self.__init__()
+        cache_config_pattern   = r"""^{name} \s+                              # The cache's identifier
+                                     size          \s+ = \s+ (\d+) \s+ : \s+  # The cache's size
+                                     ways          \s+ = \s+ (\d+) \s+ : \s+  # The cache's associativity
+                                     block \s size \s+ = \s+ (\d+) $          # The cache's block size
+                                  """
+        cache_value_pattern    = r"^Memory Level: {level}$"
         if cache_name == 'L1i':
-            config_pattern = re.compile(cache_values_pattern.format(name='Icache'), re.X)
+            config_pattern = re.compile(cache_config_pattern.format(name='Icache'), re.X)
+            value_pattern  = re.compile(cache_value_pattern.format(level='L1i'))
             cost_pattern   = re.compile("L1 cache cost \(Icache \$(\d+)\)")
         elif cache_name == 'L1d':
-            config_pattern = re.compile(cache_values_pattern.format(name='Dcache'), re.X)
+            config_pattern = re.compile(cache_config_pattern.format(name='Dcache'), re.X)
+            value_pattern  = re.compile(cache_value_pattern.format(level='L1d'))
             cost_pattern   = re.compile("L1 cache cost \(Icache \$\d+\) \+ \(Dcache \$(\d+)\)")
         elif cache_name == 'L2':
-            config_pattern = re.compile(cache_values_pattern.format(name='L2-cache'), re.X)
+            config_pattern = re.compile(cache_config_pattern.format(name='L2-cache'), re.X)
+            value_pattern  = re.compile(cache_value_pattern.format(level='L2'))
             cost_pattern   = re.compile("L2 cache cost = \$(\d+)")
         else:
             raise ValueError("{name} is not a valid cache name".format(name=cache_name))
 
-        for line in lines:
-            cache_config_match = re.match(config_pattern, line)
-            cost_match         = re.match(cost_pattern, line)
-            if cache_config_match:
-                self.size       = cache_config_match.group(1)
-                self.ways       = cache_config_match.group(2)
-                self.block_size = cache_config_match.group(3)
-                print cache_name, "matched config"
+        hit_miss_pattern         = re.compile(r"Hit Count = (\d+)  Miss Count = (\d+)")
+        rate_pattern             = re.compile(r"Hit Rate =\s+(\d+\.\d)%  Miss Rate =\s+(\d+\.\d)%")
+        kickout_transfer_pattern = re.compile(r"Kickouts = (\d+); Dirty kickouts = (\d+); Transfers = (\d+)")
+        vc_hit_pattern           = re.compile(r"VC Hit count = (\d+)")
+
+        for i, line in enumerate(lines):
+            config_match = re.match(config_pattern, line)
+            value_match  = re.match(value_pattern, line)
+            cost_match   = re.match(cost_pattern, line)
+            if config_match:
+                self.size       = int(config_match.group(1))
+                self.ways       = int(config_match.group(2))
+                self.block_size = int(config_match.group(3))
             if cost_match:
-                self.cost       = cost_match.group(1)
-                print cache_name, "matched cost:"
+                self.cost       = int(cost_match.group(1))
+            if value_match:
+                hit_miss_match = re.match(hit_miss_pattern, lines[i+1])
+                if hit_miss_match:
+                    self.hit_count  = int(hit_miss_match.group(1))
+                    self.miss_count = int(hit_miss_match.group(2))
+                else:
+                    raise RuntimeError("Bad sim result")
+                rate_match = re.match(rate_pattern, lines[i+3])
+                if rate_match:
+                    self.hit_rate  = float(rate_match.group(1))
+                    self.miss_rate = float(rate_match.group(2))
+                else:
+                    raise RuntimeError("Bad sim result")
+                kickout_transfer_match = re.match(kickout_transfer_pattern, lines[i+4])
+                if kickout_transfer_match:
+                    self.kickouts       = int(kickout_transfer_match.group(1))
+                    self.dirty_kickouts = int(kickout_transfer_match.group(2))
+                    self.transfers      = int(kickout_transfer_match.group(3))
+                else:
+                    raise RuntimeError("Bad sim result")
+                vc_hit_match = re.match(vc_hit_pattern, lines[i+5])
+                if vc_hit_match:
+                    self.victim_cache_hit_count = int(vc_hit_match.group(1))
+                else:
+                    raise RuntimeError("Bad sim result")
+
+        values = [self.size, self.ways, self.block_size, self.hit_count,
+                  self.miss_count, self.hit_rate, self.miss_rate, self.kickouts,
+                  self.dirty_kickouts, self.transfers, self.victim_cache_hit_count, self.cost]
+
+        if any(v is None for v in values):
+            raise RuntimeError("Bad sim result")
 
 class MainMem:
 

@@ -127,6 +127,18 @@ class MainMem:
 
     def __init__(self, lines):
         self.__make_all_none__()
+        config_pattern = re.compile(r"Memory ready time = (\d+) : chunksize = (\d+) : chunktime = (\d+)")
+        cost_pattern   = re.compile(r".*Memory cost = \$(\d+)")
+
+        for line in lines:
+            config_match = re.match(config_pattern, line)
+            if config_match:
+                self.memory_ready_time = int(config_match.group(1))
+                self.chunksize         = int(config_match.group(2))
+                self.chunktime         = int(config_match.group(3))
+            cost_match = re.match(cost_pattern, line)
+            if cost_match:
+                self.cost = cost_match.group(1)
 
     def __make_all_none__(self):
         self.memory_ready_time = None
@@ -134,6 +146,12 @@ class MainMem:
         self.chunktime         = None
 
         self.cost              = None
+
+    def __str__(self):
+        return "Main memory: {memory_ready_time} ready cycles, {chunksize} byte chunks in {chunktime} cycles".format(**self.__dict__)
+
+    def __repr__(self):
+        return "MainMem(memory_ready_time={memory_ready_time},chunksize={chunksize},chunktime={chunktime},cost={cost})".format(**self.__dict__)
 
 
 class MemorySystem:
@@ -206,9 +224,6 @@ if __name__ == "__main__":
             l1i_cache = Cache(lines, 'L1i')
             l1d_cache = Cache(lines, 'L1d')
             l2_cache  = Cache(lines, 'L2')
-            print repr(l1i_cache)
-            print repr(l1d_cache)
-            print repr(l2_cache)
 
             # Build main mem
             main_mem  = MainMem(lines)

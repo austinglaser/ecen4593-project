@@ -30,7 +30,7 @@ char const * const exception_descriptors[MAX_EXCEPTION_N] = {
     [BAD_CONFIG_VALUE]      = "Invalid value for field in configuration",
     [BAD_CONFIG_FILE]       = "Unable to open configuration file",
     [INVALID_OPERATION]     = "Bad operation specifier. Valid values are I, W, or R",
-    [INVALID_ACCESS_SIZE]   = "Invalid (> 8) number of bytes accessed",
+    [INVALID_ACCESS_SIZE]   = "Invalid number of bytes accessed",
 };
 
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */

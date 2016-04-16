@@ -23,6 +23,7 @@
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 /* --- PRIVATE DATATYPES ---------------------------------------------------- */
 
+/**@brief   Stateless structure for main memory */
 struct _main_mem_t {
     memory_param_t const * config;
 };

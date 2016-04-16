@@ -34,6 +34,10 @@ static void Memory_Create(stats_t * stats, config_t * config);
 /**@brief   Tears down the memory hierarchy */
 static void Memory_Destroy(void);
 
+/**@brief   Parse command-line options*/
+static void parse_args(int argc, char const * const * const argv,
+                       char const * * config_file, char const * * trace_name);
+
 /**@brief   Prints an ultra-useful usage message */
 static void usage(char const * call);
 
@@ -56,34 +60,9 @@ static l1_cache_t l1d_cache;        /**< L1d -> L2 */
 /**@brief   Application Entry Point */
 int main(int argc, char const * const * const argv)
 {
-    if (argc > 4) {
-        printf("Too many arguments\n\n");
-        usage(argv[0]);
-        return -1;
-    }
-
     char const * config_file = NULL;
     char const * trace_name = NULL;
-    int i;
-    for (i = 1; i < argc; i++) {
-        if (strcmp("-t", argv[i]) == 0) {
-            if (i == argc - 1) {
-                printf("'-t' takes an argument\n\n");
-                usage(argv[0]);
-                return -1;
-            }
-            trace_name = argv[i + 1];
-            i++;
-        }
-        else {
-            if (config_file != NULL) {
-                printf("extra argument '%s'\n\n", argv[i]);
-                usage(argv[0]);
-                return -1;
-            }
-            config_file = argv[i];
-        }
-    }
+    parse_args(argc, argv, &config_file, &trace_name);
 
     config_t config;
     Config_FromFile(config_file, &config);
@@ -150,6 +129,38 @@ static void Memory_Destroy(void)
     L1Cache_Destroy(l1d_cache);
     L2Cache_Destroy(l2_cache);
     MainMem_Destroy(main_mem);
+}
+
+static void parse_args(int argc, char const * const * const argv,
+                       char const * * config_file, char const * * trace_name)
+{
+    if (argc > 4) {
+        printf("Too many arguments\n\n");
+        usage(argv[0]);
+        exit(-1);
+    }
+
+    int i;
+    for (i = 1; i < argc; i++) {
+        if (strcmp("-t", argv[i]) == 0) {
+            if (i == argc - 1) {
+                printf("'-t' takes an argument\n\n");
+                usage(argv[0]);
+                exit(-1);
+            }
+            *trace_name = argv[i + 1];
+            i++;
+        }
+        else {
+            if (*config_file != NULL) {
+                printf("extra argument '%s'\n\n", argv[i]);
+                usage(argv[0]);
+                exit(-1);
+            }
+            *config_file = argv[i];
+        }
+    }
+
 }
 
 static void usage(char const * call)

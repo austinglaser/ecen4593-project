@@ -151,7 +151,6 @@ static void parse_args(int argc, char const * const * const argv,
             *config_file = argv[i];
         }
     }
-
 }
 
 static void usage(char const * call)

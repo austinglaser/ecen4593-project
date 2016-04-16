@@ -49,11 +49,7 @@ class Cache(MetricContainer):
         else:
             raise ValueError("{name} is not a valid cache name".format(name=cache_name))
 
-        hit_miss_pattern         = re.compile(r"Hit Count = (\d+)  Miss Count = (\d+)")
-        rate_pattern             = re.compile(r"Hit Rate =\s+(\d+\.\d)%  Miss Rate =\s+(\d+\.\d)%")
-        kickout_transfer_pattern = re.compile(r"Kickouts = (\d+); Dirty kickouts = (\d+); Transfers = (\d+)")
-        vc_hit_pattern           = re.compile(r"VC Hit count = (\d+)")
-
+        value_header_line = None
         for i, line in enumerate(lines):
             config_match = re.match(config_pattern, line)
             value_match  = re.match(value_pattern, line)
@@ -65,30 +61,30 @@ class Cache(MetricContainer):
             if cost_match:
                 self.cost       = int(cost_match.group(1))
             if value_match:
-                hit_miss_match = re.match(hit_miss_pattern, lines[i+1])
-                if hit_miss_match:
-                    self.hit_count  = int(hit_miss_match.group(1))
-                    self.miss_count = int(hit_miss_match.group(2))
-                else:
-                    raise RuntimeError("Bad sim result")
-                rate_match = re.match(rate_pattern, lines[i+3])
-                if rate_match:
-                    self.hit_rate  = float(rate_match.group(1))
-                    self.miss_rate = float(rate_match.group(2))
-                else:
-                    raise RuntimeError("Bad sim result")
-                kickout_transfer_match = re.match(kickout_transfer_pattern, lines[i+4])
-                if kickout_transfer_match:
-                    self.kickouts       = int(kickout_transfer_match.group(1))
-                    self.dirty_kickouts = int(kickout_transfer_match.group(2))
-                    self.transfers      = int(kickout_transfer_match.group(3))
-                else:
-                    raise RuntimeError("Bad sim result")
-                vc_hit_match = re.match(vc_hit_pattern, lines[i+5])
-                if vc_hit_match:
-                    self.victim_cache_hit_count = int(vc_hit_match.group(1))
-                else:
-                    raise RuntimeError("Bad sim result")
+                value_header_line = i
+
+        hit_miss_pattern         = re.compile(r"Hit Count = (\d+)  Miss Count = (\d+)")
+        rate_pattern             = re.compile(r"Hit Rate =\s+(\d+\.\d)%  Miss Rate =\s+(\d+\.\d)%")
+        kickout_transfer_pattern = re.compile(r"Kickouts = (\d+); Dirty kickouts = (\d+); Transfers = (\d+)")
+        vc_hit_pattern           = re.compile(r"VC Hit count = (\d+)")
+
+        if not value_header_line is None:
+            hit_miss_match = re.match(hit_miss_pattern, lines[value_header_line + 1])
+            rate_match = re.match(rate_pattern, lines[value_header_line + 3])
+            kickout_transfer_match = re.match(kickout_transfer_pattern, lines[value_header_line + 4])
+            vc_hit_match = re.match(vc_hit_pattern, lines[value_header_line + 5])
+            if hit_miss_match:
+                self.hit_count  = int(hit_miss_match.group(1))
+                self.miss_count = int(hit_miss_match.group(2))
+            if rate_match:
+                self.hit_rate  = float(rate_match.group(1))
+                self.miss_rate = float(rate_match.group(2))
+            if kickout_transfer_match:
+                self.kickouts       = int(kickout_transfer_match.group(1))
+                self.dirty_kickouts = int(kickout_transfer_match.group(2))
+                self.transfers      = int(kickout_transfer_match.group(3))
+            if vc_hit_match:
+                self.victim_cache_hit_count = int(vc_hit_match.group(1))
 
         self.__check_all_not_none__()
 
@@ -129,11 +125,11 @@ class MainMem(MetricContainer):
 
         for line in lines:
             config_match = re.match(config_pattern, line)
+            cost_match = re.match(cost_pattern, line)
             if config_match:
                 self.memory_ready_time = int(config_match.group(1))
                 self.chunksize         = int(config_match.group(2))
                 self.chunktime         = int(config_match.group(3))
-            cost_match = re.match(cost_pattern, line)
             if cost_match:
                 self.cost = cost_match.group(1)
 
@@ -168,14 +164,15 @@ class References(MetricContainer):
 
         reference_pattern = re.compile(r"\w+\.?\s+=\s+(\d+)\s+\[\s?(\d+\.\d)%\]")
         read_match = re.match(reference_pattern, lines[header_line + 1])
+        write_match = re.match(reference_pattern, lines[header_line + 2])
+        instr_match = re.match(reference_pattern, lines[header_line + 3])
+
         if read_match:
             self.reads        = int(read_match.group(1))
             self.read_percent = float(read_match.group(2))
-        write_match = re.match(reference_pattern, lines[header_line + 2])
         if write_match:
             self.writes        = int(write_match.group(1))
             self.write_percent = float(write_match.group(2))
-        instr_match = re.match(reference_pattern, lines[header_line + 3])
         if instr_match:
             self.instrs        = int(instr_match.group(1))
             self.instr_percent = float(instr_match.group(2))
@@ -205,7 +202,43 @@ class Cycles(MetricContainer):
     def __init__(self, lines):
         self.__make_all_none__()
 
-        #self.__check_all_not_none__()
+        header_pattern   = re.compile(r"Total cycles for activities:")
+        cpi_pattern      = re.compile(r"CPI =\s+(\d+\.\d)")
+        ideal_pattern    = re.compile(r"Ideal:\s+Exec\. Time = \s+(\d+); CPI =\s+(\d+\.\d)")
+        ideal_ma_pattern = re.compile(r"Ideal mis-aligned:\s+Exec\. Time = \s+(\d+); CPI =\s+(\d+\.\d)")
+
+        header_line = None
+        for i, line in enumerate(lines):
+            if re.match(header_pattern, line):
+                header_line = i
+
+            cpi_match = re.match(cpi_pattern, line)
+            ideal_match = re.match(ideal_pattern, line)
+            ideal_ma_match = re.match(ideal_pattern, line)
+            if cpi_match:
+                self.cpi = float(cpi_match.group(1))
+            if ideal_match:
+                self.ideal     = int(ideal_match.group(1))
+                self.cpi_ideal = float(ideal_match.group(2))
+            if ideal_ma_match:
+                self.ideal_misaligned     = int(ideal_ma_match.group(1))
+                self.cpi_ideal_misaligned = float(ideal_ma_match.group(2))
+
+        reference_pattern = re.compile(r"\w+\.?\s+=\s+(\d+)\s+\[\s?(\d+\.\d)%\]")
+        read_match = re.match(reference_pattern, lines[header_line + 1])
+        write_match = re.match(reference_pattern, lines[header_line + 2])
+        instr_match = re.match(reference_pattern, lines[header_line + 3])
+        if read_match:
+            self.reads        = int(read_match.group(1))
+            self.read_percent = float(read_match.group(2))
+        if write_match:
+            self.writes        = int(write_match.group(1))
+            self.write_percent = float(write_match.group(2))
+        if instr_match:
+            self.instrs        = int(instr_match.group(1))
+            self.instr_percent = float(instr_match.group(2))
+
+        self.__check_all_not_none__()
 
     def __make_all_none__(self):
         self.reads                = None
@@ -223,6 +256,15 @@ class Cycles(MetricContainer):
         self.cpi_ideal            = None
         self.cpi_ideal_misaligned = None
 
+    def __str__(self):
+        return ("Cycle counts: {reads} Reads ({read_percent}%), " +
+                "{writes} Writes ({write_percent}%), " +
+                "{instrs} Instructions ({instr_percent}%)").format(**self.__dict__)
+
+    def __repr__(self):
+        return ("Cycles(reads={reads},writes={writes},instrs={instrs}," +
+                "read_percent={read_percent},write_percent={write_percent},instr_percent={instr_percent})").format(**self.__dict__)
+
 class MemorySystem:
 
     def __init__(self, l1d_cache, l1i_cache, l2_cache, main_mem):
@@ -230,6 +272,22 @@ class MemorySystem:
         self.l1i_cache = l1i_cache
         self.l2_cache  = l2_cache
         self.main_mem  = main_mem
+
+    def __str__(self):
+        return ("Memory system:\n" +
+                "    " + str(self.l1d_cache) + "\n" +
+                "    " + str(self.l1i_cache) + "\n" +
+                "    " + str(self.l2_cache) + "\n" +
+                "    " + str(self.main_mem))
+
+    def __repr__(self):
+        return ("MemorySystem(l1d_cache={l1d_cache}," +
+                             "l1i_cache={l1i_cache}," +
+                             "l2_cache={l2_cache}," +
+                             "main_mem={main_mem},").format(l1d_cache=repr(self.l1d_cache),
+                                                            l1i_cache=repr(self.l1i_cache),
+                                                            l2_cache=repr(self.l2_cache),
+                                                            main_mem=repr(self.main_mem))
 
 class Result:
 
@@ -243,8 +301,16 @@ class Result:
         self.cycles        = cycles
 
 
+    def __str__(self):
+        return "{trace} with {config}".format(**self.__dict__)
+
+    def __repr__(self):
+        return "Result(trace={trace},config={config})".format(**self.__dict__)
+
+
 if __name__ == "__main__":
     arguments = docopt.docopt(__doc__)
+    results = []
     for filename in arguments['<data_file>']:
         with open(filename) as f:
             # Get all lines
@@ -279,3 +345,8 @@ if __name__ == "__main__":
 
             # Build cycle metrics
             cycles = Cycles(lines)
+
+            # Build full result
+            result = Result(trace, config, memory_system, references, cycles)
+            results.append(result)
+    print results

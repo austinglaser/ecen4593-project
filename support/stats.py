@@ -18,32 +18,10 @@ import re
 
 class Cache:
 
-    def __init__(self, size=None, ways=None, block_size=None,
-                 hit_count=None, victim_cache_hit_count=None, miss_count=None, hit_rate=None, miss_rate=None,
-                 kickouts=None, dirty_kickouts=None, transfers=None,
-                 cost=None,
-                 lines=None, cache_name=None):
-        if lines is not None:
-            self.fromlines(lines, cache_name)
-        else:
-            self.size                   = size
-            self.ways                   = ways
-            self.block_size             = block_size
+    def __init__(self, lines, cache_name):
+        self.__make_all_none__()
+        self.name = cache_name
 
-            self.hit_count              = hit_count
-            self.victim_cache_hit_count = victim_cache_hit_count
-            self.miss_count             = miss_count
-            self.hit_rate               = hit_rate
-            self.miss_rate              = miss_rate
-
-            self.kickouts               = kickouts
-            self.dirty_kickouts         = dirty_kickouts
-            self.transfers              = transfers
-
-            self.cost                   = cost
-
-    def fromlines(self, lines, cache_name):
-        self.__init__()
         cache_config_pattern   = r"""^{name} \s+                              # The cache's identifier
                                      size          \s+ = \s+ (\d+) \s+ : \s+  # The cache's size
                                      ways          \s+ = \s+ (\d+) \s+ : \s+  # The cache's associativity
@@ -113,14 +91,50 @@ class Cache:
         if any(v is None for v in values):
             raise RuntimeError("Bad sim result")
 
+
+    def __make_all_none__(self):
+        self.name                   = None
+
+        self.size                   = None
+        self.ways                   = None
+        self.block_size             = None
+
+        self.hit_count              = None
+        self.victim_cache_hit_count = None
+        self.miss_count             = None
+        self.hit_rate               = None
+        self.miss_rate              = None
+
+        self.kickouts               = None
+        self.dirty_kickouts         = None
+        self.transfers              = None
+
+        self.cost                   = None
+
+
+    def __str__(self):
+        return "{name}: {size} bytes, {ways} way, with {block_size} byte blocks".format(**self.__dict__)
+
+    def __repr__(self):
+        return ("Cache(name={name},size={size},ways={ways},block_size={block_size}," +
+                "hit_count={hit_count},victim_cache_hit_count={victim_cache_hit_count}," +
+                "miss_count={miss_count},hit_rate={hit_rate},miss_rate={miss_rate}," +
+                "kickouts={kickouts},dirty_kickouts={dirty_kickouts},transfers={transfers}," +
+                "cost={cost})").format(**self.__dict__)
+
+
 class MainMem:
 
-    def __init__(self, memory_ready_time, chunksize, chunktime, cost):
-        self.memory_ready_time = memory_ready_time
-        slef.chunksize         = chunksize
-        self.chunktime         = chunktime
+    def __init__(self, lines):
+        self.__make_all_none__()
 
-        self.cost              = cost
+    def __make_all_none__(self):
+        self.memory_ready_time = None
+        self.chunksize         = None
+        self.chunktime         = None
+
+        self.cost              = None
+
 
 class MemorySystem:
 
@@ -163,8 +177,6 @@ class Result:
         self.references    = references
         self.cycles        = cycles
 
-    def from_file(filename):
-        pass
 
 if __name__ == "__main__":
     arguments = docopt.docopt(__doc__)
@@ -191,7 +203,13 @@ if __name__ == "__main__":
             lines = [l for l in lines if l]
 
             # Build cache configs
-            l1i_cache = Cache(lines=lines, cache_name='L1i')
-            l1d_cache = Cache(lines=lines, cache_name='L1d')
-            l2_cache  = Cache(lines=lines, cache_name='L2')
+            l1i_cache = Cache(lines, 'L1i')
+            l1d_cache = Cache(lines, 'L1d')
+            l2_cache  = Cache(lines, 'L2')
+            print repr(l1i_cache)
+            print repr(l1d_cache)
+            print repr(l2_cache)
+
+            # Build main mem
+            main_mem  = MainMem(lines)
 

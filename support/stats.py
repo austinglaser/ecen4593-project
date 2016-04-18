@@ -16,6 +16,10 @@ Usage:
 import docopt
 import re
 
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+
 class MetricContainer:
 
     def __check_all_not_none__(self):
@@ -302,36 +306,49 @@ class Result:
 
 
     def __str__(self):
-        return "{trace} with {config}".format(**self.__dict__)
+        return "Result({trace}, {config})".format(**self.__dict__)
 
     def __repr__(self):
-        return "Result(trace={trace},config={config})".format(**self.__dict__)
+        return "Result(trace={trace}, config={config})".format(trace=repr(self.trace),
+                                                               config=repr(self.config))
+        #return ("Result(trace={trace},config={config}," +
+        #        "memory_system={memory_system}," +
+        #        "references={references}" + 
+        #        "cycles={cycles}").format(trace=repr(trace),config=repr(config),
+        #                                  memory_system=repr(self.memory_system),
+        #                                  references=repr(self.references),
+        #                                  cycles=repr(self.cycles))
 
+def get_stripped_lines(f):
+    return map(str.strip, f.readlines())
+
+def get_divider_line_indices(lines, div_re=r'^-+$'):
+    divider_pattern = re.compile('^-+$')
+    divider_lines = []
+    for i, line in enumerate(lines):
+        if re.match(divider_pattern, line):
+            divider_lines.append(i)
+    return divider_lines
+
+def get_trace_config(lines, divider_lines):
+    name_line = divider_lines[0] + 1
+    names = lines[name_line].split(' ')[0].split('.')
+    return names[0], names[1]
+
+def strip_header_footer_empty(lines, divider_lines):
+    lines = lines[divider_lines[1] + 1:divider_lines[2]]
+    lines = [l for l in lines if l]
+    return lines
 
 if __name__ == "__main__":
     arguments = docopt.docopt(__doc__)
-    results = []
+    results = {}
     for filename in arguments['<data_file>']:
         with open(filename) as f:
-            # Get all lines
-            lines = map(str.strip, f.readlines())
-
-            # Find the dividers
-            divider_pattern = re.compile('^-+$')
-            divider_lines = []
-            for i, line in enumerate(lines):
-                if re.match(divider_pattern, line):
-                    divider_lines.append(i)
-
-            # Get the trace's name
-            name_line = divider_lines[0] + 1
-            names = lines[name_line].split(' ')[0].split('.')
-            trace = names[0]
-            config = names[1]
-
-            # Strip off header, cache contents, and empty lines
-            lines = lines[divider_lines[1] + 1:divider_lines[2]]
-            lines = [l for l in lines if l]
+            lines           = get_stripped_lines(f)
+            divider_lines   = get_divider_line_indices(lines)
+            trace, config   = get_trace_config(lines, divider_lines)
+            lines           = strip_header_footer_empty(lines, divider_lines)
 
             # Build memory system
             l1d_cache = Cache(lines, 'L1d')
@@ -340,13 +357,33 @@ if __name__ == "__main__":
             main_mem  = MainMem(lines)
             memory_system = MemorySystem(l1d_cache, l1i_cache, l2_cache, main_mem)
 
-            # Build reference metrics
+            # Build metrics
             references = References(lines)
-
-            # Build cycle metrics
             cycles = Cycles(lines)
 
             # Build full result
             result = Result(trace, config, memory_system, references, cycles)
-            results.append(result)
-    print results
+
+            if result.config not in results:
+                results[config] = {}
+            results[config][trace] = result
+
+    configs = ['default', 'All-2way', 'All-4way', 'All-FA', 'L1-2way', 'L1-8way']
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    colors = cm.rainbow(np.linspace(0, 1, len(traces)))
+    l1i_miss_rates = {}
+    l1i_assoc = {}
+    for trace, color in zip(traces, colors):
+        l1i_miss_rates[trace] = []
+        l1i_assoc[trace] = []
+        for config in configs:
+            r = results[config][trace]
+            l1i_miss_rates[trace].append(r.memory_system.l1i_cache.miss_rate)
+            l1i_assoc[trace].append(r.memory_system.l1i_cache.ways)
+
+        plt.scatter(l1i_assoc[trace], l1i_miss_rates[trace], label=trace, color=color)
+    ax = plt.gca()
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles, labels)
+    ax.set_xscale('log')
+    plt.show()

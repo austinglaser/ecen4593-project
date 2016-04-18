@@ -340,6 +340,25 @@ def strip_header_footer_empty(lines, divider_lines):
     lines = [l for l in lines if l]
     return lines
 
+def plot_results(traces, configs, independent_getter, dependent_getter):
+    colors = cm.rainbow(np.linspace(0, 1, len(traces)))
+    independent = {}
+    dependent = {}
+    for trace, color in zip(traces, colors):
+        independent[trace] = []
+        dependent[trace] = []
+        for config in configs:
+            r = results[config][trace]
+            independent[trace].append(independent_getter(r))
+            dependent[trace].append(dependent_getter(r))
+
+        plt.scatter(dependent[trace], independent[trace], label=trace, color=color)
+    ax = plt.gca()
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles, labels)
+    ax.set_xscale('log')
+    plt.show()
+
 if __name__ == "__main__":
     arguments = docopt.docopt(__doc__)
     results = {}
@@ -368,22 +387,8 @@ if __name__ == "__main__":
                 results[config] = {}
             results[config][trace] = result
 
-    configs = ['default', 'All-2way', 'All-4way', 'All-FA', 'L1-2way', 'L1-8way']
     traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    colors = cm.rainbow(np.linspace(0, 1, len(traces)))
-    l1i_miss_rates = {}
-    l1i_assoc = {}
-    for trace, color in zip(traces, colors):
-        l1i_miss_rates[trace] = []
-        l1i_assoc[trace] = []
-        for config in configs:
-            r = results[config][trace]
-            l1i_miss_rates[trace].append(r.memory_system.l1i_cache.miss_rate)
-            l1i_assoc[trace].append(r.memory_system.l1i_cache.ways)
-
-        plt.scatter(l1i_assoc[trace], l1i_miss_rates[trace], label=trace, color=color)
-    ax = plt.gca()
-    handles, labels = ax.get_legend_handles_labels()
-    ax.legend(handles, labels)
-    ax.set_xscale('log')
-    plt.show()
+    configs = ['default', 'All-2way', 'All-4way', 'All-FA', 'L1-2way', 'L1-8way']
+    plot_results(traces, configs,
+                 lambda r: r.memory_system.l1d_cache.miss_rate,
+                 lambda r: r.memory_system.l1d_cache.ways)

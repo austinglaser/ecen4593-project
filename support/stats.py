@@ -192,6 +192,9 @@ class References(MetricContainer):
         self.write_percent = None
         self.instr_percent = None
 
+    def total(self):
+        return self.reads + self.writes + self.instrs
+
     def __str__(self):
         return ("Reference counts: {reads} Reads ({read_percent}%), " +
                 "{writes} Writes ({write_percent}%), " +
@@ -259,6 +262,9 @@ class Cycles(MetricContainer):
         self.cpi                  = None
         self.cpi_ideal            = None
         self.cpi_ideal_misaligned = None
+
+    def total(self):
+        return self.reads + self.writes + self.instrs
 
     def __str__(self):
         return ("Cycle counts: {reads} Reads ({read_percent}%), " +
@@ -340,7 +346,9 @@ def strip_header_footer_empty(lines, divider_lines):
     lines = [l for l in lines if l]
     return lines
 
-def plot_results(traces, configs, independent_getter, dependent_getter):
+def plot_results(traces, configs,
+                 independent_name, dependent_name,
+                 independent_getter, dependent_getter, log_x=False):
     colors = cm.rainbow(np.linspace(0, 1, len(traces)))
     independent = {}
     dependent = {}
@@ -352,11 +360,14 @@ def plot_results(traces, configs, independent_getter, dependent_getter):
             independent[trace].append(independent_getter(r))
             dependent[trace].append(dependent_getter(r))
 
-        plt.scatter(dependent[trace], independent[trace], label=trace, color=color)
+        plt.scatter(independent[trace], dependent[trace], label=trace, color=color)
+    plt.xlabel(independent_name)
+    plt.ylabel(dependent_name)
     ax = plt.gca()
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles, labels)
-    ax.set_xscale('log')
+    if log_x:
+        ax.set_xscale('log')
     plt.show()
 
 if __name__ == "__main__":
@@ -387,8 +398,20 @@ if __name__ == "__main__":
                 results[config] = {}
             results[config][trace] = result
 
-    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    configs = ['default', 'All-2way', 'All-4way', 'All-FA', 'L1-2way', 'L1-8way']
+    traces = ['sjeng']
+    configs = ['default', 'MemBandwidth-16', 'MemBandwidth-32', 'MemBandwidth-64']
     plot_results(traces, configs,
-                 lambda r: r.memory_system.l1d_cache.miss_rate,
-                 lambda r: r.memory_system.l1d_cache.ways)
+                 'Main memory bandwidth [bytes]',
+                 'Overall CPI [cycles/instruction]',
+                 lambda r: r.memory_system.main_mem.chunksize,
+                 lambda r: r.cycles.cpi)
+    plot_results(traces, configs,
+                 'Main memory bandwidth [bytes]',
+                 'Main memory cost [cycles/instruction]',
+                 lambda r: r.memory_system.main_mem.chunksize,
+                 lambda r: r.memory_system.main_mem.cost)
+    plot_results(traces, configs,
+                 'Main memory cost [cycles/instruction]',
+                 'Overall CPI [cycles/instruction]',
+                 lambda r: r.memory_system.main_mem.cost,
+                 lambda r: r.cycles.cpi)

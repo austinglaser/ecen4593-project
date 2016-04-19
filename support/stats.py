@@ -400,6 +400,64 @@ if __name__ == "__main__":
                 results[config] = {}
             results[config][trace] = result
 
+    #  Result structure:
+    #
+    #   memory_system               (all memory system info)
+    #     l1d_cache                   (data cache)
+    #       size                        (total cache size)
+    #       ways                        (cache associativity)
+    #       block_size
+    #       hit_count
+    #       victim_cache_hit_count
+    #       miss_count
+    #       hit_rate
+    #       miss_rate
+    #       cost
+    #     l1i_cache                   (instruction cache)
+    #       size                        (total cache size)
+    #       ways                        (cache associativity)
+    #       block_size
+    #       hit_count
+    #       victim_cache_hit_count
+    #       miss_count
+    #       hit_rate
+    #       miss_rate
+    #       cost
+    #     l2_cache                    (unified l2 cache)
+    #       size                        (total cache size)
+    #       ways                        (cache associativity)
+    #       block_size
+    #       hit_count
+    #       victim_cache_hit_count
+    #       miss_count
+    #       hit_rate
+    #       miss_rate
+    #       cost
+    #     main_mem                    (main memory configuration)
+    #       memory_ready_time
+    #       chunksize
+    #       chunktime
+    #       cost
+    #   references                  (reference counts)
+    #     reads
+    #     writes
+    #     instrs
+    #     read_percent
+    #     write_percent
+    #     instr_percent
+    #   cycles                      (cycle counts)
+    #     reads
+    #     writes
+    #     instrs
+    #     read_percent
+    #     write_percent
+    #     instr_percent
+    #     ideal
+    #     ideal_misaligned
+    #     cpi
+    #     cpi_ideal
+    #     cpi_ideal_misaligned
+
     #traces = ['sjeng']
     #configs = ['default', 'MemBandwidth-16', 'MemBandwidth-32', 'MemBandwidth-64']
     #plot_results(traces, configs,

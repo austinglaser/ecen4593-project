@@ -480,11 +480,10 @@ if __name__ == "__main__":
     #             lambda r: r.memory_system.main_mem.cost,
     #             lambda r: r.cycles.cpi)
     traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    configs = ['default', 'L1-2way', 'All-4way', 'L1-8way', 'All-FA']
+    configs = ['default', 'L1-small']
     plot_results(traces, configs,
-                 'Icache miss rate vs. associativity',
-                 'Associativity',
+                 'L1 Dcache miss rate vs L1 Dcache size',
+                 'L1 cache size',
                  'Miss rate [percent]',
-                 lambda r: r.memory_system.l1i_cache.ways,
-                 lambda r: r.cycles.cpi / r.cycles.cpi_ideal_misaligned,
-                 log_x=True, x_limits=(.5, 512))
+                 lambda r: r.memory_system.l1d_cache.size,
+                 lambda r: r.memory_system.l1d_cache.miss_rate)

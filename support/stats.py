@@ -349,10 +349,9 @@ def strip_header_footer_empty(lines, divider_lines):
 def plot_results(traces, configs,
                  title, independent_name, dependent_name,
                  independent_getter, dependent_getter, log_x=False):
-    colors = cm.gray(np.linspace(0, .75, len(traces)))
     independent = {}
     dependent = {}
-    for trace, color in zip(traces, colors):
+    for trace in traces:
         independent[trace] = []
         dependent[trace] = []
         for config in configs:
@@ -360,7 +359,7 @@ def plot_results(traces, configs,
             independent[trace].append(independent_getter(r))
             dependent[trace].append(dependent_getter(r))
 
-        plt.scatter(independent[trace], dependent[trace], label=trace, color=color)
+        plt.plot(independent[trace], dependent[trace], label=trace, marker='o', linestyle=' ')
     plt.xlabel(independent_name)
     plt.ylabel(dependent_name)
     plt.title(title)
@@ -485,5 +484,5 @@ if __name__ == "__main__":
                  'Associativity',
                  'Miss rate [percent]',
                  lambda r: r.memory_system.l1i_cache.ways,
-                 lambda r: r.memory_system.l1i_cache.miss_rate,
+                 lambda r: r.cycles.cpi / r.cycles.cpi_ideal_misaligned,
                  log_x=True)

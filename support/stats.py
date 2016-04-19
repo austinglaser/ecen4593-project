@@ -347,9 +347,9 @@ def strip_header_footer_empty(lines, divider_lines):
     return lines
 
 def plot_results(traces, configs,
-                 independent_name, dependent_name,
+                 title, independent_name, dependent_name,
                  independent_getter, dependent_getter, log_x=False):
-    colors = cm.rainbow(np.linspace(0, 1, len(traces)))
+    colors = cm.gray(np.linspace(0, .75, len(traces)))
     independent = {}
     dependent = {}
     for trace, color in zip(traces, colors):
@@ -363,9 +363,11 @@ def plot_results(traces, configs,
         plt.scatter(independent[trace], dependent[trace], label=trace, color=color)
     plt.xlabel(independent_name)
     plt.ylabel(dependent_name)
+    plt.title(title)
     ax = plt.gca()
     handles, labels = ax.get_legend_handles_labels()
-    ax.legend(handles, labels)
+    ax.legend(handles, labels, loc='upper center', bbox_to_anchor=(.5, -0.1), ncol=3)
+    plt.gcf().subplots_adjust(bottom=0.2)
     if log_x:
         ax.set_xscale('log')
     plt.show()
@@ -398,20 +400,32 @@ if __name__ == "__main__":
                 results[config] = {}
             results[config][trace] = result
 
-    traces = ['sjeng']
-    configs = ['default', 'MemBandwidth-16', 'MemBandwidth-32', 'MemBandwidth-64']
+    #traces = ['sjeng']
+    #configs = ['default', 'MemBandwidth-16', 'MemBandwidth-32', 'MemBandwidth-64']
+    #plot_results(traces, configs,
+    #             'CPI vs memory bandwidth',
+    #             'Main memory bandwidth [bytes]',
+    #             'Overall CPI [cycles/instruction]',
+    #             lambda r: r.memory_system.main_mem.chunksize,
+    #             lambda r: r.cycles.cpi)
+    #plot_results(traces, configs,
+    #             'Cost vs memory bandwidth',
+    #             'Main memory bandwidth [bytes]',
+    #             'Main memory cost [dollars]',
+    #             lambda r: r.memory_system.main_mem.chunksize,
+    #             lambda r: r.memory_system.main_mem.cost)
+    #plot_results(traces, configs,
+    #             'CPI vs main memory cost',
+    #             'Main memory cost [cycles/instruction]',
+    #             'Overall CPI [cycles/instruction]',
+    #             lambda r: r.memory_system.main_mem.cost,
+    #             lambda r: r.cycles.cpi)
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'L1-2way', 'All-4way', 'L1-8way', 'All-FA']
     plot_results(traces, configs,
-                 'Main memory bandwidth [bytes]',
-                 'Overall CPI [cycles/instruction]',
-                 lambda r: r.memory_system.main_mem.chunksize,
-                 lambda r: r.cycles.cpi)
-    plot_results(traces, configs,
-                 'Main memory bandwidth [bytes]',
-                 'Main memory cost [cycles/instruction]',
-                 lambda r: r.memory_system.main_mem.chunksize,
-                 lambda r: r.memory_system.main_mem.cost)
-    plot_results(traces, configs,
-                 'Main memory cost [cycles/instruction]',
-                 'Overall CPI [cycles/instruction]',
-                 lambda r: r.memory_system.main_mem.cost,
-                 lambda r: r.cycles.cpi)
+                 'Icache miss rate vs. associativity',
+                 'Associativity',
+                 'Miss rate [percent]',
+                 lambda r: r.memory_system.l1i_cache.ways,
+                 lambda r: r.memory_system.l1i_cache.miss_rate,
+                 log_x=True)

@@ -348,7 +348,7 @@ def strip_header_footer_empty(lines, divider_lines):
 
 def plot_results(traces, configs,
                  title, independent_name, dependent_name,
-                 independent_getter, dependent_getter, log_x=False):
+                 independent_getter, dependent_getter, log_x=False, x_limits=None):
     independent = {}
     dependent = {}
     for trace in traces:
@@ -369,6 +369,8 @@ def plot_results(traces, configs,
     plt.gcf().subplots_adjust(bottom=0.2)
     if log_x:
         ax.set_xscale('log')
+    if x_limits:
+        plt.xlim(x_limits)
     plt.show()
 
 if __name__ == "__main__":
@@ -485,4 +487,4 @@ if __name__ == "__main__":
                  'Miss rate [percent]',
                  lambda r: r.memory_system.l1i_cache.ways,
                  lambda r: r.cycles.cpi / r.cycles.cpi_ideal_misaligned,
-                 log_x=True)
+                 log_x=True, x_limits=(.5, 512))

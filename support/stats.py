@@ -479,11 +479,27 @@ if __name__ == "__main__":
     #             'Overall CPI [cycles/instruction]',
     #             lambda r: r.memory_system.main_mem.cost,
     #             lambda r: r.cycles.cpi)
+    #traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    #configs = ['default', 'L1-small', ]
+    #plot_results(traces, configs,
+    #            'L1 Dcache miss rate vs L1 Dcache size',
+    #             'L1 Dcache size',
+    #             'Miss rate [percent]',
+    #             lambda r: r.memory_system.l1d_cache.size,
+    #             lambda r: r.memory_system.l1d_cache.miss_rate)
+    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    # configs = ['default', 'L1-small', ]
+    # plot_results(traces, configs,
+    #              'L1 Dcache hit rate vs L1 Dcache size',
+    #              'L1 Dcache size',
+    #              'Hit rate [percent]',
+    #              lambda r: r.memory_system.l1d_cache.size,
+    #              lambda r: r.memory_system.l1d_cache.hit_rate)
     traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    configs = ['default', 'L1-small']
+    configs = ['default', 'L1-small', ]
     plot_results(traces, configs,
-                 'L2 Cache hit rate vs L2 Cache size',
-                 'L2 Cache size',
+                 'L1 Dcache hit rate vs L1 Dcache size',
+                 'L1 Dcache size',
                  'Hit rate [percent]',
-                 lambda r: r.memory_system.l2_cache.size,
-                 lambda r: r.memory_system.l2_cache.hit_rate)
+                 lambda r: r.memory_system.l1d_cache.size,
+                 lambda r: r.memory_system.l1d_cache.hit_rate)

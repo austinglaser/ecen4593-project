@@ -496,10 +496,10 @@ if __name__ == "__main__":
     #              lambda r: r.memory_system.l1d_cache.size,
     #              lambda r: r.memory_system.l1d_cache.hit_rate)
     traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    configs = ['default', 'L1-small', ]
+    configs = ['default', 'All-small']
     plot_results(traces, configs,
-                 'L1 Dcache hit rate vs L1 Dcache size',
-                 'L1 Dcache size',
-                 'Hit rate [percent]',
-                 lambda r: r.memory_system.l1d_cache.size,
-                 lambda r: r.memory_system.l1d_cache.hit_rate)
+                 'L2 Cache miss rate vs L2 Cache size',
+                 'L2 Cache size',
+                 'Miss rate [percent]',
+                 lambda r: r.memory_system.l2_cache.size,
+                 lambda r: r.memory_system.l2_cache.miss_rate)

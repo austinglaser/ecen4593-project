@@ -482,8 +482,8 @@ if __name__ == "__main__":
     traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
     configs = ['default', 'L1-small']
     plot_results(traces, configs,
-                 'L1 Dcache miss rate vs L1 Dcache size',
+                 'L1 Dcache hit rate vs L1 Dcache size',
                  'L1 cache size',
-                 'Miss rate [percent]',
+                 'Hit rate [percent]',
                  lambda r: r.memory_system.l1d_cache.size,
-                 lambda r: r.memory_system.l1d_cache.miss_rate)
+                 lambda r: r.memory_system.l1d_cache.hit_rate)

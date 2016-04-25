@@ -135,7 +135,7 @@ class MainMem(MetricContainer):
                 self.chunksize         = int(config_match.group(2))
                 self.chunktime         = int(config_match.group(3))
             if cost_match:
-                self.cost = cost_match.group(1)
+                self.cost = int(cost_match.group(1))
 
         self.__check_all_not_none__()
 

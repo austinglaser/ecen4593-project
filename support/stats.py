@@ -526,14 +526,38 @@ if __name__ == "__main__":
     #              'L2 Cache size',
     #              'Overall CPI [cycles/instruction',
     #              lambda r: r.memory_system.l2_cache.size,
+    # #              lambda r: r.cycles.cpi,)
+    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    # configs = ['default', 'All-FA', 'All-2way', 'All-4way']
+    # plot_results(traces, configs,
+    #              'L1 Dcache miss rate vs L1 Dcache associativity',
+    #              'L1 Dcache associativity',
+    #              'L1 Dcache miss rate',
+    #              lambda r: r.memory_system.l1d_cache.ways,
+    #              lambda r: r.memory_system.l1d_cache.miss_rate, log_x=True, x_limits = [0.5, 600])
     #              lambda r: r.cycles.cpi,)
+    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    # configs = ['default', 'All-FA', 'All-2way', 'All-4way']
+    # plot_results(traces, configs,
+    #              'CPI vs L1 Dcache associativity',
+    #              'L1 Dcache associativity',
+    #              'CPI [cycles/instruction]',
+    #              lambda r: r.memory_system.l1d_cache.ways,
+    #              lambda r: r.cycles.cpi, log_x=True, x_limits = [0.5, 600])
+    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    # configs = ['default', 'All-FA', 'All-2way', 'All-4way']
+    # plot_results(traces, configs,
+    #              'CPI vs L2 Cache associativity',
+    #              'L2 Cache associativity',
+    #              'CPI [cycles/instruction]',
+    #              lambda r: r.memory_system.l2_cache.ways,
+    #              lambda r: r.cycles.cpi, log_x=True, x_limits = [0.5, 600])
     traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    configs = ['default', 'L1-small']
+    configs = ['default', 'All-FA', 'All-2way', 'All-4way']
     plot_results(traces, configs,
-                 'CPI vs L1 Dcache Size',
-                 'L1 Dcache size',
-                 'Overall CPI [cycles/instruction',
-                 lambda r: r.memory_system.l1d_cache.size,
-                 lambda r: r.cycles.cpi,)
-
+                 'CPI vs L2 Cache associativity',
+                 'L2 Cache associativity',
+                 'CPI [cycles/instruction]',
+                 lambda r: r.memory_system.l2_cache.ways,
+                 lambda r: r.cycles.cpi, log_x=True, x_limits = [0.5, 600])
 

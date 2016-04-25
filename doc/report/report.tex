@@ -201,7 +201,7 @@ actually start to look MORE attractive rather than less, even given the
 diminishing returns outlined above.
 
 It begins to make sense in light of the chosen cost function, which is actually
-logarithmic (ignoring latency, it's $\$75 + \$100*log_2(B / 8)$, where $B$ is
+logarithmic (ignoring latency, it's $\$75 + \$100 \log_2(B / 8)$, where $B$ is
 the memory bandwidth in bytes). To us, this seems slightly unrealistic---our
 first instinct is that this function should be linear or worse. However, it does
 explain the results, and when taken as a given makes higher-bandwidth main

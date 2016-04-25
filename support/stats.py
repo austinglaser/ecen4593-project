@@ -481,7 +481,7 @@ if __name__ == "__main__":
     #             lambda r: r.memory_system.main_mem.cost)
     #plot_results(traces, configs,
     #             'CPI vs Main Memory Cost',
-    #             'Main memory cost [cycles/instruction]',
+    #             'Main memory cost [dollars]',
     #             'Overall CPI [cycles/instruction]',
     #             lambda r: r.memory_system.main_mem.cost,
     #             lambda r: r.cycles.cpi)

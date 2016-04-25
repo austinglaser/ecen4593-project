@@ -560,11 +560,11 @@ if __name__ == "__main__":
     #              lambda r: r.memory_system.l2_cache.ways,
     #              lambda r: r.cycles.cpi, log_x=True, x_limits = [0.5, 600])
     traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    configs = ['default', 'All-FA', 'All-2way', 'All-4way']
+    configs = ['default', 'L1-2way', 'All-2way', 'All-4way', 'L1-8way', 'L1-small', 'L1-small-4way', 'All-small', 'All-FA']
     plot_results(traces, configs,
-                 'CPI vs L2 Cache associativity',
-                 'L2 Cache associativity',
+                 'CPI vs Total memory system cost',
+                 'Cost [dollars]',
                  'CPI [cycles/instruction]',
-                 lambda r: r.memory_system.l2_cache.ways,
-                 lambda r: r.cycles.cpi, log_x=True, x_limits = [0.5, 600])
+                 lambda r: r.memory_system.cost(),
+                 lambda r: r.cycles.cpi)
 

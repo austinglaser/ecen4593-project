@@ -459,26 +459,27 @@ if __name__ == "__main__":
     #     cpi_ideal
     #     cpi_ideal_misaligned
 
-    # traces = ['sjeng']
-    # configs = ['default', 'MemBandwidth-16', 'MemBandwidth-32', 'MemBandwidth-64']
-    # plot_results(traces, configs,
-    #             'CPI vs memory bandwidth',
+    #traces = ['sjeng']
+    #configs = ['default', 'MemBandwidth-16', 'MemBandwidth-32', 'MemBandwidth-64']
+    #plot_results(traces, configs,
+    #             'CPI vs Memory Bandwidth',
     #             'Main memory bandwidth [bytes]',
     #             'Overall CPI [cycles/instruction]',
     #             lambda r: r.memory_system.main_mem.chunksize,
     #             lambda r: r.cycles.cpi)
     #plot_results(traces, configs,
-    #             'Cost vs memory bandwidth',
+    #             'Main Memory Cost vs Memory Bandwidth',
     #             'Main memory bandwidth [bytes]',
     #             'Main memory cost [dollars]',
     #             lambda r: r.memory_system.main_mem.chunksize,
     #             lambda r: r.memory_system.main_mem.cost)
     #plot_results(traces, configs,
-    #             'CPI vs main memory cost',
+    #             'CPI vs Main Memory Cost',
     #             'Main memory cost [cycles/instruction]',
     #             'Overall CPI [cycles/instruction]',
     #             lambda r: r.memory_system.main_mem.cost,
     #             lambda r: r.cycles.cpi)
+
     #traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
     #configs = ['default', 'L1-small', ]
     #plot_results(traces, configs,

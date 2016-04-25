@@ -168,6 +168,59 @@ This is the second paragraph.
 
 \section{Main Memory System Analysis}
 
+One major task in this project was to determine the effect the bandwidth of the
+main memory connection has on memory system performance. We only performed the
+simulations on the `sjeng` trace, so the plots have less data. Before examining
+the results of the simulations, we can make a couple of predictions based around
+our knowledge of the memory system's functionality.
+
+The first is that, all other configuration details being equal, there will be no
+performance improvement with a bus width greater than 64 bytes. The fastest main
+memory access possible will need to transfer a single block of data to or from
+the L2 cache, and since that transfer will always be 64 bytes of data, larger
+busses will simply be wasted bandwidth.
+
+Secondly, we can expect diminishing returns with each doubling in bandwidth.
+There is a constant-time aspect to the memory access (sending the address and
+waiting for the memory to be ready), and we're making no changes to that aspect
+of the system. As long as this is the case (according to our friend Amdahl),
+there is a performance limit which is insurmountable even if we could spend zero
+time actually transferring data. Furthermore, these constant time operations
+occupy an increasing proportion of our total memory access time.
+
+Now, on to the actual results. Examining figure \ref{fig:cpivsband} shows us
+that our predictions are borne out by the actual data -- the largest performance
+improvement comes from the first doubling, while later doublings produce
+progressively smaller impacts.
+
+We can also look at the relationship between cost and performance (figure
+\ref{fig:cpivsmainmemcost}). This is particularly interesting, because the
+performance curve flattens out somewhat, becoming somewhat closer to linear.
+This means that, from a cost/benefit standpoint, greater memory bandwidths
+actually start to look MORE attractive rather than less, even given the
+diminishing returns outlined above.
+
+It begins to make sense in light of the chosen cost function, which is actually
+logarithmic (ignoring latency, it's $\$75 + \$100*log_2(B / 8)$, where $B$ is
+the memory bandwidth in bytes). To us, this seems slightly unrealistic---our
+first instinct is that this function should be linear or worse. However, it does
+explain the results, and when taken as a given makes higher-bandwidth main
+memory interfaces look even more attractive.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{plots/CPI_vs_Bandwidth.png}
+    \caption{Performance impact of main memory bandwidth}
+    \label{fig:cpivsband}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{plots/CPI_vs_Main_Mem_Cost.png}
+    \caption{Performance impact of main memory cost}
+    \label{fig:cpivsmainmemcost}
+\end{figure}
+
 %----------------------------------------------------------------------------------------
 
 \end{document}

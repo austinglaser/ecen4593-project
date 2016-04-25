@@ -47,13 +47,17 @@ typedef uint32_t (*mem_access_f_t)(void * mem, access_t const * access);
  * @param[in] sub_access_f:     A function that can be used to access the
  *                              next-lower level of memory, when needed
  * @param[in] sub_mem:          A pointer to that next memory level
- * @param[out] stats:           The structure where bookkeeping data will be written
+ * @param[out] stats:           The structure where bookkeeping data will be
+ *                              written
  * @param[in] config:           Structure controlling the cache's parameters
  *
  * @return                      A new CacheInternals instance, or NULL if
  *                              memory allocation failed
  */
-cache_t CacheInternals_Create(mem_access_f_t sub_access_f, void * sub_mem, cache_stats_t * stats, cache_param_t const * config);
+cache_t CacheInternals_Create(mem_access_f_t sub_access_f,
+                              void * sub_mem,
+                              cache_stats_t * stats,
+                              cache_param_t const * config);
 
 /**@brief   Destroys a CacheInternals instance, freeing all memory used
  *

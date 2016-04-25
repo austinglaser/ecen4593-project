@@ -54,10 +54,13 @@ typedef struct _stats_t {
 
     uint64_t instr_count;           /**< Total number of instruction reads */
     uint64_t instr_count_aligned;   /**< Total number of L1 instruction reads */
-    uint64_t instr_cycles;          /**< Total cycles spent retrieving instructions */
+    uint64_t instr_cycles;          /**< Total cycles spent retrieving
+                                         instructions */
 
-    cache_stats_t l1i;              /**< Individual statistics for L1 instruction cache */
-    cache_stats_t l1d;              /**< Individual statistics for L1 data cache */
+    cache_stats_t l1i;              /**< Individual statistics for L1
+                                         instruction cache */
+    cache_stats_t l1d;              /**< Individual statistics for L1 data
+                                         cache */
     cache_stats_t l2;               /**< Individual statistics for L2 cache */
 } stats_t;
 
@@ -85,7 +88,10 @@ void Statistics_Print(stats_t const * stats);
  * @param[in] n_aligned:    The actual number of L1 accesses this request
  *                          caused
  */
-void Statistics_RecordAccess(stats_t * stats, uint8_t type, uint32_t cycles, uint32_t n_aligned);
+void Statistics_RecordAccess(stats_t * stats,
+                             uint8_t type,
+                             uint32_t cycles,
+                             uint32_t n_aligned);
 
 /**@brief   Record a single access to a cache
  *

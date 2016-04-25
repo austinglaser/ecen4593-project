@@ -89,8 +89,10 @@ void Config_ParseLine(const char * line, config_t * config);
  * @param[out] config:          Configuration to populate
  *
  * @throws  BAD_CONFIG_FILE:    If the configuration file could not be opened
- * @throws  BAD_CONFIG_CACHE:   If the config line refers to an invalid memory level
- * @throws  BAD_CONFIG_PARAM:   If the config line refers to an unrecognized parameter
+ * @throws  BAD_CONFIG_CACHE:   If the config line refers to an invalid memory
+ *                              level
+ * @throws  BAD_CONFIG_PARAM:   If the config line refers to an unrecognized
+ *                              parameter
  * @throws  BAD_CONFIG_VALUE:   If a value is out of the allowable range
  */
 void Config_FromFile(const char * filename, config_t * config);

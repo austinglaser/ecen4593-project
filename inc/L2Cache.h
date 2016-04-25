@@ -37,12 +37,15 @@ typedef struct _l2_cache_t * l2_cache_t;
  *
  * @param[in] main_mem:     The external memory to access when a miss or
  *                          dirty-kickout occurs
- * @param[in] stats:        Where statistics about cache performance will be written
+ * @param[in] stats:        Where statistics about cache performance will be
+ *                          written
  * @param[in] config:       Descriptor containing the cache's parameters
  *
  * @return      A new L2 cache instance, or NULL if memory allocation failed
  */
-l2_cache_t L2Cache_Create(main_mem_t mem, cache_stats_t * stats, cache_param_t const * config);
+l2_cache_t L2Cache_Create(main_mem_t mem,
+                          cache_stats_t * stats,
+                          cache_param_t const * config);
 
 /**@brief   Destroy an L2 cache instance
  *

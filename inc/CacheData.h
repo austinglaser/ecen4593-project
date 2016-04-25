@@ -55,10 +55,13 @@ typedef struct _cache_data_t * cache_data_t;
 /**@brief   Create a new instance of cache_data_t
  *
  * @param[in] n_sets:                   The total number of cache sets
- * @param[in] set_len:                  The number of blocks allowed to be stored in a set.
+ * @param[in] set_len:                  The number of blocks allowed to be
+ *                                      stored in a set.
  *                                      The cache's associativity
- * @param[in] block_size_bytes:         Size of a cache block. Used in tag generation and address alignment
- * @param[in] victim_cache_len_blocks:  The number of blocks kept in the victim cache
+ * @param[in] block_size_bytes:         Size of a cache block. Used in tag
+ *                                      generation and address alignment
+ * @param[in] victim_cache_len_blocks:  The number of blocks kept in the victim
+ *                                      cache
  *
  * @return:     A pointer to the newly-created data structure, or NULL if
  *              memory allocation failed

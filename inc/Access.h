@@ -35,9 +35,10 @@ enum ACCESS_TYPE {
 
 /**@brief   The type used internally to represent an access operation */
 typedef struct {
-    uint8_t type;           /**< The access' type. Member of @ref enum ACCESS_TYPE */
-    uint64_t address;       /**< The address being accessed */
-    uint32_t n_bytes;       /**< The number of bytes being accessed */
+    uint8_t type;       /**< The access' type. Member of @ref enum
+                             ACCESS_TYPE */
+    uint64_t address;   /**< The address being accessed */
+    uint32_t n_bytes;   /**< The number of bytes being accessed */
 } access_t;
 
 /* --- PUBLIC MACROS -------------------------------------------------------- */
@@ -48,7 +49,7 @@ typedef struct {
  *
  * The line should be of the following format:
  *
- * [I|W|R] <address> <bytes>[\n]
+ * <I|W|R> <address> <bytes>[\n]
  *
  * <address> is a 64-bit number encoded as hex, and <bytes> is a 32-bit number
  * encoded as decimal.
@@ -57,8 +58,10 @@ typedef struct {
  * @param[out] access:  A structure for output
  *
  * @throws ARGUMENT_ERROR       When passed invalid (NULL) parameters
- * @throws SYNTAX_ERROR         When the line doesn't match the expected syntax (described above)
- * @throws INVALID_OPERATION    When the operation is not one of @ref enum ACCESS_TYPE
+ * @throws SYNTAX_ERROR         When the line doesn't match the expected syntax
+ *                              (described above)
+ * @throws INVALID_OPERATION    When the operation is not one of @ref enum
+ *                              ACCESS_TYPE
  * @throws INVALID_ACCESS_SIZE  When one attempts to access zero bytes
  */
 void Access_ParseLine(const char * line, access_t * access);
@@ -71,7 +74,9 @@ void Access_ParseLine(const char * line, access_t * access);
  * @param[in] unaligned_access:     An access which needs alignment
  * @param[in] block_size:           Block size for alignment
  */
-void Access_Align(access_t * aligned_access, access_t const * unaligned_access, uint32_t block_size);
+void Access_Align(access_t * aligned_access,
+                  access_t const * unaligned_access,
+                  uint32_t block_size);
 
 /**@brief   Prints an access
  *

@@ -283,6 +283,12 @@ class MemorySystem:
         self.l2_cache  = l2_cache
         self.main_mem  = main_mem
 
+    def cost(self):
+        return (self.l1d_cache.cost +
+                self.l1i_cache.cost +
+                self.l2_cache.cost +
+                self.main_mem.cost)
+
     def __str__(self):
         return ("Memory system:\n" +
                 "    " + str(self.l1d_cache) + "\n" +

@@ -10,7 +10,8 @@
 /**@defgroup L1CACHE L1Cache
  * @{
  *
- * @brief L1 Cache level (both instruction and data). A thin wrapper around @ref CACHEINTERNALS
+ * @brief L1 Cache level (both instruction and data). A thin wrapper around
+ *        @ref CACHEINTERNALS
  */
 
 /* --- PUBLIC DEPENDENCIES -------------------------------------------------- */
@@ -37,12 +38,15 @@ typedef struct _l1_cache_t * l1_cache_t;
  *
  * @param[in] l2_cache:     The l2_cache to access when a miss or dirty-kickout
  *                          occurs
- * @param[in] stats:        Where statistics about cache performance will be written
+ * @param[in] stats:        Where statistics about cache performance will be
+ *                          written
  * @param[in] config:       Descriptor containing the cache's parameters
  *
  * @return      A new l1 cache instance, or NULL if memory allocation failed
  */
-l1_cache_t L1Cache_Create(l2_cache_t l2_cache, cache_stats_t * stats, cache_param_t const * config);
+l1_cache_t L1Cache_Create(l2_cache_t l2_cache,
+                          cache_stats_t * stats,
+                          cache_param_t const * config);
 
 /**@brief   Destroy an L1 cache instance
  *

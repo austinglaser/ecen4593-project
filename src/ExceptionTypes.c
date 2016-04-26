@@ -29,7 +29,8 @@ char const * const exception_descriptors[MAX_EXCEPTION_N] = {
     [BAD_CONFIG_PARAM]      = "Bad parameter name in configuration",
     [BAD_CONFIG_VALUE]      = "Invalid value for field in configuration",
     [BAD_CONFIG_FILE]       = "Unable to open configuration file",
-    [INVALID_OPERATION]     = "Bad operation specifier. Valid values are I, W, or R",
+    [INVALID_OPERATION]     = "Bad operation specifier."
+                               " Valid values are I, W, or R",
     [INVALID_ACCESS_SIZE]   = "Invalid number of bytes accessed",
 };
 

@@ -41,7 +41,10 @@ void Access_ParseLine(const char * line, access_t * access)
         ThrowHere(ARGUMENT_ERROR);
     }
 
-    if (sscanf(line, "%c %" SCNx64 " %" SCNu32 "\n", &access->type, &access->address, &access->n_bytes) != 3) {
+    if (sscanf(line, "%c %" SCNx64 " %" SCNu32 "\n",
+               &access->type,
+               &access->address,
+               &access->n_bytes) != 3) {
         ThrowHere(SYNTAX_ERROR);
     }
 
@@ -54,7 +57,9 @@ void Access_ParseLine(const char * line, access_t * access)
     }
 }
 
-void Access_Align(access_t * aligned_access, access_t const * unaligned_access, uint32_t block_size)
+void Access_Align(access_t * aligned_access,
+                  access_t const * unaligned_access,
+                  uint32_t block_size)
 {
     aligned_access->type = unaligned_access->type;
 

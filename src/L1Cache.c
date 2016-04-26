@@ -41,14 +41,19 @@ static uint32_t _L1Cache_AccessL2(void * _l2_cache, access_t const * access);
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-l1_cache_t L1Cache_Create(l2_cache_t l2_cache, cache_stats_t * stats, cache_param_t const * config)
+l1_cache_t L1Cache_Create(l2_cache_t l2_cache,
+                          cache_stats_t * stats,
+                          cache_param_t const * config)
 {
     l1_cache_t cache = (l1_cache_t) malloc(sizeof(*cache));
     if (cache == NULL) {
         return NULL;
     }
 
-    cache->internals = CacheInternals_Create(_L1Cache_AccessL2, l2_cache, stats, config);
+    cache->internals = CacheInternals_Create(_L1Cache_AccessL2,
+                                             l2_cache,
+                                             stats,
+                                             config);
     if (cache->internals == NULL) {
         free(cache);
         return NULL;

@@ -48,8 +48,12 @@ void Statistics_Create(stats_t * stats)
 
 void Statistics_Print(stats_t const * stats)
 {
-    uint64_t total_cycles = stats->read_cycles + stats->write_cycles + stats->instr_cycles;
-    uint64_t total_refs = stats->read_count  + stats->write_count  + stats->instr_count;
+    uint64_t total_cycles = stats->read_cycles +
+                            stats->write_cycles +
+                            stats->instr_cycles;
+    uint64_t total_refs   = stats->read_count +
+                            stats->write_count +
+                            stats->instr_count;
     printf("  Execute time = %" PRIu64 "; Total refs = %" PRIu64 "\n",
            total_cycles,
            total_refs);
@@ -107,7 +111,10 @@ void Statistics_Print(stats_t const * stats)
     Statistics_PrintCache(&(stats->l2));
 }
 
-void Statistics_RecordAccess(stats_t * stats, uint8_t type, uint32_t cycles, uint32_t n_aligned)
+void Statistics_RecordAccess(stats_t * stats,
+                             uint8_t type,
+                             uint32_t cycles,
+                             uint32_t n_aligned)
 {
     switch(type) {
     case TYPE_READ:
@@ -128,7 +135,8 @@ void Statistics_RecordAccess(stats_t * stats, uint8_t type, uint32_t cycles, uin
     }
 }
 
-void Statistics_RecordCacheAccess(cache_stats_t * cache_stats, result_t result)
+void Statistics_RecordCacheAccess(cache_stats_t * cache_stats,
+                                  result_t result)
 {
     switch (result) {
     case RESULT_HIT_VICTIM_CACHE:
@@ -186,7 +194,9 @@ static void Statistics_PrintCache(cache_stats_t const * cache_stats)
     printf("    Hit Rate = %4.1f%%  Miss Rate = %4.1f%%\n",
            Statistics_Percentage(cache_stats->hit_count,  total_requests),
            Statistics_Percentage(cache_stats->miss_count, total_requests));
-    printf("    Kickouts = %" PRIu64 "; Dirty kickouts = %" PRIu64 "; Transfers = %" PRIu64 "\n",
+    printf("    Kickouts = %" PRIu64
+           "; Dirty kickouts = %" PRIu64 ";"
+           " Transfers = %" PRIu64 "\n",
            cache_stats->kickouts,
            cache_stats->dirty_kickouts,
            cache_stats->transfers);

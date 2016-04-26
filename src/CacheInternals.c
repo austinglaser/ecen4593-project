@@ -30,8 +30,10 @@ struct _cache_t {
                                                  be writing to */
     void *                  sub_mem;        /**< The next-lowest memory level */
     mem_access_f_t          sub_access_f;   /**< A function which knows how to
-                                                 access said next-lowest level */
-    cache_data_t            data;           /**< The data, used for book-keeping */
+                                                 access said next-lowest
+                                                 level */
+    cache_data_t            data;           /**< The data, used for
+                                                 book-keeping */
 };
 
 /* --- PRIVATE MACROS ------------------------------------------------------- */
@@ -40,7 +42,10 @@ struct _cache_t {
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
-cache_t CacheInternals_Create(mem_access_f_t sub_access_f, void * sub_mem, cache_stats_t * stats, cache_param_t const * config)
+cache_t CacheInternals_Create(mem_access_f_t sub_access_f,
+                              void * sub_mem,
+                              cache_stats_t * stats,
+                              cache_param_t const * config)
 {
     cache_t cache = (cache_t) malloc(sizeof(*cache));
     if (cache == NULL) {
@@ -83,10 +88,14 @@ uint32_t CacheInternals_Access(cache_t cache, access_t const * access)
     result_t result;
     uint64_t dirty_kickout_address;
     if (access->type == TYPE_WRITE) {
-        dirty_kickout_address = CacheData_Write(cache->data, access->address, &result);
+        dirty_kickout_address = CacheData_Write(cache->data,
+                                                access->address,
+                                                &result);
     }
     else {
-        dirty_kickout_address = CacheData_Read(cache->data, access->address, &result);
+        dirty_kickout_address = CacheData_Read(cache->data,
+                                               access->address,
+                                               &result);
     }
 
     uint32_t access_time_cycles = 0;

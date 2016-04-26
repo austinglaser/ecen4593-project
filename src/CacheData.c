@@ -75,7 +75,8 @@ struct _cache_data_t {
     uint32_t n_sets;                /**< The number of sets present */
     uint32_t set_len_blocks;        /**< The allowable number of bloccks in a
                                          set (the cache's associativity) */
-    uint32_t victim_set_len_blocks; /**< The length of the victim set, in blocks */
+    uint32_t victim_set_len_blocks; /**< The length of the victim set, in
+                                         blocks */
     uint32_t block_size_bytes;      /**< The size of a block [bytes] */
     uint32_t set_index_shift;       /**< Shift used to move an address's set
                                          bits to the right, so they can be used
@@ -83,11 +84,14 @@ struct _cache_data_t {
     uint64_t set_mask;              /**< A mask that can be used to isolate the
                                          bytes in an a block's address
                                          determining its set membership */
-    uint64_t block_mask;            /**< A mask used for computing in which block an address falls */
-    block_t * all_blocks;           /**< Reference to the start of the block array */
+    uint64_t block_mask;            /**< A mask used for computing in which
+                                         block an address falls */
+    block_t * all_blocks;           /**< Reference to the start of the block
+                                         array */
     block_t * next_free_block;      /**< Reference to the next block that has
                                          not been inserted into the cache */
-    block_t * last_block;           /**< Reference to the end of the block array */
+    block_t * last_block;           /**< Reference to the end of the block
+                                         array */
     set_t victim_set;               /**< A set used to store blocks that have
                                          just been kicked out of their proper
                                          set */
@@ -98,7 +102,8 @@ struct _cache_data_t {
 /* --- PRIVATE MACROS ------------------------------------------------------- */
 
 /**@brief Helper for iterating over all blocks in a set from newest to oldest */
-#define for_block_in_set(block, set) for (block = set->newest; block != NULL; block = block->older)
+#define for_block_in_set(block, set) \
+        for (block = set->newest; block != NULL; block = block->older)
 
 /* --- PRIVATE FUNCTION PROTOTYPES ------------------------------------------ */
 
@@ -114,7 +119,10 @@ struct _cache_data_t {
  *
  * @return          The address of a block kicked out dirty, if any
  */
-static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access, result_t * result);
+static uint64_t CacheData_AccessBlock(cache_data_t data,
+                                      uint64_t address,
+                                      bool write_access,
+                                      result_t * result);
 
 /**@brief   Retrieve the index of the set @p address belongs in */
 static uint32_t CacheData_GetSetIndex(cache_data_t data, uint64_t address);
@@ -123,7 +131,8 @@ static uint32_t CacheData_GetSetIndex(cache_data_t data, uint64_t address);
 static set_t * CacheData_GetSet(cache_data_t data, uint64_t address);
 
 /**@brief   Determine the base address of the block @p address belongs in */
-static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address);
+static uint64_t CacheData_BlockAlignAddress(cache_data_t data,
+                                            uint64_t address);
 
 /**@brief   Get a new block from the pool allocated when @p data was created */
 static block_t * CacheData_AllocateBlock(cache_data_t data);
@@ -156,7 +165,9 @@ static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block);
  * @note    Needs access to the containing cache_data_t structure, so that it
  *          can handle the victim set specially
  */
-static void CacheData_Set_Print(cache_data_t data, set_t * set, uint32_t set_index);
+static void CacheData_Set_Print(cache_data_t data,
+                                set_t * set,
+                                uint32_t set_index);
 
 /* --- PUBLIC VARIABLES ----------------------------------------------------- */
 /* --- PRIVATE VARIABLES ---------------------------------------------------- */
@@ -175,7 +186,8 @@ cache_data_t CacheData_Create(uint32_t n_sets,
         return NULL;
     }
 
-    cache_data_t data = (cache_data_t) malloc(sizeof(*data) + sizeof(set_t) * n_sets);
+    cache_data_t data = (cache_data_t) malloc(sizeof(*data) +
+                                              (sizeof(set_t) * n_sets));
     if (data == NULL) {
         return NULL;
     }
@@ -184,40 +196,41 @@ cache_data_t CacheData_Create(uint32_t n_sets,
     // parameters exactly how many we will need. This means that NO memory
     // allocation is done in the body of the functional code -- we're just
     // grabbing blocks from the all_blocks array as needed
-    uint32_t total_cache_blocks = n_sets * set_len_blocks + victim_set_len_blocks;
+    uint32_t total_cache_blocks = (n_sets * set_len_blocks) +
+                                  victim_set_len_blocks;
     data->all_blocks = (block_t *) malloc(sizeof(block_t) * total_cache_blocks);
     if (data->all_blocks == NULL) {
         free(data);
         return NULL;
     }
-    data->next_free_block               = data->all_blocks;
-    data->last_block                    = data->all_blocks + total_cache_blocks;
+    data->next_free_block           = data->all_blocks;
+    data->last_block                = data->all_blocks + total_cache_blocks;
 
-    data->n_sets                        = n_sets;
-    data->set_len_blocks                = set_len_blocks;
-    data->victim_set_len_blocks         = victim_set_len_blocks;
-    data->block_size_bytes              = block_size_bytes;
+    data->n_sets                    = n_sets;
+    data->set_len_blocks            = set_len_blocks;
+    data->victim_set_len_blocks     = victim_set_len_blocks;
+    data->block_size_bytes          = block_size_bytes;
 
-    data->set_index_shift               = HighestBitSet(block_size_bytes);
-    data->set_mask                      = (n_sets - 1) << (data->set_index_shift);
-    data->block_mask                    = AlignmentMask(block_size_bytes);
+    data->set_index_shift           = HighestBitSet(block_size_bytes);
+    data->set_mask                  = (n_sets - 1) << (data->set_index_shift);
+    data->block_mask                = AlignmentMask(block_size_bytes);
 
-    data->victim_set.n_valid_blocks     = 0;
-    data->victim_set.newest             = NULL;
-    data->victim_set.oldest             = NULL;
+    data->victim_set.n_valid_blocks = 0;
+    data->victim_set.newest         = NULL;
+    data->victim_set.oldest         = NULL;
 
     uint32_t i;
     for (i = 0; i < n_sets; i++) {
-        data->sets[i].n_valid_blocks    = 0;
-        data->sets[i].newest            = NULL;
-        data->sets[i].oldest            = NULL;
+        data->sets[i].n_valid_blocks = 0;
+        data->sets[i].newest         = NULL;
+        data->sets[i].oldest         = NULL;
     }
 
     for (i = 0; i < total_cache_blocks; i++) {
-        data->all_blocks[i].dirty       = false;
-        data->all_blocks[i].address     = 0;
-        data->all_blocks[i].older       = NULL;
-        data->all_blocks[i].newer       = NULL;
+        data->all_blocks[i].dirty   = false;
+        data->all_blocks[i].address = 0;
+        data->all_blocks[i].older   = NULL;
+        data->all_blocks[i].newer   = NULL;
     }
 
     return data;
@@ -244,7 +257,8 @@ bool CacheData_Contains(cache_data_t data, uint64_t address)
         return true;
     }
 
-    block_t * victim_block = CacheData_Set_GetMatchingBlock(&(data->victim_set), aligned_address);
+    block_t * victim_block = CacheData_Set_GetMatchingBlock(&(data->victim_set),
+                                                            aligned_address);
     return victim_block != NULL;
 }
 
@@ -271,7 +285,10 @@ void CacheData_Print(cache_data_t data)
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool write_access, result_t * result)
+static uint64_t CacheData_AccessBlock(cache_data_t data,
+                                      uint64_t address,
+                                      bool write_access,
+                                      result_t * result)
 {
     uint64_t dirty_kickout_address = 0;
     set_t * set = CacheData_GetSet(data, address);
@@ -315,7 +332,8 @@ static uint64_t CacheData_AccessBlock(cache_data_t data, uint64_t address, bool 
                 CacheData_Set_RemoveBlock(victim_set, block);
                 *result = RESULT_HIT_VICTIM_CACHE;
             }
-            else if (victim_set->n_valid_blocks < data->victim_set_len_blocks) {
+            else if (victim_set->n_valid_blocks <
+                     data->victim_set_len_blocks) {
                 // Victim cache not full
                 block = CacheData_AllocateBlock(data);
                 *result = RESULT_MISS;
@@ -362,7 +380,8 @@ static set_t * CacheData_GetSet(cache_data_t data, uint64_t address)
     return &(data->sets[set_index]);
 }
 
-static uint64_t CacheData_BlockAlignAddress(cache_data_t data, uint64_t address)
+static uint64_t CacheData_BlockAlignAddress(cache_data_t data,
+                                            uint64_t address)
 {
     return address & data->block_mask;
 }
@@ -430,7 +449,9 @@ static void CacheData_Set_InsertBlockAsNewest(set_t * set, block_t * block)
     set->n_valid_blocks += 1;
 }
 
-static void CacheData_Set_Print(cache_data_t data, set_t * set, uint32_t set_index)
+static void CacheData_Set_Print(cache_data_t data,
+                                set_t * set,
+                                uint32_t set_index)
 {
     bool is_victim_set = set == &(data->victim_set);
     if (!is_victim_set && set->newest == NULL) {

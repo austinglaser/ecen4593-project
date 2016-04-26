@@ -34,8 +34,10 @@ typedef void (* value_writer_t)(uint32_t, void *);
 
 /**@brief   Structure encoding a single config value */
 typedef struct {
-    const char * mem_names[2];      /**< The memory levels the value is valid for */
-    const char * param_str;         /**< The parameter string to match in the config */
+    const char * mem_names[2];      /**< The memory levels the value is valid
+                                         for */
+    const char * param_str;         /**< The parameter string to match in the
+                                         config */
     value_writer_t value_writer;    /**< A function which knows how to write it
                                          to the appropriate structure */
 } config_value_t;
@@ -51,7 +53,10 @@ typedef struct {
  * @param[in] value:            The raw value
  * @param[out] config:          The config that will be modified
  */
-static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * config);
+static void write_value(const char * mem_name_str,
+                        const char * param_str,
+                        uint32_t value,
+                        config_t * config);
 
 /**@brief   Writes a cache's block size to the cache config */
 static void cache_block_size_writer(uint32_t value, void * _cache);
@@ -86,9 +91,11 @@ static void main_mem_send_chunk_writer(uint32_t value, void * _memp);
 /**@brief   Writes main memory's chunk size time to the memory config */
 static void main_mem_chunk_size_writer(uint32_t value, void * _memp);
 
-/**@brief   Gets an abstracted pointer to the appropriate sub-structure in @p config
+/**@brief   Gets an abstracted pointer to the appropriate sub-structure in @p
+ *          config
  *
- * @return  A pointer to the structure, or NULL if @p mem_name_str is an invalid value
+ * @return  A pointer to the structure, or NULL if @p mem_name_str is an
+ *          invalid value
  */
 static void * get_mem(const char * mem_name_str, config_t * config);
 
@@ -96,10 +103,16 @@ static void * get_mem(const char * mem_name_str, config_t * config);
  *
  * @see     config_values
  */
-static const config_value_t * find_matching_config_value(const char * mem_name_str, const char * param_str);
+static const config_value_t *
+find_matching_config_value(const char * mem_name_str,
+                           const char * param_str);
 
-/**@brief   Determines whether a given configuration value matches the provided memory/parameter pair */
-static bool is_matching_config_value(const config_value_t * config_valuep, const char * mem_name_str, const char * param_str);
+/**@brief   Determines whether a given configuration value matches the provided
+ *          memory/parameter pair
+ */
+static bool is_matching_config_value(const config_value_t * config_valuep,
+                                     const char * mem_name_str,
+                                     const char * param_str);
 
 /**@brief   Throws an exception of @p value is not a power of two */
 static void ensure_value_power_of_two(uint32_t value);
@@ -111,17 +124,60 @@ static void ensure_value_power_of_two(uint32_t value);
  *          valid for, and their writers
  */
 static const config_value_t config_values[] = {
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "block_size",    .value_writer = cache_block_size_writer },
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "cache_size",    .value_writer = cache_cache_size_writer },
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "assoc",         .value_writer = cache_associative_size_writer },
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "hit_time",      .value_writer = cache_hit_time_writer },
-    { .mem_names = { L1_CACHE_STR, L2_CACHE_STR }, .param_str = "miss_time",     .value_writer = cache_miss_time_writer },
-    { .mem_names = { L2_CACHE_STR },               .param_str = "transfer_time", .value_writer = l2_cache_transfer_time_writer },
-    { .mem_names = { L2_CACHE_STR },               .param_str = "bus_width",     .value_writer = l2_cache_bus_width_writer },
-    { .mem_names = { MAIN_MEM_STR },               .param_str = "sendaddr",      .value_writer = main_mem_send_address_writer },
-    { .mem_names = { MAIN_MEM_STR },               .param_str = "ready",         .value_writer = main_mem_ready_writer },
-    { .mem_names = { MAIN_MEM_STR },               .param_str = "chunktime",     .value_writer = main_mem_send_chunk_writer },
-    { .mem_names = { MAIN_MEM_STR },               .param_str = "chunksize",     .value_writer = main_mem_chunk_size_writer },
+    {
+        .mem_names = { L1_CACHE_STR, L2_CACHE_STR },
+        .param_str = "block_size",
+        .value_writer = cache_block_size_writer
+    },
+    {
+        .mem_names = { L1_CACHE_STR, L2_CACHE_STR },
+        .param_str = "cache_size",
+        .value_writer = cache_cache_size_writer
+    },
+    {
+        .mem_names = { L1_CACHE_STR, L2_CACHE_STR },
+        .param_str = "assoc", 
+        .value_writer = cache_associative_size_writer
+    },
+    {
+        .mem_names = { L1_CACHE_STR, L2_CACHE_STR },
+        .param_str = "hit_time",
+        .value_writer = cache_hit_time_writer
+    },
+    {
+        .mem_names = { L1_CACHE_STR, L2_CACHE_STR },
+        .param_str = "miss_time",
+        .value_writer = cache_miss_time_writer
+    },
+    {
+        .mem_names = { L2_CACHE_STR },
+        .param_str = "transfer_time",
+        .value_writer = l2_cache_transfer_time_writer },
+    {
+        .mem_names = { L2_CACHE_STR },
+        .param_str = "bus_width",
+        .value_writer = l2_cache_bus_width_writer
+    },
+    {
+        .mem_names = { MAIN_MEM_STR },
+        .param_str = "sendaddr",
+        .value_writer = main_mem_send_address_writer
+    },
+    {
+        .mem_names = { MAIN_MEM_STR },
+        .param_str = "ready",
+        .value_writer = main_mem_ready_writer
+    },
+    {
+        .mem_names = { MAIN_MEM_STR },
+        .param_str = "chunktime",
+        .value_writer = main_mem_send_chunk_writer
+    },
+    {
+        .mem_names = { MAIN_MEM_STR },
+        .param_str = "chunksize",
+        .value_writer = main_mem_chunk_size_writer
+    },
 };
 
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
@@ -163,7 +219,11 @@ void Config_ParseLine(const char * line, config_t * config)
     if (strcmp("", line) == 0 || strcmp("\n", line) == 0) {
         return;
     }
-    else if (sscanf(line, "%[^_]_%[^=]=%" SCNu32 "\n", mem_name_str, param_str, &value) == 3) {
+    else if (sscanf(line,
+                    "%[^_]_%[^=]=%" SCNu32 "\n",
+                    mem_name_str,
+                    param_str,
+                    &value) == 3) {
         write_value(mem_name_str, param_str, value, config);
     }
     else {
@@ -202,20 +262,28 @@ void Config_FromFile(const char * filename, config_t * config)
 
 void Config_Print(config_t const * config)
 {
-    printf("    Dcache size   = %6" PRIu32 " : ways = %3" PRIu32 " : block size = %3" PRIu32 "\n",
+    printf("    Dcache size   = %6" PRIu32
+           " : ways = %3" PRIu32
+           " : block size = %3" PRIu32 "\n",
            config->l1.cache_size_bytes,
            config->l1.associativity,
            config->l1.block_size_bytes);
-    printf("    Icache size   = %6" PRIu32 " : ways = %3" PRIu32 " : block size = %3" PRIu32 "\n",
+    printf("    Icache size   = %6" PRIu32
+           " : ways = %3" PRIu32
+           " : block size = %3" PRIu32 "\n",
            config->l1.cache_size_bytes,
            config->l1.associativity,
            config->l1.block_size_bytes);
-    printf("    L2-cache size = %6" PRIu32 " : ways = %3" PRIu32 " : block size = %3" PRIu32 "\n",
+    printf("    L2-cache size = %6" PRIu32
+           " : ways = %3" PRIu32
+           " : block size = %3" PRIu32 "\n",
            config->l2.cache_size_bytes,
            config->l2.associativity,
            config->l2.block_size_bytes);
 
-    printf("    Memory ready time = %" PRIu32 " : chunksize = %" PRIu32 " : chunktime = %" PRIu32 "\n",
+    printf("    Memory ready time = %" PRIu32
+           " : chunksize = %" PRIu32
+           " : chunktime = %" PRIu32 "\n",
            config->main_mem.ready_cycles,
            config->main_mem.chunk_size_bytes,
            config->main_mem.send_chunk_cycles);
@@ -224,33 +292,47 @@ void Config_Print(config_t const * config)
 void Config_PrintCost(config_t const * config)
 {
     uint32_t l1_size_factor  = (config->l1.cache_size_bytes / 4096);
-    uint32_t l1_assoc_factor = HighestBitSet(config->l1.associativity) * l1_size_factor;
+    uint32_t l1_assoc_factor = HighestBitSet(config->l1.associativity) *
+                               l1_size_factor;
     uint32_t l1_cost         = 100 * l1_size_factor +
                                100 * l1_assoc_factor;
 
     uint32_t l2_size_factor  = (config->l2.cache_size_bytes / 16384);
-    uint32_t l2_assoc_factor = HighestBitSet(config->l2.associativity) * l2_size_factor;
+    uint32_t l2_assoc_factor = HighestBitSet(config->l2.associativity) *
+                               l2_size_factor;
     uint32_t l2_cost         = 50 * l2_size_factor +
                                50 * l2_assoc_factor;
 
-    uint32_t mem_latency_factor   = HighestBitSet(CEIL_DIVIDE(50, config->main_mem.ready_cycles));
-    uint32_t mem_bandwidth_factor = HighestBitSet(config->main_mem.chunk_size_bytes / 8);
-    uint32_t memory_cost          = 50 + 200 * mem_latency_factor +
-                                    25 + 100 * mem_bandwidth_factor;
+    uint32_t mem_latency_factor =
+            HighestBitSet(CEIL_DIVIDE(50, config->main_mem.ready_cycles));
+    uint32_t mem_bandwidth_factor =
+            HighestBitSet(config->main_mem.chunk_size_bytes / 8);
+    uint32_t memory_cost = 50 + 200 * mem_latency_factor +
+                           25 + 100 * mem_bandwidth_factor;
 
     uint32_t total_cost = l1_cost*2 + l2_cost + memory_cost;
 
-    printf("  L1 cache cost (Icache $%"PRIu32") + (Dcache $%"PRIu32") = $%"PRIu32"\n", l1_cost, l1_cost, l1_cost*2);
-    printf("  L2 cache cost = $%"PRIu32";  Memory cost = $%"PRIu32"  Total cost = $%"PRIu32"\n",
+    printf("  L1 cache cost (Icache $%"PRIu32")"
+           " + (Dcache $%"PRIu32") = $%"PRIu32"\n",
+           l1_cost,
+           l1_cost,
+           l1_cost*2);
+    printf("  L2 cache cost = $%"PRIu32";"
+           "  Memory cost = $%"PRIu32
+           "  Total cost = $%"PRIu32"\n",
            l2_cost, memory_cost, total_cost);
 }
 
 /* --- PRIVATE FUNCTION DEFINITIONS ----------------------------------------- */
 
-static void write_value(const char * mem_name_str, const char * param_str, uint32_t value, config_t * config)
+static void write_value(const char * mem_name_str,
+                        const char * param_str,
+                        uint32_t value,
+                        config_t * config)
 {
     void * memp = get_mem(mem_name_str, config);
-    const config_value_t * config_valuep = find_matching_config_value(mem_name_str, param_str);
+    const config_value_t * config_valuep =
+        find_matching_config_value(mem_name_str, param_str);
     if (!config_valuep) {
         ThrowHere(BAD_CONFIG_PARAM);
     }
@@ -352,7 +434,9 @@ static void * get_mem(const char * mem_name_str, config_t * config)
     }
 }
 
-static const config_value_t * find_matching_config_value(const char * mem_name_str, const char * param_str)
+static const config_value_t *
+find_matching_config_value(const char * mem_name_str,
+                           const char * param_str)
 {
     unsigned int i;
     const unsigned int n_config_values = ARRAY_ELEMENTS(config_values);
@@ -366,7 +450,9 @@ static const config_value_t * find_matching_config_value(const char * mem_name_s
     return NULL;
 }
 
-static bool is_matching_config_value(const config_value_t * config_valuep, const char * mem_name_str, const char * param_str)
+static bool is_matching_config_value(const config_value_t * config_valuep,
+                                     const char * mem_name_str,
+                                     const char * param_str)
 {
     if (strcmp(config_valuep->param_str, param_str) == 0) {
         unsigned int i;

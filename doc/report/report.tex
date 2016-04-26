@@ -183,6 +183,33 @@ The goal of the Memory Simulation project was to implement a simulator that can 
 
 \section{Trend Analysis}
 
+\subsection{Miss Rate and Cache Size Analysis}
+
+Comparing the miss rates and the cache sizes, we can see in figure \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and \ref{fig:l2vsmiss} that as the cache size increases, the miss rates for the most part decrease. We expected this in most cases because as the cache size increases there is less chance of a conflict. It can be see in figure \ref{fig:l2vsmiss} that there is an exception to our expected results. The miss rate for the bzip2 trace increases slightly as the cache size increases. This could be because...
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/L1icache_miss_vs_L1icache_size.png}
+    \caption{L1 Icache Miss Rate vs L1 Icache Size}
+    \label{fig:L1imissvsl1isize}
+\end{figure}
+
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_size.png}
+    \caption{Size of L2 cache impact on L2 cache miss rate}
+    \label{fig:l2vsmiss}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/L1_Dcache_miss_vs_L1_Dcache_size.png}
+    \caption{Size of L1 Dcache impact on L1 Dcache miss rate}
+    \label{fig:l1vsmiss}
+\end{figure}
+
 \section{Main Memory System Analysis}
 
 One major task in this project was to determine the effect the bandwidth of the
@@ -238,19 +265,6 @@ memory interfaces look even more attractive.
     \label{fig:cpivsmainmemcost}
 \end{figure}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/L1_Dcache_miss_vs_L1_Dcache_size.png}
-    \caption{Size of L1 Dcache impact on L1 Dcache miss rate}
-    \label{fig:l1vsmiss}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_size.png}
-    \caption{Size of L2 cache impact on L2 cache miss rate}
-    \label{fig:l2vsmiss}
-\end{figure}
 
 \begin{figure}[ht]
     \centering
@@ -336,12 +350,7 @@ memory interfaces look even more attractive.
     \label{fig:L1imissvsl1iassoc}
 \end{figure}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/L1icache_miss_vs_L1icache_size.png}
-    \caption{L1 Icache Miss Rate vs L1 Icache Size}
-    \label{fig:L1imissvsl1isize}
-\end{figure}
+
 
 
 \clearpage

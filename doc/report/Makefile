@@ -1,6 +1,8 @@
 all: report.pdf
 
-%.pdf: %.tex $(wildcard plots/*) $(wildcard ../../inc/*)
+%.pdf: %.tex $(wildcard plots/*) \
+             $(wildcard ../../inc/*) \
+             $(wildcard ../../src/*)
 	pdflatex $<
 	pdflatex $<
 

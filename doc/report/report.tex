@@ -179,13 +179,11 @@
 
 The goal of the Memory Simulation project was to implement a simulator that can simulate and evaluate a memory system with two levels of cache memory and a main memory. Within the system there is a level-1 (L1) instruction cache and a L1 data cache. There is also a unified level-2 (L2) cache which handles requests from both L1 caches. Misses that occur in the L2 cache are handled by main memory. These caches are write-allocate, write-back caches with an 8-entry victim cache. 
 
-\section{Simulation Results}
-
 \section{Trend Analysis}
 
 \subsection{Miss Rate and Cache Size Analysis}
 
-Comparing the miss rates and the cache sizes, we can see in figure \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and \ref{fig:l2vsmiss} that as the cache size increases, the miss rates for the most part decrease. We expected this in most cases because as the cache size increases there is less chance of a conflict. It can be see in figure \ref{fig:l2vsmiss} that there is an exception to our expected results. The miss rate for the bzip2 trace increases slightly as the cache size increases. This could be because...
+Comparing the miss rate and the cache sizes, we can see in figure \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and \ref{fig:l2vsmiss} that as the cache size increases, the miss rates for the most part decrease. We expected this in most cases because as the cache size increases there is less chance of a conflict. It can be see in figure \ref{fig:l2vsmiss} that there is an exception to our expected results. The miss rate for the bzip2 trace increases slightly as the cache size increases. This could be because...
 
 \begin{figure}[ht]
     \centering
@@ -193,8 +191,6 @@ Comparing the miss rates and the cache sizes, we can see in figure \ref{fig:L1im
     \caption{L1 Icache Miss Rate vs L1 Icache Size}
     \label{fig:L1imissvsl1isize}
 \end{figure}
-
-
 
 \begin{figure}[ht]
     \centering
@@ -209,6 +205,20 @@ Comparing the miss rates and the cache sizes, we can see in figure \ref{fig:L1im
     \caption{Size of L1 Dcache impact on L1 Dcache miss rate}
     \label{fig:l1vsmiss}
 \end{figure}
+
+\subsection{Miss Rate and Cache Associativity Analysis}
+
+Comparing miss rate and cache associativity we can see in figure \ref{fig:L1imissvsl1iassoc}, \ref{fig:l1missvsl1assoc}, and \ref{fig:l2missvsl2assoc} that as the cache associativity increases, the cache miss rate decreases.
+
+\subsection{CPI and Cache Size Analysis}
+
+CPI and Cache Size
+
+\subsection{CPI and Cache Associativity Analysis}
+
+CPI and Cache Associativity
+
+\subsection{CPI and Costs Analysis}
 
 \section{Main Memory System Analysis}
 

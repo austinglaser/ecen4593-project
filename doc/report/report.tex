@@ -177,7 +177,13 @@
 
 \section{Introduction}
 
-The goal of the Memory Simulation project was to implement a simulator that can simulate and evaluate a memory system with two levels of cache memory and a main memory. Within the system there is a level-1 (L1) instruction cache and a L1 data cache. There is also a unified level-2 (L2) cache which handles requests from both L1 caches. Misses that occur in the L2 cache are handled by main memory. These caches are write-allocate, write-back caches with an 8-entry victim cache. 
+The goal of the Memory Simulation project was to implement a simulator that can
+simulate and evaluate a memory system with two levels of cache memory and a main
+memory. Within the system there is a level-1 (L1) instruction cache and a L1
+data cache. There is also a unified level-2 (L2) cache which handles requests
+from both L1 caches. Misses that occur in the L2 cache are handled by main
+memory. These caches are write-allocate, write-back caches with an 8-entry
+victim cache. 
 
 \section{Trend Analysis}
 
@@ -205,11 +211,32 @@ The goal of the Memory Simulation project was to implement a simulator that can 
 \end{figure}
 
 
-Compulsory, capacity, and conflict misses effect the cache miss rate. A compulsory miss occurs when the first access to a block cannot be in the cache. Compulsory misses do not depend on size, but capacity misses do. If the cache is too small and cannot hold all of the blocks needed during the execution of the program, then misses occur on blocks that were discarded earlier. If the multiple memory locations are being mapped to the same cache location then a conflict miss occurs. Conflict misses can also be resolved by an increase in cache size.
+Compulsory, capacity, and conflict misses effect the cache miss rate. A
+compulsory miss occurs when the first access to a block cannot be in the cache.
+Compulsory misses do not depend on size, but capacity misses do. If the cache is
+too small and cannot hold all of the blocks needed during the execution of the
+program, then misses occur on blocks that were discarded earlier. If the
+multiple memory locations are being mapped to the same cache location then a
+conflict miss occurs. Conflict misses can also be resolved by an increase in
+cache size.
 
-In most cases, as the cache size increases there is less chance of a capacity or conflict miss. Comparing our data of the miss rate and the cache sizes, we can see in figures \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and \ref{fig:l2vsmiss}, that as the cache size increases, the miss rates for the most part decrease. It can be seen in figure \ref{fig:l2vsmiss} that there is an exception to our expected results. The miss rate for the bzip2 trace increases by about 1\% as the cache size increases. This could be because in the memory level L1D for the smaller cache size we have an 8\% miss rate, which is higher than in the larger cache L1D level. Therefore we believe we are hitting the L2 level of memory more in the larger cache than in the smaller cache.
+In most cases, as the cache size increases there is less chance of a capacity or
+conflict miss. Comparing our data of the miss rate and the cache sizes, we can
+see in figures \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and
+\ref{fig:l2vsmiss}, that as the cache size increases, the miss rates for the
+most part decrease. It can be seen in figure \ref{fig:l2vsmiss} that there is an
+exception to our expected results. The miss rate for the bzip2 trace increases
+by about 1\% as the cache size increases. This could be because in the memory
+level L1D for the smaller cache size we have an 8\% miss rate, which is higher
+than in the larger cache L1D level. Therefore we believe we are hitting the L2
+level of memory more in the larger cache than in the smaller cache.
 
-Our results for levels L1I and L1D in figures \ref{fig:L1imissvsl1isize} and \ref{fig:l1vsmiss} are more of what we expected. The trend of larger cache size, lower miss rate. L1I cache miss rate decreases significantly on all traces as the the cache size increases and same with L1D cache. The results are expected because with larger cache but with same block sizes will typically return these results. 
+Our results for levels L1I and L1D in figures \ref{fig:L1imissvsl1isize} and
+\ref{fig:l1vsmiss} are more of what we expected. The trend of larger cache size,
+lower miss rate. L1I cache miss rate decreases significantly on all traces as
+the the cache size increases and same with L1D cache. The results are expected
+because with larger cache but with same block sizes will typically return these
+results. 
 
 \subsection{Miss Rate and Cache Associativity Analysis}
 
@@ -234,11 +261,36 @@ Our results for levels L1I and L1D in figures \ref{fig:L1imissvsl1isize} and \re
     \label{fig:l2missvsl2assoc}
 \end{figure}
 
-When comparing miss rate and cache associativity we can see in figures \ref{fig:L1imissvsl1iassoc}, \ref{fig:l1missvsl1assoc}, and \ref{fig:l2missvsl2assoc} that for most cases as the cache associativity increases, the cache miss rate decreases. However, the largest effect does occur when going from a direct mapped cache to a 2 way cache. This can be seen in our data by viewing that our performance begins to level off as the associativity continues to increase. There are also some cases that are unexpected, such as the sjeng trace in figure \ref{fig:L1imissvsl1iassoc}. We can see that in this trace that as the associativity increases to fully associative the miss rate increases by 0.1\%. This could be one of the strange cases where that particular trace does not perform well with this one particular cache associativity. However, we can see that overall our data behaves as expected and the miss rates decrease as the associativity increases. 
+When comparing miss rate and cache associativity we can see in figures
+\ref{fig:L1imissvsl1iassoc}, \ref{fig:l1missvsl1assoc}, and
+\ref{fig:l2missvsl2assoc} that for most cases as the cache associativity
+increases, the cache miss rate decreases. However, the largest effect does occur
+when going from a direct mapped cache to a 2 way cache. This can be seen in our
+data by viewing that our performance begins to level off as the associativity
+continues to increase. There are also some cases that are unexpected, such as
+the sjeng trace in figure \ref{fig:L1imissvsl1iassoc}. We can see that in this
+trace that as the associativity increases to fully associative the miss rate
+increases by 0.1\%. This could be one of the strange cases where that particular
+trace does not perform well with this one particular cache associativity.
+However, we can see that overall our data behaves as expected and the miss rates
+decrease as the associativity increases. 
 
-Another way to decrease the miss rate using associativity is by utilizing the victim cache. The victim cache is a small fully associative cache placed between two levels of the cache hierarchy. The victim cache extends the associativity of the cache. An item removed from a cache level is placed in the victim cache, on a miss the victim cache is first checked before making a request to the next level of hierarchy. This essentially reduces the miss time since on a hit in the victim cache, there is no need to go to the next level of the memory hierarchy. It is implemented using a least recently used replacement policy. When the victim cache is full, the least recently used item is only written to the next memory level if it is dirty. 
+Another way to decrease the miss rate using associativity is by utilizing the
+victim cache. The victim cache is a small fully associative cache placed between
+two levels of the cache hierarchy. The victim cache extends the associativity of
+the cache. An item removed from a cache level is placed in the victim cache, on
+a miss the victim cache is first checked before making a request to the next
+level of hierarchy. This essentially reduces the miss time since on a hit in the
+victim cache, there is no need to go to the next level of the memory hierarchy.
+It is implemented using a least recently used replacement policy. When the
+victim cache is full, the least recently used item is only written to the next
+memory level if it is dirty. 
 
-In our simulations we are using the victim cache all the time, this extends the associativity of our cache. If we were able to increase the victim cache size, then we may see an increase in performance due to a possible decrease in miss penalties. However because we did not implement increasing the victim cache size in our design, this is only a prediction. 
+In our simulations we are using the victim cache all the time, this extends the
+associativity of our cache. If we were able to increase the victim cache size,
+then we may see an increase in performance due to a possible decrease in miss
+penalties. However because we did not implement increasing the victim cache size
+in our design, this is only a prediction. 
 
 \subsection{CPI and Cache Size Analysis}
 

@@ -274,13 +274,83 @@ case.
 
 \subsection{CPI and Cache Associativity Analysis}
 
-CPI and Cache Associativity
+We observe, again, that higher associativity has a positive performance impact,
+but that that impact is most pronounced with the first few degrees of
+associativity. It's also likely that even this effect is slightly blunted, given
+that we get some similar effects from implementing a victim cache.
 
-Austin
+Figures \ref{fig:cpivsl1assoc} and \ref{fig:cpivsl2assoc} show this trend. It's
+worth noting that the x-scale for associativity is logarithmic, to better
+include the fully-associative case. It's also worth noting that  (for the L1
+cache) the fully associative case doesn't fit cleanly into the progression,
+since it's the All-FA config, whereas the others only increase L1 associativity.
 
-\subsection{CPI and Costs Analysis}
+Since the scale is logarithmic, it's apparent that the increased cost of
+implementing very high degrees of associativity is probably not cost effective.
+The optimal performance point is likely a 2- or 4-way associative cache.
+(although more in-depth analysis of cost-vs-performance will be performed in
+section \ref{sec:cost}).
 
-Austin, you do this section too :)
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_associativity.png}
+    \caption{Performance impact from L1 cache associativity}
+    \label{fig:cpivsl1assoc}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_associativity.png}
+    \caption{Performance impact of L2 cache associativity}
+    \label{fig:cpivsl2assoc}
+\end{figure}
+
+\subsection{CPI and Costs Analysis} \label{sec:cost}
+
+Figure \ref{fig:cpivstotalcost} includes all memory system configurations,
+plotted against their total cost. As might be expected, there's a general trend
+to better performance by more expensive systems---but its far from a monotonic
+function. This is a good reminder that, if optimizing a memory system, we should
+take care to spend money in the right places. Note that this figure only
+includes configurations for which we have a full set of results (meaning it
+doesn't include results from the sjeng memory bandwidth simulations).
+
+For our hypothetical processor, we'll choose 3 different memory configurations:
+a 'bargain basement' variant, where the goal is minimum cost; a
+'middle-of-the-road' variant, where the goal is improved performance; and a
+'cutting-edge' variant, where the goal is to have maximum performance.
+
+For the bargain-basement processor, we'll evaluate the cheapest three
+configurations: All-small, L1-small, and default. Default costs significantly
+more than the other two, but provides about the same performance improvement
+over L1-small as L1-small does over All-small. For that reason, we would
+probably select L1-small as our memory system, since it gives us a significant
+improvement over the absolute cheapest option without incurring a huge cost
+penalty.
+
+For the middle-of-the-road variant, we'll selecting between the default
+configuration, L1-2way, and All-2way. We ignore the L1-small-4way configuration
+because it actually performs \emph{worse} than default while costing
+\emph{more}. The optimal memory system is probably All-2way, since its again
+offers a reasonable performance improvement over its immediate predecessor for a
+small cost increase.
+
+Finally, there's only really two possibilities for the cutting-edge variant:
+All-4way and All-FA (L1-8way thrown out because, again, it's a loser compared to
+All-4way). Realistically, these two configs have fairly similar performance, and
+with the exorbitant price tag that three fully-associative caches come with,
+it makes sense even for the flagship part to eschew that configuration.
+Furthermore, we could explore more 4-way configurations where we increase the
+cache sizes or vary the block size and memory bandwidth to achieve optimal
+performance.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Total_memory_system_cost.png}
+    \caption{Performance vs Total main memory cost}
+    \label{fig:cpivstotalcost}
+\end{figure}
+
 
 \section{Main Memory System Analysis}
 
@@ -353,27 +423,6 @@ memory interfaces look slightly more attractive.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_associativity.png}
-    \caption{Performance impact on L2 cache associativity}
-    \label{fig:cpivsl2assoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1Dcache_associativity.png}
-    \caption{Performance impact on L1 Dcache associativity}
-    \label{fig:cpivsl1assoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Total_memory_system_cost.png}
-    \caption{Performance vs Total main memory cost}
-    \label{fig:cpivstotalcost}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
     \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1icache_assoc.png}
     \caption{Performance vs L1 Icache Associativity}
     \label{fig:cpivsl1iassoc}
@@ -389,7 +438,17 @@ memory interfaces look slightly more attractive.
 
 \section{Conclusions}
 
+It's obvious from this report that, as was stated in class, there are simply too
+many variables in the design of a cache to perform an exhaustive search of the
+configuration space. Instead, a cache designer must use her intuition to guide
+the particular paths she explores.
 
+In spite of this, if we had more time to invest in this project, we would
+investigate some of the design parameters which were not varied for this
+project. Most interestingly would be to verify some of our assumptions about the
+performance impact of the victim cache, or different sizes of the same.
+It would be especially interesting to compare the performance impact of a victim
+cache in the direct-mapped case versus when when a higher-associativity is used.
 
 \clearpage
 \appendix

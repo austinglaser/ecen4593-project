@@ -185,7 +185,13 @@ The goal of the Memory Simulation project was to implement a simulator that can 
 
 \subsection{Miss Rate and Cache Size Analysis}
 
-Comparing the miss rate and the cache sizes, we can see in figure \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and \ref{fig:l2vsmiss} that as the cache size increases, the miss rates for the most part decrease. We expected this in most cases because as the cache size increases there is less chance of a conflict. It can be see in figure \ref{fig:l2vsmiss} that there is an exception to our expected results. The miss rate for the bzip2 trace increases slightly as the cache size increases. This could be because...
+Compulsory, capacity, and conflict misses have a big effect on the cache miss rate. A compulsory miss occurs when the first access to a block can not be in the cache. Cumpolsory misses do not depend on size, but capacity misses do. If the cache is too small and cannot hold all of the blocks needed during the execution of the program, then misses occur on blocks that were discarded earlier. If the cache has sufficient space for the data, but the block can not be kept because the set is full, then a conflict miss will occur. 
+
+Reducing cache miss rates depends on the miss type. Conflict and compulsory misses can be reduced in several ways. Larger cache blocks can decrease the compulsory miss rate by taking advantage of spatial locality however, it may also increase the miss penalty by requiring more data to be fetched per miss. In addition, they will almost certainly increase conflict misses since fewer blocks can be stored in the cache. Capacity misses can be reduced by making the cache larger as well. 
+
+Comparing our data for the miss rate and the cache sizes, we can see in figures \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and \ref{fig:l2vsmiss}, that as the cache size increases, the miss rates for the most part decrease. We expected this in most cases because as the cache size increases there is less chance of a conflict miss. It can be seen in figure \ref{fig:l2vsmiss} that there is an exception to our expected results. The miss rate for the bzip2 trace increases slightly as the cache size increases. This could be because...
+
+Brook
 
 \begin{figure}[ht]
     \centering
@@ -212,6 +218,8 @@ Comparing the miss rate and the cache sizes, we can see in figure \ref{fig:L1imi
 
 Comparing miss rate and cache associativity we can see in figure \ref{fig:L1imissvsl1iassoc}, \ref{fig:l1missvsl1assoc}, and \ref{fig:l2missvsl2assoc} that as the cache associativity increases, the cache miss rate decreases.
 
+Brook
+
 \subsection{CPI and Cache Size Analysis}
 
 Thus far, we've only examined cache miss rates. While this is a reasonable
@@ -229,11 +237,17 @@ The simplest factor to look at here is the effect of cache size on CPI. Figure
     \label{fig:cpivsl1size}
 \end{figure}
 
+Austin
+
 \subsection{CPI and Cache Associativity Analysis}
 
 CPI and Cache Associativity
 
+Austin
+
 \subsection{CPI and Costs Analysis}
+
+Austin, you do this section too :)
 
 \section{Main Memory System Analysis}
 

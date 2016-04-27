@@ -230,6 +230,25 @@ a particular trace.
 The simplest factor to look at here is the effect of cache size on CPI. Figure
 \ref{fig:cpivsl1size} shows the effect of L1 cache size on performance.
 
+It's interesting to see that, while average performance is significantly better
+with the larger cache, some traces benefit more than others. This could be due
+to several factors. If a trace accesses a large region of memory (a big array,
+for instance), or regions mapped to the same block, there will be poor
+performance when using a smaller cache, as data is continuously kicked out and
+read back in. Conversely, for a trace which spends most of its time in tight
+loops, there won't be much advantage to having less memory available.
+
+We also have (again) an anomaly with the bzip2 and astar traces (see listings
+\ref{lst:astardefault}, \ref{lst:astarl1small},
+\ref{lst:bzip2default}, and \ref{lst:bzip2l1small} for the raw results). CPI is
+actually slightly higher with a smaller L1 cache. Intuitively, this doesn't make
+much sense. There are cases (identified in the text) where a larger block size
+can cause a decrease in performance, but a larger cache should always incur
+fewer (or, in the most extreme case, the same number of) misses. It may be
+important to note that the traces exhibiting this performance tend to be those
+with the best performance even in the default case, showing that they have less
+headroom for improvement no matter what memory system they're running on.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_size.png}
@@ -237,7 +256,21 @@ The simplest factor to look at here is the effect of cache size on CPI. Figure
     \label{fig:cpivsl1size}
 \end{figure}
 
-Austin
+Figure \ref{fig:cpivsl2size} shows the effect of L2 cache size on performance.
+The same effect observed above is even more pronounced here, though is primarily
+due to the fact that the memory systems with a smaller L2 also have smaller L1
+caches (the two being compared are "default" and "All-small").
+
+Interestingly, we see that though bzip2's performance is \emph{nearly} identical
+in both cases, both it and astar do exhibit slight improvements in the default
+case.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_size.png}
+    \caption{CPI vs L2 Cache size}
+    \label{fig:cpivsl2size}
+\end{figure}
 
 \subsection{CPI and Cache Associativity Analysis}
 
@@ -288,7 +321,7 @@ logarithmic (ignoring latency, it's $\$75 + \$100 \log_2(B / 8)$, where $B$ is
 the memory bandwidth in bytes). To us, this seems slightly unrealistic---our
 first instinct is that this function should be linear or worse. However, it does
 explain the results, and when taken as a given makes higher-bandwidth main
-memory interfaces look even more attractive.
+memory interfaces look slightly more attractive.
 
 \begin{figure}[ht]
     \centering
@@ -302,21 +335,6 @@ memory interfaces look even more attractive.
     \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Main_Mem_Cost.png}
     \caption{Performance impact of main memory cost}
     \label{fig:cpivsmainmemcost}
-\end{figure}
-
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1Dcache_size.png}
-    \caption{Performance impact with L1 Dcache size}
-    \label{fig:cpivsl1size}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_size.png}
-    \caption{Performance impact with L2 Cache size}
-    \label{fig:cpivsl2size}
 \end{figure}
 
 \begin{figure}[ht]
@@ -349,20 +367,6 @@ memory interfaces look even more attractive.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Bandwidth.png}
-    \caption{Performance impact vs Main Memory Bandwidth}
-    \label{fig:cpivsbandwidth}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/Cost_vs_Bandwidth.png}
-    \caption{Main memory cost vs Main Memory Bandwidth}
-    \label{fig:costvsbandwidth}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
     \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Total_memory_system_cost.png}
     \caption{Performance vs Total main memory cost}
     \label{fig:cpivstotalcost}
@@ -382,6 +386,8 @@ memory interfaces look even more attractive.
     \label{fig:L1imissvsl1iassoc}
 \end{figure}
 
+
+\section{Conclusions}
 
 
 

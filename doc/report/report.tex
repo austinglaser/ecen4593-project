@@ -185,40 +185,62 @@ The goal of the Memory Simulation project was to implement a simulator that can 
 
 \subsection{Miss Rate and Cache Size Analysis}
 
-Compulsory, capacity, and conflict misses have a big effect on the cache miss rate. A compulsory miss occurs when the first access to a block can not be in the cache. Cumpolsory misses do not depend on size, but capacity misses do. If the cache is too small and cannot hold all of the blocks needed during the execution of the program, then misses occur on blocks that were discarded earlier. If the cache has sufficient space for the data, but the block can not be kept because the set is full, then a conflict miss will occur. 
-
-Reducing cache miss rates depends on the miss type. Conflict and compulsory misses can be reduced in several ways. Larger cache blocks can decrease the compulsory miss rate by taking advantage of spatial locality however, it may also increase the miss penalty by requiring more data to be fetched per miss. In addition, they will almost certainly increase conflict misses since fewer blocks can be stored in the cache. Capacity misses can be reduced by making the cache larger as well. 
-
-Comparing our data for the miss rate and the cache sizes, we can see in figures \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and \ref{fig:l2vsmiss}, that as the cache size increases, the miss rates for the most part decrease. We expected this in most cases because as the cache size increases there is less chance of a conflict miss. It can be seen in figure \ref{fig:l2vsmiss} that there is an exception to our expected results. The miss rate for the bzip2 trace increases slightly as the cache size increases. This could be because...
-
-Brook
-
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\textwidth]{plots/L1icache_miss_vs_L1icache_size.png}
-    \caption{L1 Icache Miss Rate vs L1 Icache Size}
+    \caption{Impact of L1I cache size on L1I cache miss rate}
     \label{fig:L1imissvsl1isize}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_size.png}
-    \caption{Size of L2 cache impact on L2 cache miss rate}
-    \label{fig:l2vsmiss}
+    \includegraphics[width=0.75\textwidth]{plots/L1_Dcache_miss_vs_L1_Dcache_size.png}
+    \caption{Impact of L1D cache size on L1D cache miss rate}
+    \label{fig:l1vsmiss}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{plots/L1_Dcache_miss_vs_L1_Dcache_size.png}
-    \caption{Size of L1 Dcache impact on L1 Dcache miss rate}
-    \label{fig:l1vsmiss}
+    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_size.png}
+    \caption{Impact of L2 cache size on L2 cache miss rate}
+    \label{fig:l2vsmiss}
 \end{figure}
+
+
+Compulsory, capacity, and conflict misses effect the cache miss rate. A compulsory miss occurs when the first access to a block cannot be in the cache. Compulsory misses do not depend on size, but capacity misses do. If the cache is too small and cannot hold all of the blocks needed during the execution of the program, then misses occur on blocks that were discarded earlier. If the multiple memory locations are being mapped to the same cache location then a conflict miss occurs. Conflict misses can also be resolved by an increase in cache size.
+
+In most cases, as the cache size increases there is less chance of a capacity or conflict miss. Comparing our data of the miss rate and the cache sizes, we can see in figures \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and \ref{fig:l2vsmiss}, that as the cache size increases, the miss rates for the most part decrease. It can be seen in figure \ref{fig:l2vsmiss} that there is an exception to our expected results. The miss rate for the bzip2 trace increases by about 1\% as the cache size increases. This could be because in the memory level L1D for the smaller cache size we have an 8\% miss rate, which is higher than in the larger cache L1D level. Therefore we believe we are hitting the L2 level of memory more in the larger cache than in the smaller cache.
+
+Our results for levels L1I and L1D in figures \ref{fig:L1imissvsl1isize} and \ref{fig:l1vsmiss} are more of what we expected. The trend of larger cache size, lower miss rate. L1I cache miss rate decreases significantly on all traces as the the cache size increases and same with L1D cache. The results are expected because with larger cache but with same block sizes will typically return these results. 
 
 \subsection{Miss Rate and Cache Associativity Analysis}
 
-Comparing miss rate and cache associativity we can see in figure \ref{fig:L1imissvsl1iassoc}, \ref{fig:l1missvsl1assoc}, and \ref{fig:l2missvsl2assoc} that as the cache associativity increases, the cache miss rate decreases.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/L1icache_miss_vs_L1icache_Assoc.png}
+    \caption{L1 Icache Miss Rate vs L1 Icache Associativity}
+    \label{fig:L1imissvsl1iassoc}
+\end{figure}
 
-Brook
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/L1Dcache_miss_vs_associativity.png}
+    \caption{L1 Dcache miss rate vs L1 Dcache Associativity}
+    \label{fig:l1missvsl1assoc}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_L2cache_associativity.png}
+    \caption{L2 cache miss rate vs L2 cache Associativity}
+    \label{fig:l2missvsl2assoc}
+\end{figure}
+
+When comparing miss rate and cache associativity we can see in figures \ref{fig:L1imissvsl1iassoc}, \ref{fig:l1missvsl1assoc}, and \ref{fig:l2missvsl2assoc} that for most cases as the cache associativity increases, the cache miss rate decreases. However, the largest effect does occur when going from a direct mapped cache to a 2 way cache. This can be seen in our data by viewing that our performance begins to level off as the associativity continues to increase. There are also some cases that are unexpected, such as the sjeng trace in figure \ref{fig:L1imissvsl1iassoc}. We can see that in this trace that as the associativity increases to fully associative the miss rate increases by 0.1\%. This could be one of the strange cases where that particular trace does not perform well with this one particular cache associativity. However, we can see that overall our data behaves as expected and the miss rates decrease as the associativity increases. 
+
+Another way to decrease the miss rate using associativity is by utilizing the victim cache. The victim cache is a small fully associative cache placed between two levels of the cache hierarchy. The victim cache extends the associativity of the cache. An item removed from a cache level is placed in the victim cache, on a miss the victim cache is first checked before making a request to the next level of hierarchy. This essentially reduces the miss time since on a hit in the victim cache, there is no need to go to the next level of the memory hierarchy. It is implemented using a least recently used replacement policy. When the victim cache is full, the least recently used item is only written to the next memory level if it is dirty. 
+
+In our simulations we are using the victim cache all the time, this extends the associativity of our cache. If we were able to increase the victim cache size, then we may see an increase in performance due to a possible decrease in miss penalties. However because we did not implement increasing the victim cache size in our design, this is only a prediction. 
 
 \subsection{CPI and Cache Size Analysis}
 

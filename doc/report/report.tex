@@ -214,7 +214,20 @@ Comparing miss rate and cache associativity we can see in figure \ref{fig:L1imis
 
 \subsection{CPI and Cache Size Analysis}
 
-CPI and Cache Size
+Thus far, we've only examined cache miss rates. While this is a reasonable
+measure of performance, we've seen in our text that it is not the final story.
+For our system, the true measure of performance is the time it takes to execute
+a particular trace.
+
+The simplest factor to look at here is the effect of cache size on CPI. Figure
+\ref{fig:cpivsl1size} shows the effect of L1 cache size on performance.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_size.png}
+    \caption{CPI vs L1 cache Size}
+    \label{fig:cpivsl1size}
+\end{figure}
 
 \subsection{CPI and Cache Associativity Analysis}
 
@@ -346,13 +359,6 @@ memory interfaces look even more attractive.
     \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1icache_assoc.png}
     \caption{Performance vs L1 Icache Associativity}
     \label{fig:cpivsl1iassoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1icache_size.png}
-    \caption{Performance vs L1 Icache Size}
-    \label{fig:cpivsl1isize}
 \end{figure}
 
 \begin{figure}[ht]

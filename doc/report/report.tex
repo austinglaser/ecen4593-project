@@ -77,8 +77,6 @@
 \renewcommand\headrulewidth{0.4pt} % Size of the header rule
 \renewcommand\footrulewidth{0.4pt} % Size of the footer rule
 
-\setlength\parindent{0pt} % Removes all indentation from paragraphs
-
 %----------------------------------------------------------------------------------------
 %	DOCUMENT STRUCTURE COMMANDS
 %	Skip this unless you know what you're doing
@@ -179,48 +177,136 @@
 
 \section{Introduction}
 
-The goal of the Memory Simulation project was to implement a simulator that can simulate and evaluate a memory system with two levels of cache memory and a main memory. Within the system there is a level-1 (L1) instruction cache and a L1 data cache. There is also a unified level-2 (L2) cache which handles requests from both L1 caches. Misses that occur in the L2 cache are handled by main memory. These caches are write-allocate, write-back caches with an 8-entry victim cache. 
+The goal of the Memory Simulation project was to implement a simulator that can
+simulate and evaluate a memory system with two levels of cache memory and a main
+memory. Within the system there is a level-1 (L1) instruction cache and a L1
+data cache. There is also a unified level-2 (L2) cache which handles requests
+from both L1 caches. Misses that occur in the L2 cache are handled by main
+memory. These caches are write-allocate, write-back caches with an 8-entry
+victim cache. 
 
 \section{Trend Analysis}
 
 \subsection{Miss Rate and Cache Size Analysis}
 
-Compulsory, capacity, and conflict misses have a big effect on the cache miss rate. A compulsory miss occurs when the first access to a block can not be in the cache. Cumpolsory misses do not depend on size, but capacity misses do. If the cache is too small and cannot hold all of the blocks needed during the execution of the program, then misses occur on blocks that were discarded earlier. If the cache has sufficient space for the data, but the block can not be kept because the set is full, then a conflict miss will occur. 
-
-Reducing cache miss rates depends on the miss type. Conflict and compulsory misses can be reduced in several ways. Larger cache blocks can decrease the compulsory miss rate by taking advantage of spatial locality however, it may also increase the miss penalty by requiring more data to be fetched per miss. In addition, they will almost certainly increase conflict misses since fewer blocks can be stored in the cache. Capacity misses can be reduced by making the cache larger as well. 
-
-Comparing our data for the miss rate and the cache sizes, we can see in figures \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and \ref{fig:l2vsmiss}, that as the cache size increases, the miss rates for the most part decrease. We expected this in most cases because as the cache size increases there is less chance of a conflict miss. It can be seen in figure \ref{fig:l2vsmiss} that there is an exception to our expected results. The miss rate for the bzip2 trace increases slightly as the cache size increases. This could be because...
-
-Brook
-
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\textwidth]{plots/L1icache_miss_vs_L1icache_size.png}
-    \caption{L1 Icache Miss Rate vs L1 Icache Size}
+    \caption{Impact of L1I cache size on L1I cache miss rate}
     \label{fig:L1imissvsl1isize}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_size.png}
-    \caption{Size of L2 cache impact on L2 cache miss rate}
-    \label{fig:l2vsmiss}
+    \includegraphics[width=0.75\textwidth]{plots/L1_Dcache_miss_vs_L1_Dcache_size.png}
+    \caption{Impact of L1D cache size on L1D cache miss rate}
+    \label{fig:l1vsmiss}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{plots/L1_Dcache_miss_vs_L1_Dcache_size.png}
-    \caption{Size of L1 Dcache impact on L1 Dcache miss rate}
-    \label{fig:l1vsmiss}
+    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_size.png}
+    \caption{Impact of L2 cache size on L2 cache miss rate}
+    \label{fig:l2vsmiss}
 \end{figure}
+
+
+Compulsory, capacity, and conflict misses effect the cache miss rate. A
+compulsory miss occurs when the first access to a block cannot be in the cache.
+Compulsory misses do not depend on size, but capacity misses do. If the cache is
+too small and cannot hold all of the blocks needed during the execution of the
+program, then misses occur on blocks that were discarded earlier. If the
+multiple memory locations are being mapped to the same cache location then a
+conflict miss occurs. Conflict misses can also be resolved by an increase in
+cache size.
+
+In most cases, as the cache size increases there is less chance of a capacity or
+conflict miss. Comparing our data of the miss rate and the cache sizes, we can
+see in figures \ref{fig:L1imissvsl1isize}, \ref{fig:l1vsmiss}, and
+\ref{fig:l2vsmiss}, that as the cache size increases, the miss rates for the
+most part decrease. It can be seen in figure \ref{fig:l2vsmiss} that there is an
+exception to our expected results. The miss rate for the bzip2 trace increases
+by about 1\% as the cache size increases. This could be because in the memory
+level L1D for the smaller cache size we have an 8\% miss rate, which is higher
+than in the larger cache L1D level. Therefore we believe we are hitting the L2
+level of memory more in the larger cache than in the smaller cache.
+
+Our results for levels L1I and L1D in figures \ref{fig:L1imissvsl1isize} and
+\ref{fig:l1vsmiss} are more of what we expected. The trend of larger cache size,
+lower miss rate. L1I cache miss rate decreases significantly on all traces as
+the the cache size increases and same with L1D cache. The results are expected
+because with larger cache but with same block sizes will typically return these
+results. 
 
 \subsection{Miss Rate and Cache Associativity Analysis}
 
-Comparing miss rate and cache associativity we can see in figure \ref{fig:L1imissvsl1iassoc}, \ref{fig:l1missvsl1assoc}, and \ref{fig:l2missvsl2assoc} that as the cache associativity increases, the cache miss rate decreases.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/L1icache_miss_vs_L1icache_Assoc.png}
+    \caption{L1 Icache Miss Rate vs L1 Icache Associativity}
+    \label{fig:L1imissvsl1iassoc}
+\end{figure}
 
-Brook
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/L1Dcache_miss_vs_associativity.png}
+    \caption{L1 Dcache miss rate vs L1 Dcache Associativity}
+    \label{fig:l1missvsl1assoc}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_L2cache_associativity.png}
+    \caption{L2 cache miss rate vs L2 cache Associativity}
+    \label{fig:l2missvsl2assoc}
+\end{figure}
+
+When comparing miss rate and cache associativity we can see in figures
+\ref{fig:L1imissvsl1iassoc}, \ref{fig:l1missvsl1assoc}, and
+\ref{fig:l2missvsl2assoc} that for most cases as the cache associativity
+increases, the cache miss rate decreases. However, the largest effect does occur
+when going from a direct mapped cache to a 2 way cache. This can be seen in our
+data by viewing that our performance begins to level off as the associativity
+continues to increase. There are also some cases that are unexpected, such as
+the sjeng trace in figure \ref{fig:L1imissvsl1iassoc}. We can see that in this
+trace that as the associativity increases to fully associative the miss rate
+increases by 0.1\%. This could be one of the strange cases where that particular
+trace does not perform well with this one particular cache associativity.
+However, we can see that overall our data behaves as expected and the miss rates
+decrease as the associativity increases. 
+
+Another way to decrease the miss rate using associativity is by utilizing the
+victim cache. The victim cache is a small fully associative cache placed between
+two levels of the cache hierarchy. The victim cache extends the associativity of
+the cache. An item removed from a cache level is placed in the victim cache, on
+a miss the victim cache is first checked before making a request to the next
+level of hierarchy. This essentially reduces the miss time since on a hit in the
+victim cache, there is no need to go to the next level of the memory hierarchy.
+It is implemented using a least recently used replacement policy. When the
+victim cache is full, the least recently used item is only written to the next
+memory level if it is dirty. 
+
+In our simulations we are using the victim cache all the time, this extends the
+associativity of our cache. If we were able to increase the victim cache size,
+then we may see an increase in performance due to a possible decrease in miss
+penalties. However because we did not implement increasing the victim cache size
+in our design, this is only a prediction. 
 
 \subsection{CPI and Cache Size Analysis}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_size.png}
+    \caption{CPI vs L1 cache Size}
+    \label{fig:cpivsl1size}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_size.png}
+    \caption{CPI vs L2 Cache size}
+    \label{fig:cpivsl2size}
+\end{figure}
 
 Thus far, we've only examined cache miss rates. While this is a reasonable
 measure of performance, we've seen in our text that it is not the final story.
@@ -249,13 +335,6 @@ important to note that the traces exhibiting this performance tend to be those
 with the best performance even in the default case, showing that they have less
 headroom for improvement no matter what memory system they're running on.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_size.png}
-    \caption{CPI vs L1 cache Size}
-    \label{fig:cpivsl1size}
-\end{figure}
-
 Figure \ref{fig:cpivsl2size} shows the effect of L2 cache size on performance.
 The same effect observed above is even more pronounced here, though is primarily
 due to the fact that the memory systems with a smaller L2 also have smaller L1
@@ -265,24 +344,100 @@ Interestingly, we see that though bzip2's performance is \emph{nearly} identical
 in both cases, both it and astar do exhibit slight improvements in the default
 case.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_size.png}
-    \caption{CPI vs L2 Cache size}
-    \label{fig:cpivsl2size}
-\end{figure}
-
 \subsection{CPI and Cache Associativity Analysis}
 
-CPI and Cache Associativity
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_associativity.png}
+    \caption{Performance impact from L1 cache associativity}
+    \label{fig:cpivsl1assoc}
+\end{figure}
 
-Austin
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_associativity.png}
+    \caption{Performance impact of L2 cache associativity}
+    \label{fig:cpivsl2assoc}
+\end{figure}
 
-\subsection{CPI and Costs Analysis}
+We observe, again, that higher associativity has a positive performance impact,
+but that that impact is most pronounced with the first few degrees of
+associativity. It's also likely that even this effect is slightly blunted, given
+that we get some similar effects from implementing a victim cache.
 
-Austin, you do this section too :)
+Figures \ref{fig:cpivsl1assoc} and \ref{fig:cpivsl2assoc} show this trend. It's
+worth noting that the x-scale for associativity is logarithmic, to better
+include the fully-associative case. It's also worth noting that  (for the L1
+cache) the fully associative case doesn't fit cleanly into the progression,
+since it's the All-FA config, whereas the others only increase L1 associativity.
+
+Since the scale is logarithmic, it's apparent that the increased cost of
+implementing very high degrees of associativity is probably not cost effective.
+The optimal performance point is likely a 2- or 4-way associative cache.
+(although more in-depth analysis of cost-vs-performance will be performed in
+section \ref{sec:cost}).
+
+\subsection{CPI and Costs Analysis} \label{sec:cost}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Total_memory_system_cost.png}
+    \caption{Performance vs Total main memory cost}
+    \label{fig:cpivstotalcost}
+\end{figure}
+
+Figure \ref{fig:cpivstotalcost} includes all memory system configurations,
+plotted against their total cost. As might be expected, there's a general trend
+to better performance by more expensive systems---but its far from a monotonic
+function. This is a good reminder that, if optimizing a memory system, we should
+take care to spend money in the right places. Note that this figure only
+includes configurations for which we have a full set of results (meaning it
+doesn't include results from the sjeng memory bandwidth simulations).
+
+For our hypothetical processor, we'll choose 3 different memory configurations:
+a 'bargain basement' variant, where the goal is minimum cost; a
+'middle-of-the-road' variant, where the goal is improved performance; and a
+'cutting-edge' variant, where the goal is to have maximum performance.
+
+For the bargain-basement processor, we'll evaluate the cheapest three
+configurations: All-small, L1-small, and default. Default costs significantly
+more than the other two, but provides about the same performance improvement
+over L1-small as L1-small does over All-small. For that reason, we would
+probably select L1-small as our memory system, since it gives us a significant
+improvement over the absolute cheapest option without incurring a huge cost
+penalty.
+
+For the middle-of-the-road variant, we'll selecting between the default
+configuration, L1-2way, and All-2way. We ignore the L1-small-4way configuration
+because it actually performs \emph{worse} than default while costing
+\emph{more}. The optimal memory system is probably All-2way, since its again
+offers a reasonable performance improvement over its immediate predecessor for a
+small cost increase.
+
+Finally, there's only really two possibilities for the cutting-edge variant:
+All-4way and All-FA (L1-8way thrown out because, again, it's a loser compared to
+All-4way). Realistically, these two configs have fairly similar performance, and
+with the exorbitant price tag that three fully-associative caches come with,
+it makes sense even for the flagship part to eschew that configuration.
+Furthermore, we could explore more 4-way configurations where we increase the
+cache sizes or vary the block size and memory bandwidth to achieve optimal
+performance.
 
 \section{Main Memory System Analysis}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Bandwidth.png}
+    \caption{Performance impact of main memory bandwidth}
+    \label{fig:cpivsband}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Main_Mem_Cost.png}
+    \caption{Performance impact of main memory cost}
+    \label{fig:cpivsmainmemcost}
+\end{figure}
 
 One major task in this project was to determine the effect the bandwidth of the
 main memory connection has on memory system performance. We only performed the
@@ -323,73 +478,19 @@ first instinct is that this function should be linear or worse. However, it does
 explain the results, and when taken as a given makes higher-bandwidth main
 memory interfaces look slightly more attractive.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Bandwidth.png}
-    \caption{Performance impact of main memory bandwidth}
-    \label{fig:cpivsband}
-\end{figure}
+\section{Conclusion}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Main_Mem_Cost.png}
-    \caption{Performance impact of main memory cost}
-    \label{fig:cpivsmainmemcost}
-\end{figure}
+It's obvious from this report that, as was stated in class, there are simply too
+many variables in the design of a cache to perform an exhaustive search of the
+configuration space. Instead, a cache designer must use her intuition to guide
+the particular paths she explores.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/L1Dcache_miss_vs_associativity.png}
-    \caption{L1 Dcache miss rate vs L1 Dcache Associativity}
-    \label{fig:l1missvsl1assoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_L2cache_associativity.png}
-    \caption{L2 cache miss rate vs L2 cache Associativity}
-    \label{fig:l2missvsl2assoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_associativity.png}
-    \caption{Performance impact on L2 cache associativity}
-    \label{fig:cpivsl2assoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1Dcache_associativity.png}
-    \caption{Performance impact on L1 Dcache associativity}
-    \label{fig:cpivsl1assoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Total_memory_system_cost.png}
-    \caption{Performance vs Total main memory cost}
-    \label{fig:cpivstotalcost}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1icache_assoc.png}
-    \caption{Performance vs L1 Icache Associativity}
-    \label{fig:cpivsl1iassoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/L1icache_miss_vs_L1icache_Assoc.png}
-    \caption{L1 Icache Miss Rate vs L1 Icache Associativity}
-    \label{fig:L1imissvsl1iassoc}
-\end{figure}
-
-
-\section{Conclusions}
-
-
+In spite of this, if we had more time to invest in this project, we would
+investigate some of the design parameters which were not varied for this
+project. Most interestingly would be to verify some of our assumptions about the
+performance impact of the victim cache, or different sizes of the same.
+It would be especially interesting to compare the performance impact of a victim
+cache in the direct-mapped case versus when when a higher-associativity is used.
 
 \clearpage
 \appendix

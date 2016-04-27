@@ -244,6 +244,20 @@ In our simulations we are using the victim cache all the time, this extends the 
 
 \subsection{CPI and Cache Size Analysis}
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_size.png}
+    \caption{CPI vs L1 cache Size}
+    \label{fig:cpivsl1size}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_size.png}
+    \caption{CPI vs L2 Cache size}
+    \label{fig:cpivsl2size}
+\end{figure}
+
 Thus far, we've only examined cache miss rates. While this is a reasonable
 measure of performance, we've seen in our text that it is not the final story.
 For our system, the true measure of performance is the time it takes to execute
@@ -271,13 +285,6 @@ important to note that the traces exhibiting this performance tend to be those
 with the best performance even in the default case, showing that they have less
 headroom for improvement no matter what memory system they're running on.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_size.png}
-    \caption{CPI vs L1 cache Size}
-    \label{fig:cpivsl1size}
-\end{figure}
-
 Figure \ref{fig:cpivsl2size} shows the effect of L2 cache size on performance.
 The same effect observed above is even more pronounced here, though is primarily
 due to the fact that the memory systems with a smaller L2 also have smaller L1
@@ -287,14 +294,21 @@ Interestingly, we see that though bzip2's performance is \emph{nearly} identical
 in both cases, both it and astar do exhibit slight improvements in the default
 case.
 
+\subsection{CPI and Cache Associativity Analysis}
+
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_size.png}
-    \caption{CPI vs L2 Cache size}
-    \label{fig:cpivsl2size}
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_associativity.png}
+    \caption{Performance impact from L1 cache associativity}
+    \label{fig:cpivsl1assoc}
 \end{figure}
 
-\subsection{CPI and Cache Associativity Analysis}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_associativity.png}
+    \caption{Performance impact of L2 cache associativity}
+    \label{fig:cpivsl2assoc}
+\end{figure}
 
 We observe, again, that higher associativity has a positive performance impact,
 but that that impact is most pronounced with the first few degrees of
@@ -313,21 +327,14 @@ The optimal performance point is likely a 2- or 4-way associative cache.
 (although more in-depth analysis of cost-vs-performance will be performed in
 section \ref{sec:cost}).
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1cache_associativity.png}
-    \caption{Performance impact from L1 cache associativity}
-    \label{fig:cpivsl1assoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L2Cache_associativity.png}
-    \caption{Performance impact of L2 cache associativity}
-    \label{fig:cpivsl2assoc}
-\end{figure}
-
 \subsection{CPI and Costs Analysis} \label{sec:cost}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Total_memory_system_cost.png}
+    \caption{Performance vs Total main memory cost}
+    \label{fig:cpivstotalcost}
+\end{figure}
 
 Figure \ref{fig:cpivstotalcost} includes all memory system configurations,
 plotted against their total cost. As might be expected, there's a general trend
@@ -366,15 +373,21 @@ Furthermore, we could explore more 4-way configurations where we increase the
 cache sizes or vary the block size and memory bandwidth to achieve optimal
 performance.
 
+\section{Main Memory System Analysis}
+
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Total_memory_system_cost.png}
-    \caption{Performance vs Total main memory cost}
-    \label{fig:cpivstotalcost}
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Bandwidth.png}
+    \caption{Performance impact of main memory bandwidth}
+    \label{fig:cpivsband}
 \end{figure}
 
-
-\section{Main Memory System Analysis}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Main_Mem_Cost.png}
+    \caption{Performance impact of main memory cost}
+    \label{fig:cpivsmainmemcost}
+\end{figure}
 
 One major task in this project was to determine the effect the bandwidth of the
 main memory connection has on memory system performance. We only performed the
@@ -415,50 +428,7 @@ first instinct is that this function should be linear or worse. However, it does
 explain the results, and when taken as a given makes higher-bandwidth main
 memory interfaces look slightly more attractive.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Bandwidth.png}
-    \caption{Performance impact of main memory bandwidth}
-    \label{fig:cpivsband}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_Main_Mem_Cost.png}
-    \caption{Performance impact of main memory cost}
-    \label{fig:cpivsmainmemcost}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/L1Dcache_miss_vs_associativity.png}
-    \caption{L1 Dcache miss rate vs L1 Dcache Associativity}
-    \label{fig:l1missvsl1assoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/L2cache_miss_vs_L2cache_associativity.png}
-    \caption{L2 cache miss rate vs L2 cache Associativity}
-    \label{fig:l2missvsl2assoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/CPI_vs_L1icache_assoc.png}
-    \caption{Performance vs L1 Icache Associativity}
-    \label{fig:cpivsl1iassoc}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.75\textwidth]{plots/L1icache_miss_vs_L1icache_Assoc.png}
-    \caption{L1 Icache Miss Rate vs L1 Icache Associativity}
-    \label{fig:L1imissvsl1iassoc}
-\end{figure}
-
-
-\section{Conclusions}
+\section{Conclusion}
 
 It's obvious from this report that, as was stated in class, there are simply too
 many variables in the design of a cache to perform an exhaustive search of the

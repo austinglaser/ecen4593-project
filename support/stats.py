@@ -357,7 +357,8 @@ def plot_results(traces, configs,
                  independent_getter, dependent_getter, log_x=False, x_limits=None):
     independent = {}
     dependent = {}
-    for trace in traces:
+    markers = ['^', 'v', '<', '>', '+', 'x', '|', '_']
+    for i, trace in enumerate(traces):
         independent[trace] = []
         dependent[trace] = []
         for config in configs:
@@ -365,7 +366,8 @@ def plot_results(traces, configs,
             independent[trace].append(independent_getter(r))
             dependent[trace].append(dependent_getter(r))
 
-        plt.plot(independent[trace], dependent[trace], label=trace, marker='o', linestyle=' ')
+        independent[trace], dependent[trace] = [list(x) for x in zip(*sorted(zip(independent[trace], dependent[trace]), key=lambda pair: pair[0]))]
+        plt.plot(independent[trace], dependent[trace], label=trace, marker=markers[i], fillstyle='none', color='k', linestyle=':')
     plt.xlabel(independent_name)
     plt.ylabel(dependent_name)
     plt.title(title)

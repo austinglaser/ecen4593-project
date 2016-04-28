@@ -56,7 +56,8 @@ uint32_t MainMem_Access(main_mem_t mem, access_t const * access)
     uint32_t access_cycles = mem->config->send_address_cycles +
                              mem->config->ready_cycles;
 
-    uint32_t n_chunks = access->n_bytes / mem->config->chunk_size_bytes;
+    uint32_t n_chunks = CEIL_DIVIDE(access->n_bytes,
+                                    mem->config->chunk_size_bytes);
 
     access_cycles += n_chunks * mem->config->send_chunk_cycles;
 

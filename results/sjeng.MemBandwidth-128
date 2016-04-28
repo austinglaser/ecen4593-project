@@ -9,7 +9,7 @@
     L2-cache size =  32768 : ways =   1 : block size =  64
     Memory ready time = 50 : chunksize = 128 : chunktime = 15
 
-  Execute time = 77197172379; Total refs = 17300001933
+  Execute time = 80839431714; Total refs = 17300001933
   Inst refs = 12741056222; Data refs = 4558945711
 
   Number of reference types:   [Percentage]
@@ -19,12 +19,12 @@
     Total  =  17300001933
 
   Total cycles for activities: [Percentage]
-    Reads  =  15684285287      [20.3%]
-    Writes =   8282403924      [10.7%]
-    Inst.  =  53230483168      [69.0%]
-    Total  =  77197172379
+    Reads  =  16902552992      [20.9%]
+    Writes =   8985330369      [11.1%]
+    Inst.  =  54951548353      [68.0%]
+    Total  =  80839431714
 
-  CPI =   6.1
+  CPI =   6.3
   Ideal:             Exec. Time =  30041058155; CPI =   2.4
   Ideal mis-aligned: Exec. Time =  40161444400; CPI =   3.2
 

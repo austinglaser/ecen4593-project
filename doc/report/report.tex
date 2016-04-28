@@ -498,7 +498,93 @@ cache in the direct-mapped case versus when when a higher-associativity is used.
 
 \clearpage
 \appendix
+\section{Source Code}
+
+\subsection{Notes on source code}
+
+With this project, we made an attempt to write well-tested, modular code. This
+resulted in a project which might not be as readable as it might be otherwise.
+If anyone is seriously interested in looking through it, we recommend the
+following steps:
+
+\begin{itemize}
+    \item Consult the header documentation. It's fairly complete and accurate.
+    \item Read over the tests (not included in this document, but available in
+        the project files). They provide insight into how the code is used in a
+        practical situation.
+\end{itemize}
+
+The upshot to all this is that our simulator could very easily expanded to
+different memory hierarchies. Adding an L3 cache, for instance, would be a
+trivial top-level change. We also (for test purposes) implemented a
+variable-size victim cache.
+
+With regards to efficiency, we probably aren't king-of-the-hill. In total,
+running all simulations consumed about 65 hours of CPU time, around double what
+seems to be the going rate. We were running multiple simulations at a time on a
+single computer, which could have contributed to this inefficiency.
+
+\subsection{Organization}
+
+This section contains the raw source code for the simulator. It omits test
+suites, though this simulator does have a full suite of accompanying unit tests.
+(they exist at under the \texttt{test/} directory at the top-level).
+
+Files are broken by type, and then alphabetically.
+
+\subsection{Header Files}
+
+\lstinputlisting[caption=Memory access utilities interface, label=lst:access_h]{../../inc/Access.h}
+\clearpage
+\lstinputlisting[caption=Cache data management interface, label=lst:cachedata_h]{../../inc/CacheData.h}
+\clearpage
+\lstinputlisting[caption=Cache cycles and interaction interface, label=lst:cacheinternals_h]{../../inc/CacheInternals.h}
+\clearpage
+\lstinputlisting[caption=Third-party exception library configuration, label=lst:cexceptionconfig_h]{../../inc/CExceptionConfig.h}
+\clearpage
+\lstinputlisting[caption=Configuration management interface, label=lst:config_h]{../../inc/Config.h}
+\clearpage
+\lstinputlisting[caption=Definitions for exception types, label=lst:exceptiontypes_h]{../../inc/ExceptionTypes.h}
+\clearpage
+\lstinputlisting[caption=L1 Cache simulator interface, label=lst:l1cache_h]{../../inc/L1Cache.h}
+\clearpage
+\lstinputlisting[caption=L2 Cache simulator interface, label=lst:l2cache_h]{../../inc/L2Cache.h}
+\clearpage
+\lstinputlisting[caption=Main Memory simulator interface, label=lst:mainmem_h]{../../inc/MainMem.h}
+\clearpage
+\lstinputlisting[caption=Simulator statistics collection interface, label=lst:statistics_h]{../../inc/Statistics.h}
+\clearpage
+\lstinputlisting[caption=Common utility functions interface, label=lst:util_h]{../../inc/Util.h}
+\clearpage
+
+\subsection{Source Files}
+
+\lstinputlisting[caption=Memory access utilities, label=lst:access_c]{../../src/Access.c}
+\clearpage
+\lstinputlisting[caption=Cache Data Management, label=lst:cachedata_c]{../../src/CacheData.c}
+\clearpage
+\lstinputlisting[caption=Cache cycles and interaction, label=lst:cacheinternals_c]{../../src/CacheInternals.c}
+\clearpage
+\lstinputlisting[caption=Third-part exception library configuration, label=lst:cexceptionconfig_c]{../../src/CExceptionConfig.c}
+\clearpage
+\lstinputlisting[caption=Configuration Management, label=lst:config_c]{../../src/Config.c}
+\clearpage
+\lstinputlisting[caption=Exception Types, label=lst:exceptiontypes_c]{../../src/ExceptionTypes.c}
+\clearpage
+\lstinputlisting[caption=L1 Cache Simulator, label=lst:l1cache_c]{../../src/L1Cache.c}
+\clearpage
+\lstinputlisting[caption=L2 Cache Simulator, label=lst:l2cache_c]{../../src/L2Cache.c}
+\clearpage
+\lstinputlisting[caption=Main Memory Simulator, label=lst:mainmem_c]{../../src/MainMem.c}
+\clearpage
+\lstinputlisting[caption=Statistics Aggregation, label=lst:statistics_c]{../../src/Statistics.c}
+\clearpage
+\lstinputlisting[caption=Utilities, label=lst:util_c]{../../src/Util.c}
+\clearpage
+
 \section{Simulation Results}
+
+\subsection{Organization}
 
 This section contains the raw printouts of all simulation results. It's
 organized alphabetically by trace, and then alphabetically by configuration
@@ -914,64 +1000,6 @@ name.
                  lastline=53,
                  language=,
                  label=lst:sjengmembandwidth64]{../../results/sjeng.MemBandwidth-64}
-\clearpage
-
-\section{Source Code}
-
-This section contains the raw source code for the simulator. It omits test
-suites, though this simulator does have a full suite of accompanying unit tests.
-(they exist at under the \texttt{test/} directory at the top-level).
-
-Files are broken by type, and then alphabetically
-
-\subsection{Header Files}
-
-\lstinputlisting[caption=Memory access utilities interface, label=lst:access_h]{../../inc/Access.h}
-\clearpage
-\lstinputlisting[caption=Cache data management interface, label=lst:cachedata_h]{../../inc/CacheData.h}
-\clearpage
-\lstinputlisting[caption=Cache cycles and interaction interface, label=lst:cacheinternals_h]{../../inc/CacheInternals.h}
-\clearpage
-\lstinputlisting[caption=Third-party exception library configuration, label=lst:cexceptionconfig_h]{../../inc/CExceptionConfig.h}
-\clearpage
-\lstinputlisting[caption=Configuration management interface, label=lst:config_h]{../../inc/Config.h}
-\clearpage
-\lstinputlisting[caption=Definitions for exception types, label=lst:exceptiontypes_h]{../../inc/ExceptionTypes.h}
-\clearpage
-\lstinputlisting[caption=L1 Cache simulator interface, label=lst:l1cache_h]{../../inc/L1Cache.h}
-\clearpage
-\lstinputlisting[caption=L2 Cache simulator interface, label=lst:l2cache_h]{../../inc/L2Cache.h}
-\clearpage
-\lstinputlisting[caption=Main Memory simulator interface, label=lst:mainmem_h]{../../inc/MainMem.h}
-\clearpage
-\lstinputlisting[caption=Simulator statistics collection interface, label=lst:statistics_h]{../../inc/Statistics.h}
-\clearpage
-\lstinputlisting[caption=Common utility functions interface, label=lst:util_h]{../../inc/Util.h}
-\clearpage
-
-\subsection{Source Files}
-
-\lstinputlisting[caption=Memory access utilities, label=lst:access_c]{../../src/Access.c}
-\clearpage
-\lstinputlisting[caption=Cache Data Management, label=lst:cachedata_c]{../../src/CacheData.c}
-\clearpage
-\lstinputlisting[caption=Cache cycles and interaction, label=lst:cacheinternals_c]{../../src/CacheInternals.c}
-\clearpage
-\lstinputlisting[caption=Third-part exception library configuration, label=lst:cexceptionconfig_c]{../../src/CExceptionConfig.c}
-\clearpage
-\lstinputlisting[caption=Configuration Management, label=lst:config_c]{../../src/Config.c}
-\clearpage
-\lstinputlisting[caption=Exception Types, label=lst:exceptiontypes_c]{../../src/ExceptionTypes.c}
-\clearpage
-\lstinputlisting[caption=L1 Cache Simulator, label=lst:l1cache_c]{../../src/L1Cache.c}
-\clearpage
-\lstinputlisting[caption=L2 Cache Simulator, label=lst:l2cache_c]{../../src/L2Cache.c}
-\clearpage
-\lstinputlisting[caption=Main Memory Simulator, label=lst:mainmem_c]{../../src/MainMem.c}
-\clearpage
-\lstinputlisting[caption=Statistics Aggregation, label=lst:statistics_c]{../../src/Statistics.c}
-\clearpage
-\lstinputlisting[caption=Utilities, label=lst:util_c]{../../src/Util.c}
 \clearpage
 
 %----------------------------------------------------------------------------------------

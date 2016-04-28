@@ -462,7 +462,8 @@ occupy an increasing proportion of our total memory access time.
 Now, on to the actual results. Examining figure \ref{fig:cpivsband} shows us
 that our predictions are borne out by the actual data -- the largest performance
 improvement comes from the first doubling, while later doublings produce
-progressively smaller impacts.
+progressively smaller impacts. Furthermore, the 128-byte case performs exactly
+as well as the 64-byte case.
 
 We can also look at the relationship between cost and performance (figure
 \ref{fig:cpivsmainmemcost}). This is particularly interesting, because the

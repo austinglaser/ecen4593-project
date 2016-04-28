@@ -354,10 +354,13 @@ def strip_header_footer_empty(lines, divider_lines):
 
 def plot_results(traces, configs,
                  title, independent_name, dependent_name,
-                 independent_getter, dependent_getter, log_x=False, x_limits=None):
+                 independent_getter, dependent_getter,
+                 log_x=False, x_limits=None, y_limits=None,ls=None):
     independent = {}
     dependent = {}
     markers = ['^', 'v', '<', '>', '+', 'x', '|', '_']
+    if ls is None:
+        ls = ':'
     for i, trace in enumerate(traces):
         independent[trace] = []
         dependent[trace] = []
@@ -367,7 +370,7 @@ def plot_results(traces, configs,
             dependent[trace].append(dependent_getter(r))
 
         independent[trace], dependent[trace] = [list(x) for x in zip(*sorted(zip(independent[trace], dependent[trace]), key=lambda pair: pair[0]))]
-        plt.plot(independent[trace], dependent[trace], label=trace, marker=markers[i], fillstyle='none', color='k', linestyle=':')
+        plt.plot(independent[trace], dependent[trace], label=trace, marker=markers[i], fillstyle='none', color='k', linestyle=ls)
     plt.xlabel(independent_name)
     plt.ylabel(dependent_name)
     plt.title(title)
@@ -376,9 +379,11 @@ def plot_results(traces, configs,
     ax.legend(handles, labels, loc='upper center', bbox_to_anchor=(.5, -0.1), ncol=3)
     plt.gcf().subplots_adjust(bottom=0.2)
     if log_x:
-        ax.set_xscale('log')
+        ax.set_xscale('log', basex=2)
     if x_limits:
         plt.xlim(x_limits)
+    if y_limits:
+        plt.ylim(y_limits)
     plt.show()
 
 if __name__ == "__main__":
@@ -467,123 +472,130 @@ if __name__ == "__main__":
     #     cpi_ideal
     #     cpi_ideal_misaligned
 
-    #traces = ['sjeng']
-    #configs = ['default', 'MemBandwidth-16', 'MemBandwidth-32', 'MemBandwidth-64']
-    #plot_results(traces, configs,
-    #             'CPI vs Memory Bandwidth',
-    #             'Main memory bandwidth [bytes]',
-    #             'Overall CPI [cycles/instruction]',
-    #             lambda r: r.memory_system.main_mem.chunksize,
-    #             lambda r: r.cycles.cpi)
-    #plot_results(traces, configs,
-    #             'Main Memory Cost vs Memory Bandwidth',
-    #             'Main memory bandwidth [bytes]',
-    #             'Main memory cost [dollars]',
-    #             lambda r: r.memory_system.main_mem.chunksize,
-    #             lambda r: r.memory_system.main_mem.cost)
-    #plot_results(traces, configs,
-    #             'CPI vs Main Memory Cost',
-    #             'Main memory cost [dollars]',
-    #             'Overall CPI [cycles/instruction]',
-    #             lambda r: r.memory_system.main_mem.cost,
-    #             lambda r: r.cycles.cpi)
-
-    #traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    #configs = ['default', 'L1-small', ]
-    #plot_results(traces, configs,
-    #            'L1 Dcache miss rate vs L1 Dcache size',
-    #             'L1 Dcache size',
-    #             'Miss rate [percent]',
-    #             lambda r: r.memory_system.l1d_cache.size,
-    #             lambda r: r.memory_system.l1d_cache.miss_rate)
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default', 'L1-small', ]
-    # plot_results(traces, configs,
-    #              'L1 Dcache hit rate vs L1 Dcache size',
-    #              'L1 Dcache size',
-    #              'Hit rate [percent]',
-    #              lambda r: r.memory_system.l1d_cache.size,
-    #              lambda r: r.memory_system.l1d_cache.hit_rate)
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default', 'All-small', ]
-    # plot_results(traces, configs,
-    #              'L2 Cache miss rate vs L2 Cache size',
-    #              'L2 Cache size',
-    #              'Miss rate [percent]',
-    #              lambda r: r.memory_system.l2_cache.size,
-    #              lambda r: r.memory_system.l2_cache.miss_rate)
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default', 'All-small', ]
-    # plot_results(traces, configs,
-    #              'L2 Cache hit rate vs L2 Cache size',
-    #              'L2 Cache size',
-    #              'Hit rate [percent]',
-    #              lambda r: r.memory_system.l2_cache.size,
-    #              lambda r: r.memory_system.l2_cache.hit_rate)
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default', 'L1-small']
-    # plot_results(traces, configs,
-    #              'CPI vs L1 Dcache Size',
-    #              'L1 Dcache size',
-    #              'Overall CPI [cycles/instruction',
-    #              lambda r: r.memory_system.l1d_cache.size,
-    #              lambda r: r.cycles.cpi,)
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default', 'All-small']
-    # plot_results(traces, configs,
-    #              'CPI vs L2 Cache Size',
-    #              'L2 Cache size',
-    #              'Overall CPI [cycles/instruction',
-    #              lambda r: r.memory_system.l2_cache.size,
-    # #              lambda r: r.cycles.cpi,)
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default', 'All-FA', 'All-2way', 'All-4way']
-    # plot_results(traces, configs,
-    #              'L1 Icache miss rate vs L1 Icache associativity',
-    #              'L1 Icache associativity',
-    #              'L1 Icache miss rate',
-    #              lambda r: r.memory_system.l1i_cache.ways,
-    #              lambda r: r.memory_system.l1i_cache.miss_rate, log_x=True, x_limits = [0.5, 600])
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default', 'All-FA', 'All-2way', 'All-4way']
-    # plot_results(traces, configs,
-    #              'CPI vs L1 Dcache associativity',
-    #              'L1 Dcache associativity',
-    #              'CPI [cycles/instruction]',
-    #              lambda r: r.memory_system.l1d_cache.ways,
-    #              lambda r: r.cycles.cpi, log_x=True, x_limits = [0.5, 600])
     traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    configs = ['default', 'All-FA', 'All-2way', 'All-4way']
+    configs = ['default', 'L1-small']
     plot_results(traces, configs,
-                 'CPI vs L1 Icache associativity',
-                 'L1 Icache associativity',
+                 'Instruction cache miss rate vs size',
+                 'Cache size [bytes]',
+                 'Miss rate [percent]',
+                 lambda r: r.memory_system.l1i_cache.size,
+                 lambda r: r.memory_system.l1i_cache.miss_rate,
+                 x_limits=[3500, 9000], y_limits=[-1, 7])
+
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'L1-small']
+    plot_results(traces, configs,
+                 'Data cache miss rate vs size',
+                 'cache size [bytes]',
+                 'Miss rate [percent]',
+                 lambda r: r.memory_system.l1d_cache.size,
+                 lambda r: r.memory_system.l1d_cache.miss_rate,
+                 x_limits=[3500, 9000])
+
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'All-small']
+    plot_results(traces, configs,
+                 'L2 cache miss rate vs size',
+                 'Cache size [bytes]',
+                 'Miss rate [percent]',
+                 lambda r: r.memory_system.l2_cache.size,
+                 lambda r: r.memory_system.l2_cache.miss_rate,
+                 x_limits=[15000, 34000], y_limits=[25, 80])
+
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'L1-2way', 'L1-8way', 'All-FA']
+    plot_results(traces, configs,
+                 'Instruction cache miss rate vs associativity',
+                 'Associativity',
+                 'Miss rate [percent]',
+                 lambda r: r.memory_system.l1i_cache.ways,
+                 lambda r: r.memory_system.l1i_cache.miss_rate,
+                 log_x=True, x_limits=[0.5, 512], y_limits=[-0.5, 4.5])
+
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'L1-2way', 'L1-8way', 'All-FA']
+    plot_results(traces, configs,
+                 'Data cache miss rate vs associativity',
+                 'Associativity',
+                 'Miss rate [percent]',
+                 lambda r: r.memory_system.l1d_cache.ways,
+                 lambda r: r.memory_system.l1d_cache.miss_rate,
+                 log_x=True, x_limits=[0.5, 512], y_limits=[1, 9.5])
+
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'All-2way', 'All-4way', 'All-FA']
+    plot_results(traces, configs,
+                 'L2 cache miss rate vs associativity',
+                 'Associativity',
+                 'Miss rate [percent]',
+                 lambda r: r.memory_system.l2_cache.ways,
+                 lambda r: r.memory_system.l2_cache.miss_rate,
+                 log_x=True, x_limits=[0.5, 1024])
+
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'L1-small']
+    plot_results(traces, configs,
+                 'CPI vs L1 cache size',
+                 'Cache size [bytes]',
+                 'CPI [cycles/instruction]',
+                 lambda r: r.memory_system.l1i_cache.size,
+                 lambda r: r.cycles.cpi,
+                 x_limits=[3500,8700], y_limits=[7,23])
+
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'All-small']
+    plot_results(traces, configs,
+                 'CPI vs L2 cache size',
+                 'Cache size [bytes]',
+                 'CPI [cycles/instruction]',
+                 lambda r: r.memory_system.l2_cache.size,
+                 lambda r: r.cycles.cpi,
+                 x_limits=[15000, 34000], y_limits=[6, 31])
+
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'L1-2way', 'L1-8way', 'All-FA']
+    plot_results(traces, configs,
+                 'CPI vs L1 cache associativity',
+                 'Associativity',
                  'CPI [cycles/instruction]',
                  lambda r: r.memory_system.l1i_cache.ways,
-                 lambda r: r.cycles.cpi, log_x=True, x_limits = [0.5, 600])
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default','L1-small']
-    # plot_results(traces, configs,
-    #              'CPI vs Total memory system cost',
-    #              'Cost [dollars]',
-    #              'CPI [cycles/instruction]',
-    #              lambda r: r.memory_system.cost(),
-    #              lambda r: r.cycles.cpi)
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default', 'L1-small', ]
-    # plot_results(traces, configs,
-    #            'L1 Icache miss rate vs L1 Icache size',
-    #             'L1 Icache size',
-    #             'Miss rate [percent]',
-    #             lambda r: r.memory_system.l1i_cache.size,
-    #             lambda r: r.memory_system.l1i_cache.miss_rate)
-    # traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
-    # configs = ['default', 'L1-small']
-    # plot_results(traces, configs,
-    #              'CPI vs L1 Icache Size',
-    #              'L1 Icache size',
-    #              'Overall CPI [cycles/instruction',
-    #              lambda r: r.memory_system.l1i_cache.size,
-    #              lambda r: r.cycles.cpi,)
+                 lambda r: r.cycles.cpi,
+                 log_x=True, x_limits=[0.5, 512], y_limits=[5, 20])
 
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['default', 'All-2way', 'All-4way', 'All-FA']
+    plot_results(traces, configs,
+                 'CPI vs L2 cache associativity',
+                 'Associativity',
+                 'CPI [cycles/instruction]',
+                 lambda r: r.memory_system.l2_cache.ways,
+                 lambda r: r.cycles.cpi,
+                 log_x=True, x_limits=[0.5, 1024], y_limits=[5, 20])
 
+    traces = ['astar', 'bzip2', 'gobmk', 'libquantum', 'omnetpp', 'sjeng']
+    configs = ['All-2way', 'All-4way', 'All-FA', 'All-small', 'default', 'L1-2way', 'L1-8way', 'L1-small', 'L1-small-4way']
+    plot_results(traces, configs,
+                 'CPI vs total memory system cost',
+                 'Cost [dollars]',
+                 'CPI [cycles/instruction]',
+                 lambda r: r.memory_system.cost(),
+                 lambda r: r.cycles.cpi, ls='')
+
+    traces = ['sjeng']
+    configs = ['default', 'MemBandwidth-16', 'MemBandwidth-32', 'MemBandwidth-64', 'MemBandwidth-128']
+    plot_results(traces, configs,
+                 'CPI vs Memory Bandwidth',
+                 'Main memory bandwidth [bytes]',
+                 'Overall CPI [cycles/instruction]',
+                 lambda r: r.memory_system.main_mem.chunksize,
+                 lambda r: r.cycles.cpi)
+
+    traces = ['sjeng']
+    configs = ['default', 'MemBandwidth-16', 'MemBandwidth-32', 'MemBandwidth-64', 'MemBandwidth-128']
+    plot_results(traces, configs,
+                 'CPI vs Main Memory Cost',
+                 'Main memory cost [dollars]',
+                 'Overall CPI [cycles/instruction]',
+                 lambda r: r.memory_system.main_mem.cost,
+                 lambda r: r.cycles.cpi)
 

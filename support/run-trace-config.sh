@@ -16,8 +16,10 @@ trace_basename=$(basename ${trace} .gz)
 config_basename=$(basename ${config})
 
 resultsdir=results
-resultsfile=${resultsdir}/${trace_basename}.${config_basename}
-timefile=${resultsfile}.time
+timesdir=times
+resultsname=${trace_basename}.${config_basename}
+resultsfile=${resultsdir}/${resultsname}
+timefile=${timesdir}/${resultsname}.time
 
 echo "Running '${trace_basename}' with config '${config_basename}'"
 

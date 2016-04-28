@@ -218,7 +218,8 @@ too small and cannot hold all of the blocks needed during the execution of the
 program, then misses occur on blocks that were discarded earlier. If the
 multiple memory locations are being mapped to the same cache location then a
 conflict miss occurs. Conflict misses can also be resolved by an increase in
-cache size.
+cache size.\footnote{This information taken from lecture slides
+(\href{http://ecee.colorado.edu/ecen4593/notes/Memory-1a.pdf})}
 
 In most cases, as the cache size increases there is less chance of a capacity or
 conflict miss. Comparing our data of the miss rate and the cache sizes, we can
@@ -284,7 +285,8 @@ level of hierarchy. This essentially reduces the miss time since on a hit in the
 victim cache, there is no need to go to the next level of the memory hierarchy.
 It is implemented using a least recently used replacement policy. When the
 victim cache is full, the least recently used item is only written to the next
-memory level if it is dirty. 
+memory level if it is dirty.\footnote{This information taken from lecture slides
+(\href{http://ecee.colorado.edu/ecen4593/notes/Memory-1a.pdf})}
 
 In our simulations we are using the victim cache all the time, this extends the
 associativity of our cache. If we were able to increase the victim cache size,
